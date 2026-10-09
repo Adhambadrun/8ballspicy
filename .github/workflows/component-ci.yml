@@ -132,7 +132,8 @@ jobs:
         run: |
           PRODUCTS=build-device/Build/Products/Release-iphoneos
           mkdir -p dist
-          (cd "$PRODUCTS" && zip -qr ../../dist/MrSpicyUI-iphoneos-arm64-unsigned.zip .)
+          ABS_DIST="$(pwd)/dist"
+          (cd "$PRODUCTS" && zip -qr "$ABS_DIST/MrSpicyUI-iphoneos-arm64-unsigned.zip" .)
           shasum -a 256 dist/MrSpicyUI-iphoneos-arm64-unsigned.zip | tee dist/MrSpicyUI-iphoneos-arm64-unsigned.sha256
           cat dist/MrSpicyUI-iphoneos-arm64-unsigned.sha256 | sed 's/^/::notice::artifact sha256: /'
 
