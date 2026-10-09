@@ -105,7 +105,7 @@ public final class SpicyHeaderView: UIView {
         applyContent()
     }
 
-    @objc private func closeTapped() {
+    @objc func closeTapped() {
         onCloseTapped?()
     }
 }

@@ -169,18 +169,18 @@ public final class SpicySettingsView: UIView {
 
     // MARK: Actions
 
-    @objc private func soundChanged() {
+    @objc func soundChanged() {
         preferences.soundEnabled = soundSwitch.isOn
         notifyChange()
     }
 
-    @objc private func hapticsChanged() {
+    @objc func hapticsChanged() {
         preferences.hapticsEnabled = hapticsSwitch.isOn
         intensityControl.isEnabled = hapticsSwitch.isOn
         notifyChange()
     }
 
-    @objc private func intensityChanged() {
+    @objc func intensityChanged() {
         let index = intensityControl.selectedSegmentIndex
         let cases = SpicyHapticIntensity.allCases
         guard index >= 0, index < cases.count else { return }
@@ -188,22 +188,22 @@ public final class SpicySettingsView: UIView {
         notifyChange()
     }
 
-    @objc private func notificationsChanged() {
+    @objc func notificationsChanged() {
         preferences.notificationsEnabled = notificationsSwitch.isOn
         notifyChange()
     }
 
-    @objc private func personalizationChanged() {
+    @objc func personalizationChanged() {
         preferences.personalizationEnabled = personalizationSwitch.isOn
         notifyChange()
     }
 
-    @objc private func nicknameChanged() {
+    @objc func nicknameChanged() {
         preferences.playerNickname = nicknameField.text ?? ""
         notifyChange()
     }
 
-    @objc private func resetTapped() {
+    @objc func resetTapped() {
         preferences.reset()
         reloadFromPreferences()
         notifyChange()
