@@ -73,7 +73,7 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
 
     /// Polls `condition` on the main runloop until true or `timeout`.
     private func waitUntil(
-        timeout: TimeInterval = 5,
+        _ timeout: TimeInterval = 5,
         _ message: String = "condition not met",
         _ condition: () -> Bool,
         file: StaticString = #filePath,
