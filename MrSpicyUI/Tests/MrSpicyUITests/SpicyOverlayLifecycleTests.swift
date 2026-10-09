@@ -39,10 +39,17 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = presenter
         window.makeKeyAndVisible()
+        // Give UIKit a runloop turn to complete the root view controller's
+        // appearance transition before any modal presentations are attempted
+        // (presenting from a not-yet-appeared controller defers the
+        // presentation and its completion).
+        presenter.view.layoutIfNeeded()
+        spinRunLoop(0.2)
     }
 
     override func tearDown() {
         overlay.close(animated: false, completion: nil)
+        spinRunLoop(0.1)
         window.isHidden = true
         window = nil
         presenter = nil
@@ -56,18 +63,44 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
 
     // MARK: Helpers
 
+    /// Spins the main runloop for `seconds` (lets UIKit transitions settle).
+    private func spinRunLoop(_ seconds: TimeInterval) {
+        let end = Date().addingTimeInterval(seconds)
+        while Date() < end {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.02))
+        }
+    }
+
+    /// Polls `condition` on the main runloop until true or `timeout`.
+    private func waitUntil(
+        timeout: TimeInterval = 5,
+        _ message: String = "condition not met",
+        _ condition: () -> Bool,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if condition() { return }
+            RunLoop.main.run(until: Date().addingTimeInterval(0.02))
+        }
+        if !condition() {
+            XCTFail(message, file: file, line: line)
+        }
+    }
+
     private func openOverlay(file: StaticString = #filePath, line: UInt = #line) {
-        let done = expectation(description: "open completed")
-        overlay.open(from: presenter, animated: false) { done.fulfill() }
-        wait(for: [done], timeout: 5)
-        XCTAssertTrue(overlay.isOpen, file: file, line: line)
+        overlay.open(from: presenter, animated: false, completion: nil)
+        waitUntil(5, "overlay did not open", {
+            overlay.presentingViewController != nil && overlay.isOpen
+        }, file: file, line: line)
     }
 
     private func closeOverlay(file: StaticString = #filePath, line: UInt = #line) {
-        let done = expectation(description: "close completed")
-        overlay.close(animated: false) { done.fulfill() }
-        wait(for: [done], timeout: 5)
-        XCTAssertFalse(overlay.isOpen, file: file, line: line)
+        overlay.close(animated: false, completion: nil)
+        waitUntil(5, "overlay did not close", {
+            overlay.presentingViewController == nil && !overlay.isOpen
+        }, file: file, line: line)
     }
 
     // MARK: Lifecycle
@@ -88,18 +121,18 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
 
     func testOpenIsIdempotent() {
         openOverlay()
-        let done = expectation(description: "second open completed")
-        overlay.open(from: presenter, animated: false) { done.fulfill() }
-        wait(for: [done], timeout: 5)
+        overlay.open(from: presenter, animated: false, completion: nil)
+        spinRunLoop(0.1)
         XCTAssertTrue(overlay.isOpen)
+        XCTAssertEqual(overlay.presentingViewController, presenter)
         closeOverlay()
     }
 
     func testCloseIsIdempotent() {
-        let done = expectation(description: "close on unopened overlay")
-        overlay.close(animated: false) { done.fulfill() }
-        wait(for: [done], timeout: 5)
+        overlay.close(animated: false, completion: nil)
+        spinRunLoop(0.1)
         XCTAssertFalse(overlay.isOpen)
+        XCTAssertNil(overlay.presentingViewController)
     }
 
     // MARK: Bridge behavior
@@ -108,12 +141,12 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         openOverlay()
         overlay.headerView.closeButton.sendActions(for: .touchUpInside)
 
-        let settled = expectation(description: "dismissal settled")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { settled.fulfill() }
-        wait(for: [settled], timeout: 5)
-
-        XCTAssertEqual(bridge.closeRequests, 1)
-        XCTAssertFalse(overlay.isOpen)
+        waitUntil(5, "close button did not dismiss via bridge+close", {
+            bridge.closeRequests == 1 && self.overlay.presentingViewController == nil
+        })
+        waitUntil(5, "overlay.isOpen did not clear after dismissal", {
+            !self.overlay.isOpen
+        })
     }
 
     func testSettingsControlWritesThroughToPersistenceAndBridge() {

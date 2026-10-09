@@ -146,17 +146,28 @@ public final class SpicyOverlayViewController: UIViewController {
             self?.isOpen = true
             completion?()
         }
+        // UIKit establishes the presentation relationship synchronously when
+        // it accepts the request; the completion may be deferred to the end of
+        // the transition. Reflect accepted state immediately so callers (and
+        // tests) can rely on `isOpen` without waiting for animations.
+        if presentingViewController != nil {
+            isOpen = true
+        }
     }
 
     /// Dismisses the interface. Idempotent.
     public func close(animated: Bool, completion: (() -> Void)? = nil) {
-        guard isOpen || presentingViewController != nil else {
+        guard presentingViewController != nil else {
+            isOpen = false
             completion?()
             return
         }
         dismiss(animated: animated) { [weak self] in
             self?.isOpen = false
             completion?()
+        }
+        if presentingViewController == nil {
+            isOpen = false
         }
     }
 
