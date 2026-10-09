@@ -1,10 +1,10 @@
 {
-  "manifest_version": "1.0",
-  "generated_utc": "2026-10-09T11:48:44.138620+00:00",
+  "manifest_version": "1.1",
+  "generated_utc": "2026-10-09T12:33:09Z",
   "project": "8 Ball Pool / Mr. Spicy",
-  "session_branch": "arena/6264dd0a-8ballspicy",
-  "final_status": "COMPONENT REBUILD IN PROGRESS — HOST INTEGRATION BLOCKED",
-  "status_meaning": "Prior component build verified; current repairs under CI. Host integration/source authorization not available; final IPA not produced.",
+  "session_branch": "arena/6264dd0a-8ballspicy (source of record); re-verified and recovered into arena/627c356f-8ballspicy on Adhambadrun/8ballspicy",
+  "final_status": "COMPONENT VERIFIED \u2014 HOST INTEGRATION BLOCKED",
+  "status_meaning": "Component build is complete and verified green on a real macOS/Xcode runner (CI run 37928629998, source fae2937905395c425c777c38cbc05e115b2e1d71): 51/51 hosted tests pass, 51 hostless tests with 17 explained skips, 10/10 animated-transition repeats pass, arm64 device build succeeds, and the artifact hash was independently recomputed. Host integration is NOT possible: the only candidate host is Miniclip's proprietary 8 Ball Pool, present solely as a pirated DRM-decrypted cheat-injected dump whose Apple signature codesign itself rejects. The final IPA was therefore NOT PRODUCED, and no placeholder was created.",
   "release_ipa": {
     "delivered": false,
     "expected_path": "output/pool8Signed.ipa",
@@ -37,11 +37,11 @@
       "file": "MrSpicyUI/Sources/MrSpicyUI/Resources/Branding/spicy-s-mark.png",
       "provenance": "Newly generated 2026-10-09 (AI-generated monogram). NOT a recovered copy of the historical Spicy S asset, which lived only in the unreachable sibling repositories."
     },
-    "ci_verified_source_commit": "dc03d130664aed951dc003604592ed246e53f2c7",
+    "ci_verified_source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71",
     "device_build": {
       "artifact": "MrSpicyUI-iphoneos-arm64-unsigned.zip",
-      "sha256": "1a57bab96031dc78abde5eec594eb8ca9f1121ebc47819a67cd2ed7df97c034d",
-      "size_bytes": 1712887,
+      "sha256": "3a872657371e155a2bda05deeb73342e2e848e6ca0d99e1c484c4e651a90c5a6",
+      "size_bytes": 1729023,
       "contents": [
         "MrSpicyUI.o (arm64-apple-ios13.0)",
         "MrSpicyUI.swiftmodule/ (arm64-apple-ios)",
@@ -51,36 +51,47 @@
       "sdk": "iPhoneOS26.5.sdk (Xcode 26.6, build 17F113)",
       "configuration": "Release",
       "signed": false,
-      "signing_note": "CODE_SIGNING_ALLOWED=NO; no Apple identity exists in this environment. Library component — not an installable app archive.",
-      "retrieval": "git branch 'ci/artifacts', path runs/37915278092-component/dist/",
-      "independent_verification": "SHA-256 re-computed on the analysis host and matched; MrSpicyUI.o re-parsed as Mach-O 64-bit CPU_TYPE_ARM64."
-    }
+      "signing_note": "CODE_SIGNING_ALLOWED=NO; no Apple identity exists in this environment. Library component \u2014 not an installable app archive.",
+      "retrieval": "abadrun/8ballspicy branch arena/6264dd0a-8ballspicy, path validation/ci/runs/37928629998-component/dist/ (also mirrored on this branch)",
+      "independent_verification": "SHA-256 recomputed on the analysis host from the downloaded bytes and matched the CI-recorded value. MrSpicyUI.o re-parsed as Mach-O 0xFEEDFACF CPU_TYPE_ARM64 MH_OBJECT (370,200 B). swiftmodule targets arm64-apple-ios13.0; bundle Info.plist DTSDKName iphoneos26.5, DTXcodeBuild 17F113, MinimumOSVersion 13.0.",
+      "superseded_artifacts": {
+        "37915278092": "1a57bab96031dc78abde5eec594eb8ca9f1121ebc47819a67cd2ed7df97c034d (1,712,887 B)",
+        "37916599818": "1b2d4b176dbf8ec7da55e54cd9885bd332fe4e7485240f91a9fc5bcd7d7b0c68 (1,712,888 B)",
+        "37916687975": "2d34b9d00c8f3aad00ffcf5ec0419a42bf16a8d02ba4c8b702966ba8b3399b2c (1,712,890 B)"
+      }
+    },
+    "ci_verified_run": 37928629998,
+    "ci_evidence_commit": "dbc070bba16c4d9b5deba7fed2e6e97ed0365c30",
+    "is_it_an_ipa": "NO. A relocatable Mach-O object + Swift module + resource bundle. It is a library component, not an app, not an archive, and not installable or sideloadable."
   },
   "tests": {
     "hosted_suite": {
-      "host": "HostApp/MrSpicyDemoHost (component TEST HOST — explicitly not the production game)",
-      "ci_run": 37915278092,
+      "host": "HostApp/MrSpicyDemoHost (component TEST HOST \u2014 explicitly not the production game)",
+      "ci_run": 37928629998,
       "ci_job": "hosted-tests",
       "result": "PASS",
-      "executed": 33,
+      "executed": 51,
       "failures": 0,
       "includes": [
-        "modal open → close → reopen on one instance (testOpenCloseReopenCycle)",
+        "modal open \u2192 close \u2192 reopen on one instance (testOpenCloseReopenCycle)",
         "idempotent open/close",
         "UIControl sendActions dispatch to persistence + SpicyHostBridge",
-        "close button → bridge callback → dismissal",
-        "control→handler wiring for every UI control",
+        "close button \u2192 bridge callback \u2192 dismissal",
+        "control\u2192handler wiring for every UI control",
         "settings persistence, reset (model+UI), en/ar localization, RTL, accessibility identifiers/labels, brand resource, theme invariants"
-      ]
+      ],
+      "skipped": 0,
+      "raw_log": "validation/ci/runs/37928629998-hosted-tests/xcodebuild-hosted.log"
     },
     "hostless_package_suite": {
-      "ci_run": 37915278092,
+      "ci_run": 37928629998,
       "ci_job": "component",
       "result": "PASS",
-      "executed": 33,
-      "skipped": 5,
+      "executed": 51,
+      "skipped": 17,
       "failures": 0,
-      "skip_reason": "The 5 modal-presentation tests require UIApplicationMain; hostless xctest cannot run them (UIKit: 'UIApp is nil which means we cannot dispatch control actions to their targets'). Skips are reported by XCTest with this reason — not counted as passes. They execute for real in the hosted suite."
+      "skip_reason": "17 modal-presentation tests require UIApplicationMain; hostless xctest cannot present or dispatch control actions. XCTest reports each skip with its reason and they are not counted as passes. All 17 execute for real in the hosted suite (51 executed, 0 skipped).",
+      "raw_log": "validation/ci/runs/37928629998-component/xcodebuild-test.log"
     },
     "device_installation_and_launch": {
       "result": "NOT RUN",
@@ -89,7 +100,22 @@
     "integration_runtime_in_8_ball_pool": {
       "result": "NOT RUN",
       "reason": "Integration is blocked (see integration-validation.md). The third-party Appdome-hardened game binary was not patched or executed."
-    }
+    },
+    "animated_transition_repeat": {
+      "ci_run": 37928629998,
+      "result": "PASS",
+      "executed": 10,
+      "failures": 0,
+      "raw_log": "validation/ci/runs/37928629998-hosted-tests/xcodebuild-animated-repeat.log",
+      "purpose": "Re-runs the real animated open/close/reopen regressions repeatedly to catch transition-timing flakiness."
+    },
+    "regression_history": {
+      "37916687975": "33/33 hosted pass (last green before hardening)",
+      "37925407220": "43 executed, 8 FAILED \u2014 hardening commit 2d17a44 regressed dismissal (\"overlay did not close\")",
+      "37927299718": "51 executed, 1 FAILED \u2014 lifecycle fixed; residual mis-scoped hostless control-test expectation",
+      "37928629998": "51/51 hosted pass, 51 hostless (17 skips), 10/10 animated repeat \u2014 GREEN"
+    },
+    "test_integrity_note": "Commit fae2937 changed one hostless expectation from 1 to 0 (test renamed to testDetachedCloseHandlerDoesNotNotifyBridge). Verified NOT green-washing: fae2937 modifies no component source (git show fae2937 -- MrSpicyUI/Sources/ is empty), the hostless suite never presents the overlay so a detached close tap legitimately must not notify the host, and the real presented-close requirement is asserted in the hosted suite (testCloseButtonNotifiesBridgeAndCloses, testReentrantCloseBridgeWhileOpenFiresOncePerCycle, testUserCloseDuringOpeningIsQueuedOnceAndAllowsReopen, testDetachedCloseButtonDoesNotNotifyBridge). Net coverage increased from 33 to 51 tests."
   },
   "toolchain": {
     "ci_runner": "macOS 26.6.2 (25G83) arm64, GitHub-hosted macos-latest",
@@ -100,26 +126,28 @@
   },
   "integration": {
     "status": "BLOCKED",
-    "host_application": "8 Ball Pool (com.miniclip.8ballpoolmult) — closed-source third-party (Miniclip)",
+    "host_application": "8 Ball Pool (com.miniclip.8ballpoolmult) \u2014 closed-source third-party (Miniclip)",
     "host_source_found": false,
     "authorized_sdk_or_interface_found": false,
     "seam_provided_by_component": "SpicyHostBridge protocol (spicyOverlayDidRequestClose / spicyPreferencesDidChange)",
     "report": "validation/reports/integration-validation.md"
   },
   "signature_validation": {
-    "input_ipa": "FAILED structural hash comparisons; main signature/encryption commands PRESENT, loader signature command ABSENT. Apple CI verification pending.",
+    "input_ipa": "FAILED \u2014 verified with Apple tooling, not just structural inference. CI run 37928629998 ran codesign --verify --deep --strict --verbose=4 on the extracted bundle: exit 1, \"Payload/pool.app: invalid Info.plist (plist or signature have been modified)\". Main executable LC_CODE_SIGNATURE is PRESENT with a CMS chain rooted at \"Apple iPhone OS Application Signing\" (genuine App Store provenance), and LC_ENCRYPTION_INFO_64 is PRESENT with cryptid=0 (FairPlay decrypted). The injected Frameworks/libloader.framework/libloader has NO LC_CODE_SIGNATURE. Info.plist carries DecryptedBy = \"@FastDecryptBot - https://t.me/FastDecryptBot\", which is what breaks the seal. embedded.mobileprovision is absent everywhere, so the bundle is not installable as-is. Resource seal audit: 3,312 matching / 49 mismatching files2 entries (6,624 / 98 hash comparisons) and 61 missing SC_Info FairPlay artifacts.",
     "output_component": "Unsigned by design (no Apple identity). Not installable; not claimed as such.",
-    "release_export": "NOT RUN — requires Apple-issued identity + provisioning (missing)."
+    "release_export": "NOT RUN \u2014 requires Apple-issued identity + provisioning (missing).",
+    "input_ipa_evidence": "validation/ci/runs/37928629998-component/input-apple-verification.txt",
+    "input_unchanged": "Confirmed twice: git blob 35a53a1d34658065bd5e39b143493f4a720a2ba0 identical to baseline 5ab43b4, and CI recorded input_sha256_before == input_sha256_after == 6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84."
   },
   "release_publication": {
     "github_release": "NOT PUBLISHED; no current release observed, no new release creation attempted.",
-    "artifact_available_at": "repository branch 'ci/artifacts' (git transport — verified fetchable), path runs/37915278092-component/dist/",
+    "artifact_available_at": "repository branch 'ci/artifacts' (git transport \u2014 verified fetchable), path runs/37915278092-component/dist/",
     "sources_branch": "arena/6264dd0a-8ballspicy"
   },
   "limitations": [
-    "No authorized host source or integration interface for 8 Ball Pool — integration cannot proceed (external requirement).",
-    "No physical iOS device — installation/launch validation NOT RUN.",
-    "Prior Mr. Spicy component (ExistingIPAWorkspace/OverlaySource/) and its reported checksum c0e66b30… were not recoverable; this deliverable is a new original implementation.",
+    "No authorized host source or integration interface for 8 Ball Pool \u2014 integration cannot proceed (external requirement).",
+    "No physical iOS device \u2014 installation/launch validation NOT RUN.",
+    "Prior Mr. Spicy component (ExistingIPAWorkspace/OverlaySource/) and its reported checksum c0e66b30\u2026 were not recoverable; this deliverable is a new original implementation.",
     "The input IPA is a third-party decrypted App Store build; it was used as immutable evidence only and was not modified, re-signed, or redistributed.",
     "No local signing materials; repository secrets metadata inaccessible (403), so remote secret availability is UNKNOWN, not proven absent. No authorized signing performed."
   ],
@@ -132,5 +160,35 @@
     "integration_validation": "validation/reports/integration-validation.md",
     "device_test_report": "validation/reports/device-test-report.md",
     "ci_logs_and_artifacts": "git branch 'ci/artifacts' (runs/<run-id>-<job>/)"
+  },
+  "independent_verification_this_session": {
+    "session": "arena/627c356f-8ballspicy",
+    "evidence_file": "validation/evidence/session-627c356f-independent-verification.json",
+    "host": "Debian GNU/Linux 12 x86_64 \u2014 no codesign/otool/lipo/plutil/xcodebuild available locally",
+    "performed": [
+      "Recomputed input IPA SHA-256, size and git blob; confirmed unchanged vs baseline 5ab43b4",
+      "Re-parsed ZIP (3,527 entries, CRC pass), Info.plist identity, and both Mach-O headers from raw bytes",
+      "Extracted the CMS blob and decoded the certificate chain with openssl pkcs7 -print_certs",
+      "Re-audited the full CodeResources seal: 3,312 match / 49 mismatch / 61 missing",
+      "Extracted 8,268 strings from the injected libloader binary and catalogued the cheat identifiers",
+      "Downloaded 4 component artifact ZIPs and recomputed every SHA-256 (all matched)",
+      "Re-read raw xcodebuild logs for actual executed/failed/skipped counts across 5 runs",
+      "Checked the integrity of the 1->0 test expectation change against the source diff",
+      "Verified GitHub state: branches, 13 workflow runs, 4 artifacts, 0 releases, permissions"
+    ],
+    "corrections_made_to_earlier_claims": [
+      "LC_ENCRYPTION_INFO_64 is PRESENT with cryptid=0 (earlier report said the load command was absent)",
+      "LC_CODE_SIGNATURE is PRESENT on the main executable with an App Store CMS chain (earlier report said absent); only the injected dylib lacks it",
+      "\"main executable not listed in files2\" is by design, not tampering evidence",
+      "Adhambadrun/8ballspicy is NOT archived; viewerPermission=ADMIN (earlier report said archived/push-rejected)",
+      "Real MrSpicyUI source, CI workflow, runs and artifacts DO exist and were recovered (earlier report said nothing was recoverable)",
+      "Current test totals are 51, not 33; current artifact hash is 3a872657..., not 1a57bab9... or 2d34b9d0..."
+    ]
+  },
+  "ci_environment_limitation": {
+    "workflow_push": "REJECTED \u2014 the GitHub App token for session arena/627c356f-8ballspicy lacks the \"workflows\" scope",
+    "error": "refusing to allow a GitHub App to create or update workflow `.github/workflows/component-ci.yml` without `workflows` permission",
+    "consequence": "This session branch cannot install or run the macOS CI itself, so it produced no new build evidence of its own. All build/test evidence was produced by runs on abadrun/8ballspicy and independently re-verified here.",
+    "workflow_preserved_at": "validation/ci/component-ci.workflow.yml.txt (see validation/ci/WORKFLOW-NOT-INSTALLED.md)"
   }
 }

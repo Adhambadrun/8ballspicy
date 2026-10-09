@@ -1,0 +1,25 @@
+{
+  "source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71",
+  "checked_out_commit": "fae2937905395c425c777c38cbc05e115b2e1d71",
+  "run_id": 37928629998,
+  "run_attempt": "1",
+  "job": "component",
+  "ref": "refs/heads/arena/6264dd0a-8ballspicy",
+  "source_trees": {
+    "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+    "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+    "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+  },
+  "toolchain": "Xcode 26.6\nBuild version 17F113",
+  "swift": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+  "sdk": "26.5",
+  "component_signing": "CODE_SIGNING_ALLOWED=NO; not installable",
+  "artifacts": [
+    {
+      "path": "dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+      "size_bytes": 1729023,
+      "sha256": "3a872657371e155a2bda05deeb73342e2e848e6ca0d99e1c484c4e651a90c5a6"
+    }
+  ]
+}
