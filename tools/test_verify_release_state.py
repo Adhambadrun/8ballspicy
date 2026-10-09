@@ -362,9 +362,6 @@ class ReportSemanticsTests(unittest.TestCase):
         self.assertIsNone(vrs.Report().result('nope'))
 
 
-if __name__ == '__main__':
-    unittest.main()
-
 
 class ProvenanceTests(unittest.TestCase):
     """`ci_provenance` must never invent a toolchain or hide a missing one."""
@@ -447,3 +444,92 @@ class ProvenanceTests(unittest.TestCase):
         self.assertEqual(recorded['path'], 'dist/MrSpicyUI-iphoneos-arm64-unsigned.zip')
         self.assertEqual(recorded['size_bytes'], package.stat().st_size)
         self.assertEqual(recorded['sha256'], vrs.sha256_file(package))
+
+
+class SourceSnapshotAndProScopeTests(unittest.TestCase):
+    """The manifest must describe HEAD, and Pro must stay a read-only disclosure."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp(prefix='spicy-snap-'))
+        self.addCleanup(shutil.rmtree, self.root, True)
+
+    def commit_fixture(self):
+        """Make the synthetic tree a git repository and return its tree IDs."""
+        base_tree(self.root)
+        manifest_for(self.root)
+        (self.root / 'tools').mkdir(exist_ok=True)
+        (self.root / 'tools/keep.py').write_text('# synthetic tools tree\n', encoding='utf-8')
+        for args in (('init', '-q', str(self.root)),
+                     ('-C', str(self.root), 'add', '-A'),
+                     ('-C', str(self.root), '-c', 'user.email=a@b', '-c', 'user.name=a',
+                      'commit', '-qm', 'fixture')):
+            code, _, err = vrs.git(*args)
+            self.assertEqual(code, 0, err)
+        trees = {}
+        for tree in vrs.SOURCE_TREES:
+            code, oid, err = vrs.git('-C', str(self.root), 'rev-parse', f'HEAD:{tree}')
+            self.assertEqual(code, 0, err)
+            trees[tree] = oid
+        return trees
+
+    def write_manifest_snapshot(self, snapshot):
+        path = self.root / 'validation/manifests/release-manifest.json'
+        manifest = json.loads(path.read_text(encoding='utf-8'))
+        if snapshot is not None:
+            manifest['source_tree_snapshot'] = snapshot
+        path.write_text(json.dumps(manifest), encoding='utf-8')
+
+    def test_snapshot_matching_head_passes(self):
+        trees = self.commit_fixture()
+        self.write_manifest_snapshot({'trees': trees})
+        report = vrs.run_checks(self.root)
+        self.assertEqual(report.result('manifest_source_snapshot'), 'PASS')
+
+    def test_stale_snapshot_fails_the_gate(self):
+        trees = self.commit_fixture()
+        stale = dict(trees, MrSpicyUI='5bb1ed6770542299e9b81d338611c609d0c0dc38')
+        self.write_manifest_snapshot({'trees': stale})
+        report = vrs.run_checks(self.root)
+        self.assertFalse(report.passed)
+        self.assertEqual(report.result('manifest_source_snapshot'), 'FAIL')
+
+    def test_missing_snapshot_in_a_git_repository_fails_the_gate(self):
+        self.commit_fixture()
+        self.write_manifest_snapshot(None)
+        report = vrs.run_checks(self.root)
+        self.assertEqual(report.result('manifest_source_snapshot'), 'FAIL')
+
+    def test_snapshot_is_unverified_outside_git_not_failed(self):
+        # Synthetic trees that are not repositories cannot be compared; the check
+        # must say so rather than pass or fail on invented data.
+        base_tree(self.root)
+        manifest_for(self.root)
+        report = vrs.run_checks(self.root)
+        self.assertEqual(report.result('manifest_source_snapshot'), 'UNVERIFIED')
+
+    def test_entitlement_api_in_component_fails_the_gate(self):
+        base_tree(self.root)
+        manifest_for(self.root)
+        (self.root / 'MrSpicyUI/Sources/MrSpicyUI/SpicyStore.swift').write_text(
+            'import StoreKit\nlet t = Transaction.currentEntitlements\n', encoding='utf-8')
+        report = vrs.run_checks(self.root)
+        self.assertFalse(report.passed)
+        self.assertEqual(report.result('pro_entitlement_scope'), 'FAIL')
+
+    def test_unlock_flag_in_host_fails_the_gate(self):
+        base_tree(self.root)
+        manifest_for(self.root)
+        (self.root / 'HostApp/ProGate.swift').write_text('var isProUser = true\n', encoding='utf-8')
+        report = vrs.run_checks(self.root)
+        self.assertEqual(report.result('pro_entitlement_scope'), 'FAIL')
+
+    def test_disclosure_only_component_passes_the_pro_scope_check(self):
+        base_tree(self.root)
+        manifest_for(self.root)
+        report = vrs.run_checks(self.root)
+        self.assertEqual(report.result('pro_entitlement_scope'), 'PASS')
+
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,8 +1,8 @@
 {
   "manifest_version": "2.0",
-  "generated_utc": "2026-10-09T12:32:23.967141+00:00",
+  "generated_utc": "2026-10-09T19:09:12.990556+00:00",
   "project": "8 Ball Pool / MR. SPICY independent component",
-  "session_branch": "arena/a4ebad6a-8ballspicy",
+  "session_branch": "arena/734fc10e-8ballspicy",
   "final_status": "COMPONENT VERIFIED — GAME INTEGRATION / SIGNED IPA BLOCKED",
   "release_ipa": {
     "status": "NOT PRODUCED",
@@ -161,14 +161,16 @@
           "MrSpicyUI",
           "tools"
         ],
-        "current_trees": {
+        "compiled_output_unchanged": true,
+        "evidence": "MrSpicyUI/Package.swift and MrSpicyUI/Sources/MrSpicyUI/SpicyBrand.swift differ only inside comments; after stripping comments and normalising whitespace the executable code is byte-identical to the CI-tested revision. MrSpicyUI/README.md is documentation and is not compiled. HostApp is untouched. tools/ci_provenance.py and four new tools/ files are real changes but are not part of the component build.",
+        "consequence": "The verified artifact 3a872657...c5a6 was produced from the pre-edit trees. Its component-behaviour evidence still holds because the compiled code is unchanged, but tree-level provenance for the current working copy requires a fresh CI run, which is blocked by E6 (workflows permission). The gate reports this as a WARN rather than hiding it.",
+        "trees_at_aa71e17_superseded": {
           "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
           "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
           "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
         },
-        "compiled_output_unchanged": true,
-        "evidence": "MrSpicyUI/Package.swift and MrSpicyUI/Sources/MrSpicyUI/SpicyBrand.swift differ only inside comments; after stripping comments and normalising whitespace the executable code is byte-identical to the CI-tested revision. MrSpicyUI/README.md is documentation and is not compiled. HostApp is untouched. tools/ci_provenance.py and four new tools/ files are real changes but are not part of the component build.",
-        "consequence": "The verified artifact 3a872657...c5a6 was produced from the pre-edit trees. Its component-behaviour evidence still holds because the compiled code is unchanged, but tree-level provenance for the current working copy requires a fresh CI run, which is blocked by E6 (workflows permission). The gate reports this as a WARN rather than hiding it."
+        "superseded_by": "source_tree_snapshot (session arena/734fc10e-8ballspicy)",
+        "correction_734fc10e": "The current_trees values recorded here were correct only at aa71e17. Commit 9c053e7 changed MrSpicyUI/README.md and tools/verify_release_state.py afterwards. Caught by the manifest_source_snapshot check. Superseded by source_tree_snapshot."
       }
     }
   },
@@ -201,12 +203,22 @@
     "retrieval": "git fetch of fixed session branch; bytes independently verified",
     "session_branch_can_run_ci": false,
     "workflow_installation_blocked": {
+      "status": "Refusal recorded in session a4ebad6a and re-verified in session 734fc10e (2026-10-09).",
       "reverified_utc": "2026-10-09",
       "git_push_error": "! [remote rejected] (refusing to allow a GitHub App to create or update workflow `.github/workflows/component-ci.yml` without `workflows` permission)",
       "contents_api_status": 403,
-      "contents_api_message": "Resource not accessible by integration",
-      "session_branch_workflow_runs": 0,
-      "mitigation": "validation/ci/component-ci.release-gated.yml.txt is the recommended installation; see validation/ci/WORKFLOW-NOT-INSTALLED.md"
+      "reverified_in_session": "arena/734fc10e-8ballspicy",
+      "git_push_error_734fc10e": "! [remote rejected] arena/734fc10e-8ballspicy -> arena/734fc10e-8ballspicy (refusing to allow a GitHub App to create or update workflow `.github/workflows/component-ci.yml` without `workflows` permission)"
+    },
+    "workflow_installation": {
+      "session_branch": "arena/734fc10e-8ballspicy",
+      "status": "NOT INSTALLED. Push of .github/workflows/component-ci.yml refused (GitHub App lacks workflows permission). No CI run exists for this branch.",
+      "installed_path": null,
+      "canonical_text": "validation/ci/installable/component-ci.yml",
+      "patch": "validation/ci/installable/install-component-ci.patch",
+      "install_instructions": "validation/ci/installable/INSTALL.md",
+      "patch_tested_by": "tools/test_ci_workflow.py",
+      "superseded_proposal": "validation/ci/component-ci.release-gated.yml.txt"
     }
   },
   "tests": {
@@ -272,7 +284,29 @@
     "en_ar": "Implemented/tested in component only",
     "pro": "Localized read-only unavailable disclosure; no entitlement backend, unlocked status or paid feature implementation",
     "ad_free": "Component adds no ad SDK/network code; no game ad removal/config or integrated runtime verification",
-    "automation": "Reference only, not implemented; no online aim, gameplay automation, evasion or bypass"
+    "automation": "Reference only, not implemented; no online aim, gameplay automation, evasion or bypass",
+    "status_taxonomy": {
+      "categories": [
+        "Implemented and tested",
+        "Implemented but incompletely tested",
+        "UI representation only",
+        "Explicitly unavailable",
+        "Blocked by host integration",
+        "Dependent on external authorization",
+        "Not implemented"
+      ],
+      "counts": {
+        "Implemented and tested": 0,
+        "Implemented but incompletely tested": 2,
+        "UI representation only": 1,
+        "Explicitly unavailable": 29,
+        "Blocked by host integration": 5,
+        "Dependent on external authorization": 1,
+        "Not implemented": 4
+      },
+      "source": "validation/evidence/feature-status-taxonomy.json"
+    },
+    "settings_effect": "Sound, haptic, match-notification, personalization and nickname preferences persist and report to the host bridge; inside the component they have no effect beyond storage."
   },
   "signature_validation": {
     "input_ipa": {
@@ -338,7 +372,7 @@
       "result": "FAILURE"
     }
   ],
-  "previous_session_branch": "arena/6264dd0a-8ballspicy",
+  "previous_session_branch": "arena/a4ebad6a-8ballspicy",
   "verification_session": {
     "branch": "arena/a4ebad6a-8ballspicy",
     "repository": "Adhambadrun/8ballspicy",
@@ -357,27 +391,36 @@
     "matrix_auditor": "tools/audit_feature_matrix.py",
     "matrix_auditor_tests": "tools/test_audit_feature_matrix.py",
     "result": {
-      "PASS": 26,
+      "PASS": 28,
       "WARN": 10,
-      "FAIL": 0
+      "FAIL": 0,
+      "exit_code": 0,
+      "note": "at HEAD of session 734fc10e; the 10 WARNs are W1-W10 in validation/reports/warning-register-734fc10e.md"
     },
     "warnings_explained": "Run 37927299718 failed before producing an artifact; runs 37925407220/37926156116/37927299718/37928629998 recorded older source trees than the working copy because this session edited documentation and tooling (see component.cross_repository_provenance).",
     "local_test_suite": {
-      "executed": 36,
-      "passed": 36,
+      "command": "PYTHONPATH=tools python3 -m unittest discover -s tools -p \"test_*.py\"",
+      "executed": 69,
+      "passed": 68,
       "failed": 0,
-      "breakdown": {
-        "forensic_parser": 4,
-        "release_gate": 26,
-        "matrix_auditor": 6
+      "skipped": 1,
+      "skip_reason": "test_ci_workflow.test_installed_copy_is_identical_to_the_canonical_text runs only when the workflow is installed",
+      "modules": {
+        "test_inspect_ipa": 4,
+        "test_verify_release_state": 33,
+        "test_audit_feature_matrix": 19,
+        "test_ci_workflow": 13
       }
     },
     "matrix_audit": {
-      "citations": 96,
-      "pass": 96,
+      "findings": 98,
+      "pass": 98,
       "warn": 0,
       "fail": 0,
-      "note": "Four case-drifted citations were corrected in validation/reports/feature-verification-matrix.md and validation/evidence/feature-string-search.json; the underlying findings are unchanged."
+      "exit_code": 0,
+      "matrix_citations": 42,
+      "taxonomy_and_component_evidence_checks": 5,
+      "note": "Three game-binary citations on the English and Arabic menu rows were removed because they do not evidence component localization (96 - 3 + 5 = 98). Matrix citations 45 -> 42."
     },
     "enforces": [
       "output/pool8Signed.ipa and output/pool8Signed.sha256 must not exist",
@@ -397,23 +440,23 @@
     "code_level": [
       {
         "item": "Component build reproducibility",
-        "status": "RESOLVED",
-        "evidence": "Working-copy tree IDs == CI provenance == upstream fae2937"
+        "status": "RESOLVED FOR FAE2937; CURRENT HEAD NOT CI-VERIFIED",
+        "evidence": "fae2937 CI trees: MrSpicyUI 3a775121, tools 18d176a1. HEAD: MrSpicyUI 595091cb, tools 6c77ff8f, HostApp 8704ef1e (identical). MrSpicyUI code delta since fae2937 is comments only (verified by git diff). Warnings W2-W10 remain OPEN."
       },
       {
         "item": "Component test suite",
         "status": "PASSING",
-        "evidence": "34/0/17 hostless, 51/0/0 hosted, 10/10 repeat, 4/4 parser, 36/36 local gate tests"
+        "evidence": "Hostless 34 pass / 0 fail / 17 skip; hosted 51 pass / 0 fail (run 37928629998, fae2937). Local suite at 734fc10e: 69 tests, see release_integrity_gate.local_test_suite."
       },
       {
         "item": "Feature-evidence citation accuracy",
         "status": "RESOLVED",
-        "evidence": "96/96 citations byte-exact after correcting four case-drifted quotes"
+        "evidence": "98/98 audit findings PASS at 734fc10e (42 matrix citations; 3 game-binary citations removed)."
       },
       {
         "item": "Release could be faked by CI",
-        "status": "RESOLVED (pending workflow install)",
-        "evidence": "component-ci.release-gated.yml.txt plus 26 negative gate tests"
+        "status": "MITIGATED IN CANONICAL TEXT; NOT INSTALLED (E6)",
+        "evidence": "validation/ci/installable/component-ci.yml: release-gate runs gate, audit and Python suite; publish-evidence needs the gate and refuses non-success. Invariants tested by tools/test_ci_workflow.py. Not active until the patch is installed."
       },
       {
         "item": "Provenance on non-macOS runners",
@@ -460,13 +503,38 @@
       {
         "id": "E6",
         "item": "Maintainer with the GitHub App workflows permission",
-        "status": "BLOCKING",
-        "evidence": "Re-verified: git push rejected and contents API 403; Adhambadrun/8ballspicy reports 0 workflow runs."
+        "status": "CONFIRMED BLOCKING (re-verified 2026-10-09 in session 734fc10e)",
+        "evidence": "Push of .github/workflows/component-ci.yml refused with the workflows-permission error. Workaround: a maintainer with workflows permission applies validation/ci/installable/install-component-ci.patch."
       }
     ]
   },
   "next_step": {
     "most_important": "Obtain owner authorization for a real integration path (E1) — buildable game source or an official SDK with a documented presentation/settings API and written permitted feature scope — together with a clean baseline (E2). Nothing else can produce output/pool8Signed.ipa.",
-    "cheapest_immediately_actionable": "E6 — a maintainer with the workflows scope copies validation/ci/component-ci.release-gated.yml.txt to .github/workflows/component-ci.yml so this branch can build, test and gate itself."
-  }
+    "cheapest_immediately_actionable": "A maintainer with the workflows permission (E6) applies validation/ci/installable/install-component-ci.patch to arena/734fc10e-8ballspicy. The first CI run then records provenance for the HEAD trees, which is the only way to close W2-W10. Game release remains blocked by E1-E5 regardless."
+  },
+  "source_tree_snapshot": {
+    "basis": "git tree IDs of the commit that contains this manifest, taken from the staged index. The manifest is excluded from every source tree, so these IDs do not change when the manifest changes. tools/verify_release_state.py compares them with HEAD.",
+    "session_branch": "arena/734fc10e-8ballspicy",
+    "recorded_utc": "2026-10-09T19:09:12.990556+00:00",
+    "trees": {
+      "MrSpicyUI": "595091cbadd17a8784c327477957cc8db71733a9",
+      "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+      "tools": "ceec8c41d04903b3e4810f8fd66bac4e1314b7d0"
+    },
+    "ci_verified_trees_at_fae2937": {
+      "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+      "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+      "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+    },
+    "note": "MrSpicyUI and tools differ from the CI-tested trees. The differences are documentation, comments and release-gate tooling; HostApp is unchanged. Only a CI run on these trees establishes tree-level provenance for them. HEAD of this session contains these trees; a documentation-only commit does not change them."
+  },
+  "verification_session_734fc10e": {
+    "branch": "arena/734fc10e-8ballspicy",
+    "base_commit": "98a6163daca75c8d169b3096df70fd3dada880a1",
+    "report": "validation/reports/session-734fc10e-verification.md",
+    "warning_register": "validation/reports/warning-register-734fc10e.md",
+    "change_log": "validation/reports/change-log-734fc10e.md",
+    "install_instructions": "validation/ci/installable/INSTALL.md"
+  },
+  "warnings_register": "validation/reports/warning-register-734fc10e.md"
 }

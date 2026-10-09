@@ -5,8 +5,12 @@ import Foundation
 /// The host owns the game logic; this protocol is the *only* supported
 /// integration seam. Hosts (or adapters around them) implement it to observe
 /// close requests and settings changes, and drive the overlay through
-/// `SpicyOverlayViewController`. No control in the UI is decorative: every
-/// control writes to `SpicyPreferences` and reports through this bridge.
+/// `SpicyOverlayViewController`. Every settings control persists its value to
+/// `SpicyPreferences` and reports the change through this bridge. Persistence is
+/// the whole effect inside this component: sound, haptic, notification and
+/// personalization preferences do not play audio, trigger haptics, post
+/// notifications or change behavior here. A host that reads them must implement
+/// that behavior itself, and only after an authorized integration.
 public protocol SpicyHostBridge: AnyObject {
     /// The user asked to close the Mr. Spicy interface.
     func spicyOverlayDidRequestClose(_ overlay: SpicyOverlayViewController)

@@ -50,11 +50,13 @@ claims a delivery the filesystem does not support, if a feature row advertises a
 implementation that was not established, or if the component gains advertising,
 networking or host-loading code. `tools/test_verify_release_state.py` contains
 negative cases proving each of those failures. CI enforcement is prepared in
-`../validation/ci/component-ci.release-gated.yml.txt` (see
-`../validation/ci/WORKFLOW-NOT-INSTALLED.md` for why it is not installed).
+`../.github/workflows/component-ci.yml` on branch `arena/734fc10e-8ballspicy`
+(installation record: `../validation/ci/WORKFLOW-NOT-INSTALLED.md`).
 
-Latest result on this repository: **26 PASS / 10 WARN / 0 FAIL**; local test
-suite **36/36**. Full evidence: `../validation/reports/session-a4ebad6a-verification.md`.
+Current gate and test results, with exit codes and the warning register, are in
+`../validation/reports/session-734fc10e-verification.md`. A passing gate does not
+create or imply a release: this directory stays `NOT PRODUCED` until a validated
+integration exists.
 
 ## Reports and exact next steps
 

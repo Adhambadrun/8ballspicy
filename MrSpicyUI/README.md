@@ -58,10 +58,12 @@ PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py'
 if the immutable input IPA changes, if the release manifest claims a delivery the
 filesystem does not support, if a feature row advertises an implementation that
 was not established, or if the component gains advertising, networking or
-host-loading code. CI enforcement is prepared in
-`../validation/ci/component-ci.release-gated.yml.txt`; see
-`../validation/ci/WORKFLOW-NOT-INSTALLED.md` for why it is not installed on this
-branch. Current result: 26 PASS / 10 WARN / 0 FAIL; 36/36 local tests.
+host-loading code. CI enforcement is installed as
+`../.github/workflows/component-ci.yml` on branch `arena/734fc10e-8ballspicy`
+(installation record: `../validation/ci/WORKFLOW-NOT-INSTALLED.md`). The
+workflow's green status covers this independent component and the release
+gate only; it is not game release readiness. The gate and test results for the
+current commit are recorded in `../validation/reports/session-734fc10e-verification.md`.
 
 ## Requirements
 

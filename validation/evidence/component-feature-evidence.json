@@ -1,0 +1,19 @@
+{
+  "method": "Component source evidence for matrix rows that claim Mr. Spicy-side support. Each entry names a file in the working tree and a literal token that must appear in it. tools/audit_feature_matrix.py resolves every entry. Game-only rows must not appear here. Presence of a token proves the component source contains the text; it does not prove runtime behaviour in the game.",
+  "features": {
+    "English menu": [
+      {"file": "MrSpicyUI/Sources/MrSpicyUI/Resources/en.lproj/Localizable.strings", "contains": "\"mr.spicy.settings.sound\" = \"Sound effects\";"},
+      {"file": "MrSpicyUI/Sources/MrSpicyUI/SpicyLocalization.swift", "contains": "supportedLanguages"}
+    ],
+    "Arabic menu": [
+      {"file": "MrSpicyUI/Sources/MrSpicyUI/Resources/ar.lproj/Localizable.strings", "contains": "\"mr.spicy.settings.sound\" = \"المؤثرات الصوتية\";"},
+      {"file": "MrSpicyUI/Sources/MrSpicyUI/SpicyLocalization.swift", "contains": "rightToLeftLanguages"},
+      {"file": "MrSpicyUI/Sources/MrSpicyUI/SpicyOverlayViewController.swift", "contains": "forceRightToLeft"}
+    ],
+    "Pro access": [
+      {"file": "MrSpicyUI/Sources/MrSpicyUI/SpicyOverlayViewController.swift", "contains": "mr.spicy.pro.reference"},
+      {"file": "MrSpicyUI/Sources/MrSpicyUI/Resources/en.lproj/Localizable.strings", "contains": "PRO — Not authorized / unavailable"},
+      {"file": "MrSpicyUI/Sources/MrSpicyUI/Resources/ar.lproj/Localizable.strings", "contains": "PRO — غير مصرح / غير متاح"}
+    ]
+  }
+}
