@@ -33,16 +33,16 @@ supported integration interface exists in any reachable location.
 
 The component (`MrSpicyUI/`) implements the complete documented component
 scope and exposes exactly one integration seam, `SpicyHostBridge`. Validation
-evidence (see `build-and-signing-report.md` for full logs):
+evidence (full logs in `build-and-signing-report.md`, CI run `37915278092`):
 
 | Check | Status |
 |---|---|
-| Unit tests (preferences persistence/reset, localization completeness en/ar, RTL, theme, brand resource) | executed on iOS Simulator via GitHub Actions macOS runner — result recorded in build report |
-| UI lifecycle open → close → reopen on a real UIKit presentation stack | same suite (`SpicyOverlayLifecycleTests`) |
-| Settings controls write through to `UserDefaults` and notify `SpicyHostBridge` | same suite |
-| Reset restores defaults in model **and** UI, and notifies the bridge | same suite |
-| Accessibility identifiers/labels installed | same suite |
-| Device-architecture (arm64, `generic/platform=iOS`) build | GitHub Actions macOS runner, unsigned — result recorded in build report |
+| Unit tests (preferences persistence/reset, localization completeness en/ar, RTL, theme, brand resource) | **PASS** — 33/33 hosted (0 failures); hostless package suite 33 executed / 0 failures / 5 documented skips |
+| UI lifecycle open → close → reopen on a real UIKit presentation stack | **PASS** (`testOpenCloseReopenCycle`, hosted in `HostApp/MrSpicyDemoHost`) |
+| Settings controls write through to `UserDefaults` and notify `SpicyHostBridge` | **PASS** (`testControlDispatchViaSendActionsReachesPersistenceAndBridge` + handler tests) |
+| Reset restores defaults in model **and** UI, and notifies the bridge | **PASS** (`testResetHandlerRestoresDefaultsInModelAndUI`) |
+| Accessibility identifiers/labels installed | **PASS** |
+| Device-architecture (arm64, `generic/platform=iOS`) build | **PASS** — `MrSpicyUI.o` arm64-apple-ios13.0 via iPhoneOS26.5 SDK, SHA-256 `1a57bab9…c034d`, unsigned |
 | Communication between UI settings and **8 Ball Pool functionality** | **NOT POSSIBLE** — requires the authorized host (see §2) |
 | Runtime behavior inside 8 Ball Pool | **NOT POSSIBLE** — host binary is third-party, Appdome-hardened, and must not be patched (mission constraint) |
 

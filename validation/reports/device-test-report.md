@@ -7,8 +7,9 @@
 
 | Test level | Status | Evidence |
 |---|---|---|
-| Unit tests (iOS Simulator, real Xcode toolchain) | See `build-and-signing-report.md` for executed results | GitHub Actions macOS runner, `component-ci` workflow |
-| UI lifecycle on UIKit presentation stack (open/close/reopen) | same as above | `SpicyOverlayLifecycleTests` |
+| Unit tests (iOS Simulator, real Xcode toolchain, hostless package suite) | **PASS** — 33 executed, 0 failures (5 modal tests honestly SKIPped without a UIApplication host) | CI run 37915278092 job `component`; `ci/artifacts:runs/37915278092-component/xcodebuild-test.log` |
+| Hosted suite in a real UIApplicationMain app (`HostApp/MrSpicyDemoHost`) | **PASS** — 33 executed, 0 failures | CI run 37915278092 job `hosted-tests`; `ci/artifacts:runs/37915278092-hosted-tests/xcodebuild-hosted.log` |
+| UI lifecycle on UIKit presentation stack (open/close/reopen), `sendActions` dispatch, bridge callbacks | **PASS** (hosted suite: `testOpenCloseReopenCycle`, `testOpenIsIdempotent`, `testCloseButtonNotifiesBridgeAndCloses`, `testControlDispatchViaSendActionsReachesPersistenceAndBridge`, `testCloseIsIdempotent`) | same log |
 | Install + launch on physical iOS device | **NOT RUN** | No physical iOS device is attached to or reachable from this environment (Linux analysis host; no `ios-deploy`/`libimobiledevice` device, no Apple Configurator, no device-UDID provisioning) |
 | Exercise of integrated Mr. Spicy UI inside 8 Ball Pool on-device | **NOT RUN** | Integration itself is blocked — see `integration-validation.md` |
 | On-device verification of signature/installability of any produced IPA | **NOT RUN** | No signed IPA can be produced (no Apple identity) and no device exists |
@@ -18,10 +19,10 @@
 - No claim of on-device installation, launch, or runtime behavior is made
   anywhere in this release set.
 - Simulator test execution is **not** represented as device validation.
-- Nothing in this report is inferred from the previous session's documents;
-  every row above reflects this session's tooling state (commands used to
-  establish "no device available": `find /` for deployment tooling, absence of
-  any iOS device management binaries on the Debian analysis host).
+- The demo host application is **not** the production game and is never
+  described as integrated with 8 Ball Pool.
+- Nothing in this report is inferred from previous sessions' documents;
+  every row above reflects this session's executed commands.
 
 ## What would unblock device validation
 
