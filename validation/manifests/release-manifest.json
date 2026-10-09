@@ -1,0 +1,100 @@
+{
+  "manifest_version": "1.0",
+  "generated_at_utc": "2026-10-09T08:57:47Z",
+  "mission": "Mr. Spicy IPA engineering (COMMANDS 01-11)",
+  "release": {
+    "produced": false,
+    "expected_paths": {
+      "ipa": "output/Mr Spicy.ipa",
+      "checksum": "output/Mr Spicy.sha256"
+    },
+    "files_created_for_release": [],
+    "reason": "No legitimate release is possible from this project state. The sole candidate host is Miniclip's proprietary commercial game 8 Ball Pool, present only as a decrypted, signature-stripped, provisioning-stripped, cheat-injected pirated dump (pool8Signed.ipa). Producing 'Mr Spicy.ipa' would require unauthorized modification and redistribution of a third-party copyrighted binary, extension of cheat functionality for a competitive online game, circumvention of DRM/code-signing controls, and re-signing with an identity that does not exist in this environment. This was refused by policy, independent of tooling. No fake IPA, checksum, or success claim was created.",
+    "published_to_github": false,
+    "release_link": null
+  },
+  "input": {
+    "path": "pool8Signed.ipa",
+    "absolute_path": "/home/user/8ballspicy/pool8Signed.ipa",
+    "size_bytes": 99010014,
+    "sha256": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+    "git_blob_sha1": "35a53a1d34658065bd5e39b143493f4a720a2ba0",
+    "modified_during_analysis": false,
+    "zip_valid": true,
+    "zip_entries": 3527,
+    "zip_crc_test": "pass",
+    "app_identity": {
+      "bundle_identifier": "com.miniclip.8ballpoolmult",
+      "bundle_name": "8 Ball Pool",
+      "executable": "pool",
+      "short_version": "56.31.0",
+      "build_version": "5330",
+      "minimum_ios": "13.0",
+      "architecture": "arm64",
+      "built_with": "Xcode 26.2 (17C52), iphoneos26.2 SDK",
+      "rights_holder": "Miniclip (third party - NOT owned by this project)"
+    },
+    "tampering_findings": [
+      "LC_ENCRYPTION_INFO absent from main executable: FairPlay DRM stripped (decrypted dump)",
+      "LC_CODE_SIGNATURE absent from main executable and from injected dylib: Apple signatures stripped",
+      "Injected LC_LOAD_DYLIB '@executable_path/Frameworks/libloader.framework/libloader' (not part of any legitimate Miniclip build)",
+      "libloader.framework (12,265,804 B, Info.plist id 'com.appdome.libloader') contains cheat mod-menu payload: strings 'Aim Mode', 'Aim Strength', 'Max Aim Speed', GBModMenuDelegate/GBMenu* classes, 'com.i3rby.8poolmod.autobreak.illegal.v1', 'com.i3rby.autoplay', PRO-key/Telegram paid-activation strings",
+      "embedded.mobileprovision absent everywhere: bundle not installable as-is",
+      "CodeResources seal broken: libloader and AppLovinSDK sealed-hash MISMATCH; Info.plist and main executable not sealed; untouched controls (Assets.car, libswift_Concurrency.dylib) MATCH",
+      "61 sealed SC_Info/*.supp|*.supf FairPlay artifacts missing from archive",
+      "Provenance: git history shows prior filename '8-ball-pool-i3rby-IPAOMTK.COM.ipa' (IPAOMTK.COM = modified/pirated IPA distributor)"
+    ]
+  },
+  "repository": {
+    "checkout": "/home/user/8ballspicy",
+    "session_branch": "arena/f4b84726-8ballspicy",
+    "origin": "https://github.com/Adhambadrun/8ballspicy.git",
+    "origin_state": "archived (push rejected)",
+    "mission_named_repo": "https://github.com/abadrun/8ballspicy (read-only for this session: push=false)",
+    "head_commit": "5ab43b4d4382252c1ade1218edfb7bbe96c79dee",
+    "full_history_commits": ["51ad41da8", "f926d3643", "7c16c8e37", "5ab43b4d4"],
+    "branches": ["main"],
+    "pull_requests": 0,
+    "releases": 0,
+    "actions_runs": 0,
+    "host_source_found": false,
+    "existing_ipa_workspace_overlay_source_found": false,
+    "reference_component_checksum_c0e66b306465fb0093a83893664982a54a914f6b49f69a2c1f001cb6f751088b": "no matching artifact exists in any commit, branch, or on the filesystem",
+    "spicy_brand_asset_found": false
+  },
+  "environment": {
+    "os": "Debian GNU/Linux 12 (bookworm), x86_64",
+    "macos": false,
+    "xcode": null,
+    "ios_sdk": null,
+    "codesign_otool_lipo_plutil": false,
+    "signing_identities": [],
+    "provisioning_profiles": [],
+    "devices": [],
+    "simulators": [],
+    "tools_used": ["python3 (zipfile/plistlib/struct/hashlib/re)", "git", "gh (api.github.com)", "unzip/zip", "openssl"]
+  },
+  "command_status": {
+    "01_workspace_control": "DONE - inventory complete, input located and hashed, pristine baseline preserved",
+    "02_input_verification": "DONE - hash, ZIP validity, identity, architecture, dependencies, signature state all verified from actual output",
+    "03_reverse_engineering": "DONE (static) - Mach-O/load-command/seal/string analysis complete; dynamic analysis NOT AVAILABLE (no iOS runtime); findings separated into confirmed vs hypothesis",
+    "04_host_project_discovery": "DONE - result: no host source exists anywhere in project history or environment; no authorized SDK exists",
+    "05_mr_spicy_recovery": "DONE - result: nothing to recover; referenced component and checksum do not exist in any accessible artifact",
+    "06_integration_implementation": "REFUSED BY POLICY - would constitute cheating/piracy on a third-party competitive game; NOT RUN",
+    "07_build_and_sign": "NOT AVAILABLE - no macOS/Xcode/signing identity; and refused by policy for the reasons in 06",
+    "08_modification_proof": "NOT RUN - no output artifact exists; input-vs-output comparison impossible without an illegitimate output",
+    "09_release": "NOT PRODUCED - no fake release, checksum, or success manifest created",
+    "10_blocker_handling": "DONE - blockers captured with evidence; terminal blocker is authorization/legitimacy, not tooling; no unchanged failed command was retried",
+    "11_final_response_contract": "DONE - see session response"
+  },
+  "final_status": "BLOCKED - AUTHORIZED SOURCE OR INTEGRATION REQUIRED",
+  "most_important_remaining_action": "Abandon the modify-and-resign path for Miniclip's 8 Ball Pool (it is unauthorized redistribution of a third-party game built on a pirated, cheat-injected dump and cannot be made legitimate by engineering). If a real 'Mr. Spicy' product is wanted: create an original app (own source, own bundle ID, own Apple Developer account, macOS/Xcode toolchain), or obtain a written integration agreement and official SDK from Miniclip.",
+  "reports": [
+    "validation/reports/forensic-analysis.md",
+    "validation/reports/build-and-signing-report.md",
+    "validation/reports/integration-validation.md",
+    "validation/reports/device-test-report.md"
+  ],
+  "secrets_in_repo": false,
+  "user_work_preserved": true
+}
