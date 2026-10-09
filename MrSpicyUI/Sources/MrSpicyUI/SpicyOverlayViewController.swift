@@ -211,6 +211,7 @@ public final class SpicyOverlayViewController: UIViewController {
         presentationCycle &+= 1
         let cycle = presentationCycle
         var completionDelivered = false
+        var presentationDidComplete = false
         let completeOnce = {
             guard !completionDelivered else { return }
             completionDelivered = true
@@ -218,6 +219,7 @@ public final class SpicyOverlayViewController: UIViewController {
         }
         isOpening = true
         presenter.present(self, animated: animated) { [weak self] in
+            presentationDidComplete = true
             guard let self = self, self.presentationCycle == cycle else { completeOnce(); return }
             self.isOpening = false
             if self.pendingUserClose {
@@ -230,7 +232,8 @@ public final class SpicyOverlayViewController: UIViewController {
             // it remains visible (a queued user close may already be dismissing).
             completeOnce()
         }
-        if presentingViewController == nil {
+        if presentingViewController == nil && !presentationDidComplete {
+            // A synchronous accepted completion may already have dismissed it.
             // Invalidate a possible deferred UIKit completion after rejection.
             if presentationCycle == cycle { presentationCycle &+= 1 }
             isOpening = false

@@ -331,4 +331,19 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         XCTAssertEqual(bridge.closeRequests, 0, "Programmatic dismissal and stale control events are not user close requests")
     }
 
+    func testNonanimatedOpenCompletionMayCloseWithoutFalseRejection() {
+        var opened = 0
+        var closed = 0
+        let accepted = overlay.open(from: presenter, animated: false) {
+            opened += 1
+            XCTAssertTrue(self.overlay.close(animated: false) { closed += 1 })
+        }
+        XCTAssertTrue(accepted, "Accepted nonanimated presentation may finish and close before open returns")
+        waitUntil(5, "completion-driven dismissal did not finish", { opened == 1 && closed == 1 && overlay.presentingViewController == nil })
+        XCTAssertEqual(opened, 1)
+        XCTAssertEqual(closed, 1)
+        openOverlay()
+        closeOverlay()
+    }
+
 }
