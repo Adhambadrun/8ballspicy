@@ -30,7 +30,7 @@ device and without Xcode:
 
 | Verification | Result |
 |---|---|
-| Release-integrity gate (`tools/verify_release_state.py`) | 27 PASS / 7 WARN / 0 FAIL |
+| Release-integrity gate (`tools/verify_release_state.py`) | 26 PASS / 10 WARN / 0 FAIL |
 | Gate negative tests (`tools/test_verify_release_state.py`) | 26/26 pass — the gate fails for placeholder releases, renamed demo apps, unsigned components labelled as releases, false manifest claims, dishonest feature rows, ad SDKs and `dlopen` host-loading |
 | Feature-matrix auditor (`tools/audit_feature_matrix.py`) | 96 citations, 96 PASS, 0 WARN, 0 FAIL |
 | Full local test suite (`unittest discover -s tools`) | 36/36 pass |

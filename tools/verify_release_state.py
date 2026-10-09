@@ -278,6 +278,7 @@ def check_source_provenance(r):
         r.unverified('source_provenance', 'no CI provenance records present')
         return
     verified = 0
+    divergent = {}
     for prov_path in provs:
         prov = json.loads(prov_path.read_text(encoding='utf-8'))
         recorded = prov.get('source_trees') or {}
@@ -286,6 +287,10 @@ def check_source_provenance(r):
         elif recorded and trees:
             # A historical run legitimately tested a different revision; that is
             # only a problem if it is presented as the current verified source.
+            # Record which directories differ so the warning is actionable.
+            for tree, oid in recorded.items():
+                if trees.get(tree) != oid:
+                    divergent.setdefault(tree, set()).update([oid, trees.get(tree)])
             r.warn(f'source_provenance[{prov_path.parent.name}]',
                    'run recorded a different source tree than the working copy',
                    recorded=recorded, working_copy=trees,
@@ -295,9 +300,13 @@ def check_source_provenance(r):
              f'{verified} CI run(s) recorded exactly the working-copy source trees',
              working_copy_trees=trees, runs_verified=verified)
     elif trees:
+        detail = {'working_copy_trees': trees,
+                  'divergent_directories': sorted(divergent),
+                  'note': 'A differing tree means the tested revision is not the '
+                          'current one. Re-run CI to re-establish provenance; '
+                          'do not present the old artifact as covering this tree.'}
         r.warn('source_provenance',
-               'no CI run recorded the current working-copy trees',
-               working_copy_trees=trees)
+               'no CI run recorded the current working-copy trees', **detail)
 
 
 def check_manifest_consistency(r, input_info):

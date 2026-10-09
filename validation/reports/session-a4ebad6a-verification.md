@@ -84,6 +84,34 @@ cosmetic edits.
    provenance note; it now records the verified `abadrun` lineage and the
    matching source-tree IDs.
 
+## 3b. Source provenance after this session's edits
+
+At the **start** of this session the local working copy, local `HEAD` and upstream
+`fae2937` all carried identical source trees (MrSpicyUI `3a775121…`, HostApp
+`8704ef1e…`, tools `18d176a1…`), which is why no rebuild was performed.
+
+This session then edited documentation and tooling, so the trees diverged. The
+gate reports this honestly rather than hiding it:
+
+| Directory | Tree before | Tree now | Change |
+|---|---|---|---|
+| `MrSpicyUI` | `3a775121…` | `5bb1ed67…` | documentation only |
+| `HostApp` | `8704ef1e…` | `8704ef1e…` | **unchanged** |
+| `tools` | `18d176a1…` | `f2a55a04…` | real changes (`ci_provenance.py` + 4 new tools) |
+
+`MrSpicyUI/Package.swift` and `MrSpicyUI/Sources/MrSpicyUI/SpicyBrand.swift`
+differ **only inside comments**: after stripping comments and normalising
+whitespace, the executable code is byte-identical to the CI-tested revision.
+`MrSpicyUI/README.md` is documentation and is not compiled. `tools/` is not part
+of the component build.
+
+**Consequence, stated plainly:** the verified artifact
+`3a872657…c5a6` was produced from the pre-edit trees. Its component-behaviour
+evidence still holds, because the compiled code is unchanged. Tree-level
+provenance for the *current* working copy requires a fresh CI run, which is
+blocked by **E6** (workflows permission). This is recorded as a `WARN` in
+`validation/evidence/release-state-a4ebad6a.json`, not as a pass.
+
 ## 4. Engineering work completed in this session
 
 | Deliverable | What it does |

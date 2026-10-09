@@ -15,7 +15,7 @@ status below changed. What this session added:
   IPA changes, if the manifest claims a delivery the filesystem does not support,
   if a feature row advertises an implementation that was not established, or if
   the component gains advertising, networking or host-loading code. Current
-  result on this repository: **27 PASS, 7 WARN, 0 FAIL**.
+  result on this repository: **26 PASS, 10 WARN, 0 FAIL**.
 - **Negative tests for the gate.** `tools/test_verify_release_state.py` (26
   tests) proves the gate fails for a placeholder `output/pool8Signed.ipa`, a
   renamed demo app, an unsigned component ZIP labelled as a release, a manifest

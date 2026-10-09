@@ -147,12 +147,29 @@
     "controls_scope": "Persistence/callbacks, reset, en/ar RTL, accessibility metadata/theme, UIKit lifecycle only; no host/system/game effects",
     "cross_repository_provenance": {
       "local_branch": "arena/a4ebad6a-8ballspicy",
-      "local_commit": "0fee3e9625d1e3ba108d8552355cd5d001590683",
+      "local_commit": "aa71e174867509205c82c3c5cc60821855d2eb62",
       "upstream_repository": "abadrun/8ballspicy",
       "verified_source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71",
       "method": "git fetch of the upstream commit, then git rev-parse of each source tree on both sides",
-      "source_trees_match": true,
-      "note": "MrSpicyUI, HostApp and tools tree IDs are identical on the local working copy, the local HEAD, and the upstream verified commit."
+      "at_session_start": {
+        "source_trees_match": true,
+        "note": "At the start of session arena/a4ebad6a the local working copy, local HEAD and upstream fae2937 all had MrSpicyUI 3a775121085d8abdec4c0812c4b72cd8a150ea08, HostApp 8704ef1e59bf1731e7f90e5379b2cd4387603413, tools 18d176a13edf88d4816eadae42e4d0a07867c43d."
+      },
+      "after_session_edits": {
+        "source_trees_match": false,
+        "divergent_directories": [
+          "MrSpicyUI",
+          "tools"
+        ],
+        "current_trees": {
+          "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
+          "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+          "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
+        },
+        "compiled_output_unchanged": true,
+        "evidence": "MrSpicyUI/Package.swift and MrSpicyUI/Sources/MrSpicyUI/SpicyBrand.swift differ only inside comments; after stripping comments and normalising whitespace the executable code is byte-identical to the CI-tested revision. MrSpicyUI/README.md is documentation and is not compiled. HostApp is untouched. tools/ci_provenance.py and four new tools/ files are real changes but are not part of the component build.",
+        "consequence": "The verified artifact 3a872657...c5a6 was produced from the pre-edit trees. Its component-behaviour evidence still holds because the compiled code is unchanged, but tree-level provenance for the current working copy requires a fresh CI run, which is blocked by E6 (workflows permission). The gate reports this as a WARN rather than hiding it."
+      }
     }
   },
   "ci": {
@@ -340,11 +357,11 @@
     "matrix_auditor": "tools/audit_feature_matrix.py",
     "matrix_auditor_tests": "tools/test_audit_feature_matrix.py",
     "result": {
-      "PASS": 27,
-      "WARN": 7,
+      "PASS": 26,
+      "WARN": 10,
       "FAIL": 0
     },
-    "warnings_explained": "Run 37927299718 failed before producing an artifact; runs 37925407220/37926156116/37927299718 recorded older source trees than the working copy (historical revisions, retained deliberately).",
+    "warnings_explained": "Run 37927299718 failed before producing an artifact; runs 37925407220/37926156116/37927299718/37928629998 recorded older source trees than the working copy because this session edited documentation and tooling (see component.cross_repository_provenance).",
     "local_test_suite": {
       "executed": 36,
       "passed": 36,

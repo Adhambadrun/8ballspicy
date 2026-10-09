@@ -53,7 +53,7 @@ negative cases proving each of those failures. CI enforcement is prepared in
 `../validation/ci/component-ci.release-gated.yml.txt` (see
 `../validation/ci/WORKFLOW-NOT-INSTALLED.md` for why it is not installed).
 
-Latest result on this repository: **27 PASS / 7 WARN / 0 FAIL**; local test
+Latest result on this repository: **26 PASS / 10 WARN / 0 FAIL**; local test
 suite **36/36**. Full evidence: `../validation/reports/session-a4ebad6a-verification.md`.
 
 ## Reports and exact next steps

@@ -61,7 +61,7 @@ was not established, or if the component gains advertising, networking or
 host-loading code. CI enforcement is prepared in
 `../validation/ci/component-ci.release-gated.yml.txt`; see
 `../validation/ci/WORKFLOW-NOT-INSTALLED.md` for why it is not installed on this
-branch. Current result: 27 PASS / 7 WARN / 0 FAIL; 36/36 local tests.
+branch. Current result: 26 PASS / 10 WARN / 0 FAIL; 36/36 local tests.
 
 ## Requirements
 

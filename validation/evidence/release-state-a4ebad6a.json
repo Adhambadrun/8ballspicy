@@ -13,8 +13,8 @@
     "output_checksum_exists": false
   },
   "summary": {
-    "PASS": 27,
-    "WARN": 7
+    "PASS": 26,
+    "WARN": 10
   },
   "passed": true,
   "checks": [
@@ -88,9 +88,9 @@
         "tools": "9616459e152de70e1aef0cf6cb25abeaa2302dbf"
       },
       "working_copy": {
-        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
         "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
-        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+        "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
       },
       "source_commit": "2d17a44d706d276ab4bac18dee274c2597f4b3b6"
     },
@@ -104,9 +104,9 @@
         "tools": "9616459e152de70e1aef0cf6cb25abeaa2302dbf"
       },
       "working_copy": {
-        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
         "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
-        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+        "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
       },
       "source_commit": "2d17a44d706d276ab4bac18dee274c2597f4b3b6"
     },
@@ -120,9 +120,9 @@
         "tools": "02452f073eff54c297a7fe79860d0cbd5ba03268"
       },
       "working_copy": {
-        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
         "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
-        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+        "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
       },
       "source_commit": "902ec19f29fef712e9735fcf44c1dcc88b463c8f"
     },
@@ -136,9 +136,9 @@
         "tools": "02452f073eff54c297a7fe79860d0cbd5ba03268"
       },
       "working_copy": {
-        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
         "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
-        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+        "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
       },
       "source_commit": "902ec19f29fef712e9735fcf44c1dcc88b463c8f"
     },
@@ -152,9 +152,9 @@
         "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
       },
       "working_copy": {
-        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
         "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
-        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+        "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
       },
       "source_commit": "51f0ba1ae2b75f98cc6bc43ba9687bd2aef71dea"
     },
@@ -168,22 +168,58 @@
         "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
       },
       "working_copy": {
-        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
         "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
-        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+        "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
       },
       "source_commit": "51f0ba1ae2b75f98cc6bc43ba9687bd2aef71dea"
     },
     {
-      "check": "source_provenance",
-      "result": "PASS",
-      "detail": "2 CI run(s) recorded exactly the working-copy source trees",
-      "working_copy_trees": {
+      "check": "source_provenance[37928629998-component]",
+      "result": "WARN",
+      "detail": "run recorded a different source tree than the working copy",
+      "recorded": {
         "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
         "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
         "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
       },
-      "runs_verified": 2
+      "working_copy": {
+        "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
+      },
+      "source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71"
+    },
+    {
+      "check": "source_provenance[37928629998-hosted-tests]",
+      "result": "WARN",
+      "detail": "run recorded a different source tree than the working copy",
+      "recorded": {
+        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "working_copy": {
+        "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
+      },
+      "source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71"
+    },
+    {
+      "check": "source_provenance",
+      "result": "WARN",
+      "detail": "no CI run recorded the current working-copy trees",
+      "working_copy_trees": {
+        "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
+      },
+      "divergent_directories": [
+        "MrSpicyUI",
+        "tools"
+      ],
+      "note": "A differing tree means the tested revision is not the current one. Re-run CI to re-establish provenance; do not present the old artifact as covering this tree."
     },
     {
       "check": "manifest_release_status",
