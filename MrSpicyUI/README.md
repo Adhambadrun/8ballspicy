@@ -92,3 +92,11 @@ calls remain idempotent. Only a close-button request emits the close bridge even
 `refreshLocalization(language: "ar")` refreshes all rows, controls, and RTL layout;
 no host app display name or bundle identifier is changed. Persisted component
 preferences do not by themselves change game behavior or system permissions.
+
+Close-button requests during opening are queued once rather than silently
+lost. Programmatic calls during transitions still reject explicitly. A
+presentation completion means the accepted transition finished, not that the
+menu remains visible: a queued user close may immediately begin dismissal.
+Per-presentation cycle tokens prevent old asynchronous completions mutating
+state after a new open. External host dismissals do not synthesize user-button
+bridge events. Host-driven reopen should occur from dismissal completion.

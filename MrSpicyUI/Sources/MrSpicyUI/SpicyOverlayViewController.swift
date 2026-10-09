@@ -23,6 +23,8 @@ public final class SpicyOverlayViewController: UIViewController {
     public var isOpen: Bool { presentingViewController != nil && !isBeingDismissed }
     private var isOpening = false
     private var isClosing = false
+    private var pendingUserClose = false
+    private var presentationCycle: UInt = 0
     private var language: String?
     private var proReferenceLabel: UILabel!
 
@@ -140,8 +142,14 @@ public final class SpicyOverlayViewController: UIViewController {
     private func wireCallbacks() {
         headerView.onCloseTapped = { [weak self] in
             guard let self = self else { return }
-            self.bridge?.spicyOverlayDidRequestClose(self)
-            self.close(animated: true, completion: nil)
+            // A real user close request during presentation must not be dropped.
+            if self.isOpening {
+                if !self.pendingUserClose { self.bridge?.spicyOverlayDidRequestClose(self) }
+                self.pendingUserClose = true
+            } else if !self.isClosing && !self.isBeingDismissed {
+                self.bridge?.spicyOverlayDidRequestClose(self)
+                self.close(animated: true, completion: nil)
+            }
         }
         settingsView.onSettingsChanged = { [weak self] preferences in
             guard let self = self else { return }
@@ -192,9 +200,20 @@ public final class SpicyOverlayViewController: UIViewController {
         }
         loadViewIfNeeded()
         settingsView.reloadFromPreferences()
+        presentationCycle &+= 1
+        let cycle = presentationCycle
         isOpening = true
         presenter.present(self, animated: animated) { [weak self] in
-            self?.isOpening = false
+            guard let self = self, self.presentationCycle == cycle else { completion?(); return }
+            self.isOpening = false
+            if self.pendingUserClose {
+                self.pendingUserClose = false
+                if self.presentingViewController != nil && !self.isBeingDismissed {
+                    self.close(animated: true)
+                }
+            }
+            // Completion reports the accepted presentation finishing, not that
+            // it remains visible (a queued user close may already be dismissing).
             completion?()
         }
         if presentingViewController == nil {
@@ -218,9 +237,10 @@ public final class SpicyOverlayViewController: UIViewController {
             completion?()
             return true
         }
+        let cycle = presentationCycle
         isClosing = true
         dismiss(animated: animated) { [weak self] in
-            self?.isClosing = false
+            if let self = self, self.presentationCycle == cycle { self.isClosing = false }
             completion?()
         }
         return true
@@ -231,6 +251,7 @@ public final class SpicyOverlayViewController: UIViewController {
         if presentingViewController == nil {
             isOpening = false
             isClosing = false
+            pendingUserClose = false
         }
     }
 }

@@ -1,0 +1,490 @@
+{
+  "run_id": 37925407220,
+  "source_commit": "2d17a44d706d276ab4bac18dee274c2597f4b3b6",
+  "source_trees": {
+    "MrSpicyUI": "c94bd5bfc998fa5b2534a94052d89f01ad8b3474",
+    "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+    "tools": "9616459e152de70e1aef0cf6cb25abeaa2302dbf"
+  },
+  "artifact": {
+    "path": "validation/ci/runs/37925407220-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+    "size_bytes": 1725060,
+    "sha256": "db7f20d59ca849386ec44e3f2f43c8de6a190f78bdb08506eb91ba2c224e8e1c",
+    "zip_crc": "PASS",
+    "mach_o": "arm64 thin MH_OBJECT (relocatable component, not app)",
+    "object_sha256": "0cf2a9584d449861d4be521808b7742c4d7c8cfffce7c65b04fbe7c6e6412f4d",
+    "object_size_bytes": 398216,
+    "signed": false,
+    "contents": [
+      {
+        "path": "MrSpicyUI.o",
+        "size_bytes": 398216
+      },
+      {
+        "path": "MrSpicyUI_MrSpicyUI.bundle/",
+        "size_bytes": 0
+      },
+      {
+        "path": "MrSpicyUI_MrSpicyUI.bundle/ar.lproj/",
+        "size_bytes": 0
+      },
+      {
+        "path": "MrSpicyUI_MrSpicyUI.bundle/ar.lproj/Localizable.strings",
+        "size_bytes": 1527
+      },
+      {
+        "path": "MrSpicyUI_MrSpicyUI.bundle/en.lproj/",
+        "size_bytes": 0
+      },
+      {
+        "path": "MrSpicyUI_MrSpicyUI.bundle/en.lproj/Localizable.strings",
+        "size_bytes": 1118
+      },
+      {
+        "path": "MrSpicyUI_MrSpicyUI.bundle/spicy-s-mark.png",
+        "size_bytes": 1550502
+      },
+      {
+        "path": "MrSpicyUI_MrSpicyUI.bundle/Info.plist",
+        "size_bytes": 683
+      },
+      {
+        "path": "MrSpicyUI.swiftmodule/",
+        "size_bytes": 0
+      },
+      {
+        "path": "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftdoc",
+        "size_bytes": 13044
+      },
+      {
+        "path": "MrSpicyUI.swiftmodule/Project/",
+        "size_bytes": 0
+      },
+      {
+        "path": "MrSpicyUI.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo",
+        "size_bytes": 27420
+      },
+      {
+        "path": "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftmodule",
+        "size_bytes": 173624
+      },
+      {
+        "path": "MrSpicyUI.swiftmodule/arm64-apple-ios.abi.json",
+        "size_bytes": 149
+      },
+      {
+        "path": "PackageFrameworks/",
+        "size_bytes": 0
+      }
+    ]
+  },
+  "provenance": {
+    "source_commit": "2d17a44d706d276ab4bac18dee274c2597f4b3b6",
+    "checked_out_commit": "2d17a44d706d276ab4bac18dee274c2597f4b3b6",
+    "run_id": 37925407220,
+    "run_attempt": "1",
+    "job": "component",
+    "ref": "refs/heads/arena/6264dd0a-8ballspicy",
+    "source_trees": {
+      "MrSpicyUI": "c94bd5bfc998fa5b2534a94052d89f01ad8b3474",
+      "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+      "tools": "9616459e152de70e1aef0cf6cb25abeaa2302dbf"
+    },
+    "toolchain": "Xcode 26.6\nBuild version 17F113",
+    "swift": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+    "sdk": "26.5",
+    "component_signing": "CODE_SIGNING_ALLOWED=NO; not installable",
+    "artifacts": [
+      {
+        "path": "dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+        "size_bytes": 1725060,
+        "sha256": "db7f20d59ca849386ec44e3f2f43c8de6a190f78bdb08506eb91ba2c224e8e1c"
+      }
+    ]
+  },
+  "tests": {
+    "hostless": {
+      "passed": 34,
+      "failed": 0,
+      "skipped": 9,
+      "executed": 43,
+      "cases": [
+        {
+          "name": "-[MrSpicyUITests.SpicyLocalizationTests testArabicDefinesEveryUIKey]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyLocalizationTests testArabicIsRightToLeftAndEnglishIsNot]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyLocalizationTests testEnglishAndArabicKeySetsMatch]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyLocalizationTests testEnglishDefinesEveryUIKey]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyLocalizationTests testLanguageNormalization]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyLocalizationTests testTranslationsAreNonEmptyAndDifferWhereExpected]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyLocalizationTests testUnknownKeyFallsBackToKeyItself]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyLocalizationTests testUnknownLanguageFallsBackToEnglish]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testAccessibilityIdentifiersAreInstalled]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testAllSettingsHaveAccessibilityLabels]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testArabicRefreshUpdatesEveryControlAndDirection]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testCloseButtonNotifiesBridgeThenRequestsClose]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testDetachedPresenterIsRejectedAndCompletionRuns]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testEveryControlIsWiredToItsHandler]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testHapticsHandlerTogglesIntensityControl]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testIntensityHandlerPersistsSelection]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testInvalidIntensityDoesNotMutateOrNotify]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testLanguageSelectedBeforeLoadingIsRetained]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testLayoutDirectionFollowsLocalization]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testNicknameHandlerPersistsText]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testProReferenceDisclosesUnavailableWithoutActivationControls]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testResetHandlerRestoresDefaultsInModelAndUI]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testSoundHandlerWritesPersistenceAndNotifiesBridge]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayControlTests testVersionLabelShowsComponentVersion]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayLifecycleTests testAnimatedTransitionRejectsDuplicateRequests]",
+          "status": "skipped"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayLifecycleTests testBusyPresenterIsRejectedWithoutFalseOpenState]",
+          "status": "skipped"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayLifecycleTests testCloseButtonNotifiesBridgeAndCloses]",
+          "status": "skipped"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayLifecycleTests testCloseIsIdempotent]",
+          "status": "skipped"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayLifecycleTests testControlDispatchViaSendActionsReachesPersistenceAndBridge]",
+          "status": "skipped"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayLifecycleTests testExternalDismissalClearsStateAndAllowsReopen]",
+          "status": "skipped"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayLifecycleTests testOpenCloseReopenCycle]",
+          "status": "skipped"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayLifecycleTests testOpenIsIdempotent]",
+          "status": "skipped"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyOverlayLifecycleTests testPreferencesReloadWhenReopened]",
+          "status": "skipped"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyPreferencesTests testFactoryDefaults]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyPreferencesTests testHapticIntensityRoundTrip]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyPreferencesTests testResetIsPersisted]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyPreferencesTests testResetRestoresFactoryDefaults]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyPreferencesTests testSettingsPersistAcrossInstances]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyPreferencesTests testSnapshotCoversEveryKey]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyThemeTests testBrandMarkResourceIsBundled]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyThemeTests testComponentVersionFormat]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyThemeTests testDefaultThemeColorsAreDistinctWhereItMatters]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyUITests.SpicyThemeTests testHeaderGradientConfigured]",
+          "status": "passed"
+        }
+      ],
+      "test_succeeded_marker": true,
+      "warnings": [
+        "2026-10-09 11:43:26.296 appintentsmetadataprocessor[13520:39604] warning: Metadata extraction skipped. No AppIntents.framework dependency found."
+      ],
+      "errors": []
+    },
+    "hosted": {
+      "passed": 38,
+      "failed": 5,
+      "skipped": 0,
+      "executed": 43,
+      "cases": [
+        {
+          "name": "-[MrSpicyHostedTests.SpicyLocalizationTests testArabicDefinesEveryUIKey]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyLocalizationTests testArabicIsRightToLeftAndEnglishIsNot]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyLocalizationTests testEnglishAndArabicKeySetsMatch]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyLocalizationTests testEnglishDefinesEveryUIKey]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyLocalizationTests testLanguageNormalization]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyLocalizationTests testTranslationsAreNonEmptyAndDifferWhereExpected]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyLocalizationTests testUnknownKeyFallsBackToKeyItself]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyLocalizationTests testUnknownLanguageFallsBackToEnglish]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testAccessibilityIdentifiersAreInstalled]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testAllSettingsHaveAccessibilityLabels]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testArabicRefreshUpdatesEveryControlAndDirection]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testCloseButtonNotifiesBridgeThenRequestsClose]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testDetachedPresenterIsRejectedAndCompletionRuns]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testEveryControlIsWiredToItsHandler]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testHapticsHandlerTogglesIntensityControl]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testIntensityHandlerPersistsSelection]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testInvalidIntensityDoesNotMutateOrNotify]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testLanguageSelectedBeforeLoadingIsRetained]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testLayoutDirectionFollowsLocalization]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testNicknameHandlerPersistsText]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testProReferenceDisclosesUnavailableWithoutActivationControls]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testResetHandlerRestoresDefaultsInModelAndUI]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testSoundHandlerWritesPersistenceAndNotifiesBridge]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayControlTests testVersionLabelShowsComponentVersion]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayLifecycleTests testAnimatedTransitionRejectsDuplicateRequests]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayLifecycleTests testBusyPresenterIsRejectedWithoutFalseOpenState]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayLifecycleTests testCloseButtonNotifiesBridgeAndCloses]",
+          "status": "failed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayLifecycleTests testCloseIsIdempotent]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayLifecycleTests testControlDispatchViaSendActionsReachesPersistenceAndBridge]",
+          "status": "failed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayLifecycleTests testExternalDismissalClearsStateAndAllowsReopen]",
+          "status": "failed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayLifecycleTests testOpenCloseReopenCycle]",
+          "status": "failed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayLifecycleTests testOpenIsIdempotent]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyOverlayLifecycleTests testPreferencesReloadWhenReopened]",
+          "status": "failed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyPreferencesTests testFactoryDefaults]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyPreferencesTests testHapticIntensityRoundTrip]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyPreferencesTests testResetIsPersisted]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyPreferencesTests testResetRestoresFactoryDefaults]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyPreferencesTests testSettingsPersistAcrossInstances]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyPreferencesTests testSnapshotCoversEveryKey]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyThemeTests testBrandMarkResourceIsBundled]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyThemeTests testComponentVersionFormat]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyThemeTests testDefaultThemeColorsAreDistinctWhereItMatters]",
+          "status": "passed"
+        },
+        {
+          "name": "-[MrSpicyHostedTests.SpicyThemeTests testHeaderGradientConfigured]",
+          "status": "passed"
+        }
+      ],
+      "test_succeeded_marker": false,
+      "warnings": [
+        "2026-10-09 11:45:55.560 appintentsmetadataprocessor[3350:14639] warning: Metadata extraction skipped. No AppIntents.framework dependency found.",
+        "2026-10-09 11:45:57.077 appintentsmetadataprocessor[3533:15029] warning: Metadata extraction skipped. No AppIntents.framework dependency found."
+      ],
+      "errors": [
+        "/Users/runner/work/8ballspicy/8ballspicy/MrSpicyUI/Tests/MrSpicyUITests/SpicyOverlayLifecycleTests.swift:150: error: -[MrSpicyHostedTests.SpicyOverlayLifecycleTests testCloseButtonNotifiesBridgeAndCloses] : failed - close button did not dismiss via bridge+close",
+        "/Users/runner/work/8ballspicy/8ballspicy/MrSpicyUI/Tests/MrSpicyUITests/SpicyOverlayLifecycleTests.swift:153: error: -[MrSpicyHostedTests.SpicyOverlayLifecycleTests testCloseButtonNotifiesBridgeAndCloses] : failed - overlay.isOpen did not clear after dismissal",
+        "/Users/runner/work/8ballspicy/8ballspicy/MrSpicyUI/Tests/MrSpicyUITests/SpicyOverlayLifecycleTests.swift:166: error: -[MrSpicyHostedTests.SpicyOverlayLifecycleTests testControlDispatchViaSendActionsReachesPersistenceAndBridge] : failed - overlay did not close",
+        "/Users/runner/work/8ballspicy/8ballspicy/MrSpicyUI/Tests/MrSpicyUITests/SpicyOverlayLifecycleTests.swift:180: error: -[MrSpicyHostedTests.SpicyOverlayLifecycleTests testExternalDismissalClearsStateAndAllowsReopen] : failed - overlay did not close",
+        "/Users/runner/work/8ballspicy/8ballspicy/MrSpicyUI/Tests/MrSpicyUITests/SpicyOverlayLifecycleTests.swift:127: error: -[MrSpicyHostedTests.SpicyOverlayLifecycleTests testOpenCloseReopenCycle] : failed - overlay did not close",
+        "/Users/runner/work/8ballspicy/8ballspicy/MrSpicyUI/Tests/MrSpicyUITests/SpicyOverlayLifecycleTests.swift:128: error: -[MrSpicyHostedTests.SpicyOverlayLifecycleTests testOpenCloseReopenCycle] : XCTAssertNil failed: \"<UIViewController: 0x1026a5800>\"",
+        "/Users/runner/work/8ballspicy/8ballspicy/MrSpicyUI/Tests/MrSpicyUITests/SpicyOverlayLifecycleTests.swift:195: error: -[MrSpicyHostedTests.SpicyOverlayLifecycleTests testPreferencesReloadWhenReopened] : failed - overlay did not close",
+        "/Users/runner/work/8ballspicy/8ballspicy/MrSpicyUI/Tests/MrSpicyUITests/SpicyOverlayLifecycleTests.swift:198: error: -[MrSpicyHostedTests.SpicyOverlayLifecycleTests testPreferencesReloadWhenReopened] : XCTAssertFalse failed"
+      ]
+    }
+  },
+  "device_build_succeeded": true,
+  "apple_input_verification": "NOT RUN in this revision"
+}

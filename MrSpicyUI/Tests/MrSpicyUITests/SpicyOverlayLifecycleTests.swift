@@ -227,4 +227,28 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         closeOverlay()
     }
 
+    func testUserCloseDuringOpeningIsQueuedOnceAndAllowsReopen() {
+        XCTAssertTrue(overlay.open(from: presenter, animated: true))
+        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(bridge.closeRequests, 1, "Repeated user taps during opening must not duplicate the bridge request")
+        waitUntil(5, "queued user close was dropped", { overlay.presentingViewController == nil && !overlay.isOpen })
+        openOverlay()
+        closeOverlay()
+    }
+
+    func testReopenInsideCloseCompletionUsesFreshCycle() {
+        openOverlay()
+        var closedCount = 0
+        var openedCount = 0
+        XCTAssertTrue(overlay.close(animated: true) {
+            closedCount += 1
+            XCTAssertTrue(self.overlay.open(from: self.presenter, animated: true) { openedCount += 1 })
+        })
+        waitUntil(5, "reentrant reopen did not finish", { closedCount == 1 && openedCount == 1 && overlay.isOpen })
+        XCTAssertEqual(closedCount, 1)
+        XCTAssertEqual(openedCount, 1)
+        closeOverlay()
+    }
+
 }
