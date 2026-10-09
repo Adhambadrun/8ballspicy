@@ -1,8 +1,8 @@
 {
   "manifest_version": "2.0",
-  "generated_utc": "2026-10-09T19:09:12.990556+00:00",
+  "generated_utc": "2026-10-09T19:38:37+00:00",
   "project": "8 Ball Pool / MR. SPICY independent component",
-  "session_branch": "arena/734fc10e-8ballspicy",
+  "session_branch": "arena/a8ab557d-8ballspicy",
   "final_status": "COMPONENT VERIFIED — GAME INTEGRATION / SIGNED IPA BLOCKED",
   "release_ipa": {
     "status": "NOT PRODUCED",
@@ -203,16 +203,19 @@
     "retrieval": "git fetch of fixed session branch; bytes independently verified",
     "session_branch_can_run_ci": false,
     "workflow_installation_blocked": {
-      "status": "Refusal recorded in session a4ebad6a and re-verified in session 734fc10e (2026-10-09).",
+      "status": "Refusal recorded in sessions a4ebad6a and 734fc10e, and re-verified in session a8ab557d (2026-10-09) by two independent routes: git push of the workflow file and a contents-API PUT (HTTP 403). The environment holds one credential, a GitHub App installation token (GH_TOKEN == GITHUB_TOKEN); no personal access token exists.",
       "reverified_utc": "2026-10-09",
       "git_push_error": "! [remote rejected] (refusing to allow a GitHub App to create or update workflow `.github/workflows/component-ci.yml` without `workflows` permission)",
       "contents_api_status": 403,
-      "reverified_in_session": "arena/734fc10e-8ballspicy",
-      "git_push_error_734fc10e": "! [remote rejected] arena/734fc10e-8ballspicy -> arena/734fc10e-8ballspicy (refusing to allow a GitHub App to create or update workflow `.github/workflows/component-ci.yml` without `workflows` permission)"
+      "reverified_in_session": "arena/a8ab557d-8ballspicy",
+      "git_push_error_734fc10e": "! [remote rejected] arena/734fc10e-8ballspicy -> arena/734fc10e-8ballspicy (refusing to allow a GitHub App to create or update workflow `.github/workflows/component-ci.yml` without `workflows` permission)",
+      "git_push_error_a8ab557d": "! [remote rejected] arena/a8ab557d-8ballspicy -> arena/a8ab557d-8ballspicy (refusing to allow a GitHub App to create or update workflow `.github/workflows/component-ci.yml` without `workflows` permission)",
+      "contents_api_status_a8ab557d": 403,
+      "contents_api_error_a8ab557d": "Resource not accessible by integration"
     },
     "workflow_installation": {
-      "session_branch": "arena/734fc10e-8ballspicy",
-      "status": "NOT INSTALLED. Push of .github/workflows/component-ci.yml refused (GitHub App lacks workflows permission). No CI run exists for this branch.",
+      "session_branch": "arena/a8ab557d-8ballspicy",
+      "status": "NOT INSTALLED. Push of .github/workflows/component-ci.yml refused (GitHub App lacks workflows permission); contents-API PUT also refused (HTTP 403). No CI run exists for this branch. Canonical text retargeted to this branch in session a8ab557d.",
       "installed_path": null,
       "canonical_text": "validation/ci/installable/component-ci.yml",
       "patch": "validation/ci/installable/install-component-ci.patch",
@@ -395,7 +398,7 @@
       "WARN": 10,
       "FAIL": 0,
       "exit_code": 0,
-      "note": "at HEAD of session 734fc10e; the 10 WARNs are W1-W10 in validation/reports/warning-register-734fc10e.md"
+      "note": "at HEAD of session a8ab557d; the 10 WARNs are W1-W10 in validation/reports/warning-register-a8ab557d.md"
     },
     "warnings_explained": "Run 37927299718 failed before producing an artifact; runs 37925407220/37926156116/37927299718/37928629998 recorded older source trees than the working copy because this session edited documentation and tooling (see component.cross_repository_provenance).",
     "local_test_suite": {
@@ -503,30 +506,30 @@
       {
         "id": "E6",
         "item": "Maintainer with the GitHub App workflows permission",
-        "status": "CONFIRMED BLOCKING (re-verified 2026-10-09 in session 734fc10e)",
-        "evidence": "Push of .github/workflows/component-ci.yml refused with the workflows-permission error. Workaround: a maintainer with workflows permission applies validation/ci/installable/install-component-ci.patch."
+        "status": "CONFIRMED BLOCKING (re-verified 2026-10-09 in sessions 734fc10e and a8ab557d)",
+        "evidence": "Push of .github/workflows/component-ci.yml refused with the workflows-permission error; contents-API PUT refused with HTTP 403 'Resource not accessible by integration'. Workaround: a maintainer with the workflows permission applies validation/ci/installable/install-component-ci.patch (retargeted to arena/a8ab557d-8ballspicy)."
       }
     ]
   },
   "next_step": {
     "most_important": "Obtain owner authorization for a real integration path (E1) — buildable game source or an official SDK with a documented presentation/settings API and written permitted feature scope — together with a clean baseline (E2). Nothing else can produce output/pool8Signed.ipa.",
-    "cheapest_immediately_actionable": "A maintainer with the workflows permission (E6) applies validation/ci/installable/install-component-ci.patch to arena/734fc10e-8ballspicy. The first CI run then records provenance for the HEAD trees, which is the only way to close W2-W10. Game release remains blocked by E1-E5 regardless."
+    "cheapest_immediately_actionable": "A maintainer with the workflows permission (E6) applies validation/ci/installable/install-component-ci.patch to arena/a8ab557d-8ballspicy and pushes; the push itself triggers the workflow. The first CI run then records provenance for the HEAD trees, which is the only way to close W10 (W2-W9 remain as historical WARNs by design). Game release remains blocked by E1-E5 regardless."
   },
   "source_tree_snapshot": {
     "basis": "git tree IDs of the commit that contains this manifest, taken from the staged index. The manifest is excluded from every source tree, so these IDs do not change when the manifest changes. tools/verify_release_state.py compares them with HEAD.",
-    "session_branch": "arena/734fc10e-8ballspicy",
-    "recorded_utc": "2026-10-09T19:09:12.990556+00:00",
+    "session_branch": "arena/a8ab557d-8ballspicy",
+    "recorded_utc": "2026-10-09T19:38:37+00:00",
     "trees": {
       "MrSpicyUI": "595091cbadd17a8784c327477957cc8db71733a9",
       "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
-      "tools": "ceec8c41d04903b3e4810f8fd66bac4e1314b7d0"
+      "tools": "3213aa15f4f9de2a3a42684191e9051e327c0b2c"
     },
     "ci_verified_trees_at_fae2937": {
       "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
       "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
       "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
     },
-    "note": "MrSpicyUI and tools differ from the CI-tested trees. The differences are documentation, comments and release-gate tooling; HostApp is unchanged. Only a CI run on these trees establishes tree-level provenance for them. HEAD of this session contains these trees; a documentation-only commit does not change them."
+    "note": "MrSpicyUI and tools differ from the CI-tested trees. The differences are documentation, comments and release-gate tooling; HostApp is unchanged. The tools tree changed again in session a8ab557d (test_ci_workflow.py retargeted to this session branch — test-only). Only a CI run on these trees establishes tree-level provenance for them. HEAD of this session contains these trees; a documentation-only commit does not change them."
   },
   "verification_session_734fc10e": {
     "branch": "arena/734fc10e-8ballspicy",
@@ -536,5 +539,16 @@
     "change_log": "validation/reports/change-log-734fc10e.md",
     "install_instructions": "validation/ci/installable/INSTALL.md"
   },
-  "warnings_register": "validation/reports/warning-register-734fc10e.md"
+  "warnings_register": "validation/reports/warning-register-a8ab557d.md",
+  "verification_session_a8ab557d": {
+    "branch": "arena/a8ab557d-8ballspicy",
+    "base_commit": "bd5520deb3b67d7867560eed5001933ddf9e3521",
+    "report": "validation/reports/session-a8ab557d-verification.md",
+    "warning_register": "validation/reports/warning-register-a8ab557d.md",
+    "change_log": "validation/reports/change-log-a8ab557d.md",
+    "install_instructions": "validation/ci/installable/INSTALL.md",
+    "ci_retargeted_to_this_branch": true,
+    "workflow_installed": false,
+    "ci_runs_for_this_branch": 0
+  }
 }
