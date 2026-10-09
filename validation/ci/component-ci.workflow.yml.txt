@@ -1,0 +1,270 @@
+name: component-ci
+
+# Builds and tests the MrSpicyUI component on a real macOS/Xcode toolchain:
+#  - job `component`:        package unit tests (hostless xctest) + unsigned
+#                            device build (generic/platform=iOS, arm64)
+#  - job `hosted-tests`:     the same test sources running inside a real
+#                            UIApplicationMain host app (MrSpicyDemoHost) so
+#                            modal lifecycle and control dispatch execute
+#
+# Evidence is transferred with Actions artifacts, then published ONLY to the
+# fixed session branch for reachable git transport. Publication fails honestly;
+# no false success after a failed push, and no separate artifact-branch writes.
+#
+# This workflow deliberately does NOT attempt to modify, re-sign, or repackage
+# the 8 Ball Pool application. See validation/reports/integration-validation.md.
+
+on:
+  push:
+    branches:
+      - arena/627c356f-8ballspicy
+    paths:
+      - "MrSpicyUI/**"
+      - "HostApp/**"
+      - "tools/**"
+      - ".github/workflows/component-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: component-ci-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  component:
+    name: Build & test MrSpicyUI
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: MrSpicyUI
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test read-only forensic parser
+        run: PYTHONPATH=../tools python3 -m unittest discover -s ../tools -p 'test_*.py' -v
+
+      - name: Inspect immutable input with Apple tooling (no execution)
+        run: bash ../tools/inspect_ipa_apple.sh
+
+      - name: Show toolchain
+        run: |
+          {
+            echo "### Toolchain"
+            echo '```'
+            sw_vers
+            xcodebuild -version
+            swift --version
+            echo '```'
+            echo "### xcodebuild -list"
+            (xcodebuild -list 2>&1 || true)
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY" | tee toolchain.txt
+
+      - name: Prepare iPhone simulator
+        id: sim
+        run: |
+          python3 ../tools/select_simulator.py sim-choice.txt
+          echo "udid=$(grep '^SIM_UDID=' sim-choice.txt | cut -d= -f2-)" >> "$GITHUB_OUTPUT"
+
+      - name: Run unit tests (iOS Simulator, hostless)
+        run: |
+          set +e
+          set -o pipefail
+          xcodebuild test \
+            -scheme MrSpicyUI \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -resultBundlePath MrSpicyUI-tests.xcresult 2>&1 | tee xcodebuild-test.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            echo "::error::xcodebuild test failed with exit code $status"
+            grep -E "error:|BUILD FAILED|TEST FAILED|Fatal|failed" xcodebuild-test.log \
+              | head -60 | sed 's/^/::error::test: /'
+            echo "### test log error excerpt" >> "$GITHUB_STEP_SUMMARY"
+            grep -E "error:|BUILD FAILED|TEST FAILED|Fatal|failed" xcodebuild-test.log \
+              | head -60 | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "test_status=$status" >> test-status.txt
+          exit $status
+
+      - name: Build for generic iOS device (unsigned)
+        run: |
+          set +e
+          set -o pipefail
+          xcodebuild build \
+            -scheme MrSpicyUI \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build-device \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee xcodebuild-device.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            echo "::error::xcodebuild device build failed with exit code $status"
+            grep -E "error:|BUILD FAILED|Fatal|failed" xcodebuild-device.log \
+              | head -60 | sed 's/^/::error::dev: /'
+            echo "### device build error excerpt" >> "$GITHUB_STEP_SUMMARY"
+            grep -E "error:|BUILD FAILED|Fatal|failed" xcodebuild-device.log \
+              | head -60 | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "device_status=$status" >> test-status.txt
+          exit $status
+
+      - name: Verify produced architecture
+        run: |
+          set +e
+          PRODUCTS=build-device/Build/Products/Release-iphoneos
+          {
+            echo "### Products"
+            echo '```'
+            find "$PRODUCTS" -type f 2>/dev/null | sed 's/^/  /'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY" | tee products.txt
+          status=0
+          found=0
+          while IFS= read -r f; do
+            case "$(file -b "$f")" in
+              *Mach-O*)
+                found=1
+                archs=$(lipo -archs "$f" 2>/dev/null || echo 'unknown')
+                echo "::notice::arch: $f -> $archs"
+                echo "$f -> $archs" | tee -a "$GITHUB_STEP_SUMMARY" >> products.txt
+                echo "$archs" | grep -q arm64 || { echo "::error::NOT arm64: $f ($archs)"; status=1; }
+                ;;
+            esac
+          done < <(find "$PRODUCTS" -type f 2>/dev/null)
+          if [ "$found" -eq 0 ]; then
+            echo "::error::No Mach-O binaries produced in $PRODUCTS"
+            status=1
+          fi
+          echo "arch_status=$status" >> test-status.txt
+          exit $status
+
+      - name: Package and hash
+        if: success()
+        run: |
+          PRODUCTS=build-device/Build/Products/Release-iphoneos
+          mkdir -p dist
+          ABS_DIST="$(pwd)/dist"
+          (cd "$PRODUCTS" && zip -qr "$ABS_DIST/MrSpicyUI-iphoneos-arm64-unsigned.zip" .)
+          shasum -a 256 dist/MrSpicyUI-iphoneos-arm64-unsigned.zip | tee dist/MrSpicyUI-iphoneos-arm64-unsigned.sha256
+          cat dist/MrSpicyUI-iphoneos-arm64-unsigned.sha256 | sed 's/^/::notice::artifact sha256: /'
+
+      - name: Record build provenance
+        if: always()
+        run: python3 ../tools/ci_provenance.py component provenance.json
+
+      - name: Transfer component evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: component-evidence
+          path: |
+            MrSpicyUI/*.txt
+            MrSpicyUI/*.log
+            MrSpicyUI/provenance.json
+            MrSpicyUI/dist/
+          if-no-files-found: error
+          retention-days: 30
+
+  hosted-tests:
+    name: Hosted lifecycle tests (UIApplication host)
+    runs-on: macos-latest
+    needs: component
+    if: always()
+    defaults:
+      run:
+        working-directory: HostApp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare iPhone simulator
+        id: sim
+        run: |
+          python3 ../tools/select_simulator.py sim-choice.txt
+          echo "udid=$(grep '^SIM_UDID=' sim-choice.txt | cut -d= -f2-)" >> "$GITHUB_OUTPUT"
+
+      - name: Run hosted tests
+        run: |
+          set +e
+          set -o pipefail
+          xcodebuild test \
+            -project MrSpicyDemoHost.xcodeproj \
+            -scheme MrSpicyDemoHost \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -resultBundlePath MrSpicyHosted-tests.xcresult 2>&1 | tee xcodebuild-hosted.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            echo "::error::hosted xcodebuild test failed with exit code $status"
+            grep -E "error:|BUILD FAILED|TEST FAILED|Fatal|failed" xcodebuild-hosted.log \
+              | head -60 | sed 's/^/::error::hosted: /'
+          fi
+          echo "hosted_status=$status" >> test-status.txt
+          exit $status
+
+      - name: Repeat animated transition regression (real animations)
+        run: |
+          set +e
+          set -o pipefail
+          xcodebuild test \
+            -project MrSpicyDemoHost.xcodeproj \
+            -scheme MrSpicyDemoHost \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -only-testing:MrSpicyHostedTests/SpicyOverlayLifecycleTests/testAnimatedTransitionRejectsDuplicateRequests \
+            -test-iterations 10 -run-tests-until-failure \
+            -resultBundlePath MrSpicyAnimatedRepeat-tests.xcresult 2>&1 | tee xcodebuild-animated-repeat.log
+          status=${PIPESTATUS[0]}
+          echo "animated_repeat_status=$status" >> test-status.txt
+          exit $status
+
+      - name: Record hosted provenance
+        if: always()
+        run: python3 ../tools/ci_provenance.py hosted-tests provenance.json
+
+      - name: Transfer hosted evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-evidence
+          path: |
+            HostApp/*.txt
+            HostApp/*.log
+            HostApp/provenance.json
+          if-no-files-found: error
+          retention-days: 30
+
+  publish-evidence:
+    name: Publish auditable evidence on session branch
+    needs: [component, hosted-tests]
+    if: always()
+    runs-on: macos-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: component-evidence
+          path: validation/ci/runs/${{ github.run_id }}-component
+      - uses: actions/download-artifact@v4
+        with:
+          name: hosted-evidence
+          path: validation/ci/runs/${{ github.run_id }}-hosted-tests
+      - name: Publish without masking failures or changing branches
+        env:
+          SESSION_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          test "$SESSION_BRANCH" = "arena/627c356f-8ballspicy"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Deliberate small evidence archive exception to ignored build outputs.
+          # Never copy or publish the proprietary IPA.
+          git add -f "validation/ci/runs/${GITHUB_RUN_ID}-component" "validation/ci/runs/${GITHUB_RUN_ID}-hosted-tests"
+          git commit -m "ci: verified evidence for run ${GITHUB_RUN_ID} (source ${GITHUB_SHA})"
+          git push origin "HEAD:${SESSION_BRANCH}"

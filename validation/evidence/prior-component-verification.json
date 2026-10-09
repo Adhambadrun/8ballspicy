@@ -1,0 +1,50 @@
+[
+  {
+    "path": ".cache/audit/runs/37915278092-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+    "size_bytes": 1712887,
+    "sha256": "1a57bab96031dc78abde5eec594eb8ca9f1121ebc47819a67cd2ed7df97c034d",
+    "object_sha256": "ff34b99249e13347f65dd244fe2c9da1fca87abd6bb12c6743ecad152eead16d",
+    "object_architecture": "arm64 MH_OBJECT",
+    "entries": [
+      "MrSpicyUI.o",
+      "MrSpicyUI_MrSpicyUI.bundle/",
+      "MrSpicyUI_MrSpicyUI.bundle/ar.lproj/",
+      "MrSpicyUI_MrSpicyUI.bundle/ar.lproj/Localizable.strings",
+      "MrSpicyUI_MrSpicyUI.bundle/en.lproj/",
+      "MrSpicyUI_MrSpicyUI.bundle/en.lproj/Localizable.strings",
+      "MrSpicyUI_MrSpicyUI.bundle/spicy-s-mark.png",
+      "MrSpicyUI_MrSpicyUI.bundle/Info.plist",
+      "MrSpicyUI.swiftmodule/",
+      "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftdoc",
+      "MrSpicyUI.swiftmodule/Project/",
+      "MrSpicyUI.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo",
+      "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftmodule",
+      "MrSpicyUI.swiftmodule/arm64-apple-ios.abi.json",
+      "PackageFrameworks/"
+    ]
+  },
+  {
+    "path": ".cache/audit/runs/37916687975-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+    "size_bytes": 1712890,
+    "sha256": "2d34b9d00c8f3aad00ffcf5ec0419a42bf16a8d02ba4c8b702966ba8b3399b2c",
+    "object_sha256": "ff34b99249e13347f65dd244fe2c9da1fca87abd6bb12c6743ecad152eead16d",
+    "object_architecture": "arm64 MH_OBJECT",
+    "entries": [
+      "MrSpicyUI.o",
+      "MrSpicyUI_MrSpicyUI.bundle/",
+      "MrSpicyUI_MrSpicyUI.bundle/ar.lproj/",
+      "MrSpicyUI_MrSpicyUI.bundle/ar.lproj/Localizable.strings",
+      "MrSpicyUI_MrSpicyUI.bundle/en.lproj/",
+      "MrSpicyUI_MrSpicyUI.bundle/en.lproj/Localizable.strings",
+      "MrSpicyUI_MrSpicyUI.bundle/spicy-s-mark.png",
+      "MrSpicyUI_MrSpicyUI.bundle/Info.plist",
+      "MrSpicyUI.swiftmodule/",
+      "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftdoc",
+      "MrSpicyUI.swiftmodule/Project/",
+      "MrSpicyUI.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo",
+      "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftmodule",
+      "MrSpicyUI.swiftmodule/arm64-apple-ios.abi.json",
+      "PackageFrameworks/"
+    ]
+  }
+]
