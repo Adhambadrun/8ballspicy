@@ -40,6 +40,15 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         )
     }
 
+    private final class AppearingPresenter: UIViewController {
+        var appeared = false
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            appeared = true
+        }
+    }
+
+    private var previousKeyWindow: UIWindow?
     private var window: UIWindow!
     private var presenter: UIViewController!
     private var suiteName: String!
@@ -56,20 +65,43 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         bridge = SpyBridge()
         overlay = SpicyOverlayViewController(preferences: preferences, bridge: bridge)
 
-        presenter = UIViewController()
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = presenter
-        window.makeKeyAndVisible()
-        // Let UIKit complete the root view controller's appearance transition
-        // before attempting modal presentations.
-        presenter.view.layoutIfNeeded()
-        spinRunLoop(0.2)
+        // Cold simulator launch must finish before testing real animations.
+        // Failure here is reported as host readiness, not a passed/skipped test.
+        waitUntil(15, "UIApplication host did not become active", {
+            UIApplication.shared.applicationState == .active
+        })
+        guard UIApplication.shared.applicationState == .active else {
+            throw NSError(domain: "MrSpicyTestHostReadiness", code: 1)
+        }
+        let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }
+        previousKeyWindow = scene?.windows.first { $0.isKeyWindow }
+            ?? UIApplication.shared.windows.first { $0.isKeyWindow }
+        let root = AppearingPresenter()
+        presenter = root
+        if let scene = scene {
+            window = UIWindow(windowScene: scene)
+        } else {
+            // The existing demo host supports the legacy app-delegate lifecycle.
+            window = UIWindow(frame: UIScreen.main.bounds)
+        }
+        self.window.rootViewController = presenter
+        self.window.makeKeyAndVisible()
+        self.presenter.view.layoutIfNeeded()
+        waitUntil(5, "test presenter did not appear", { root.appeared && root.view.window != nil && self.window.isKeyWindow })
+        guard root.appeared else { throw NSError(domain: "MrSpicyTestHostReadiness", code: 2) }
     }
 
     override func tearDown() {
-        overlay?.close(animated: false, completion: nil)
-        spinRunLoop(0.1)
-        window?.isHidden = true
+        if let presenter = presenter, presenter.presentedViewController != nil {
+            waitUntil(5, "transition still active at teardown", { presenter.transitionCoordinator == nil })
+            var dismissed = false
+            presenter.dismiss(animated: false) { dismissed = true }
+            waitUntil(5, "fixture dismissal did not complete", { dismissed && presenter.presentedViewController == nil })
+        }
+        self.window?.isHidden = true
+        previousKeyWindow?.makeKey()
+        previousKeyWindow = nil
         window = nil
         presenter = nil
         overlay = nil
@@ -94,32 +126,31 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
     private func waitUntil(
         _ timeout: TimeInterval = 5,
         _ message: String = "condition not met",
-        _ condition: () -> Bool,
+        _ condition: @escaping () -> Bool,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            if condition() { return }
-            RunLoop.main.run(until: Date().addingTimeInterval(0.02))
-        }
-        if !condition() {
-            XCTFail(message, file: file, line: line)
+        let start = ProcessInfo.processInfo.systemUptime
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in condition() }, object: nil)
+        let result = XCTWaiter.wait(for: [expectation], timeout: timeout)
+        if result != .completed {
+            let diagnostics = "elapsed=\(ProcessInfo.processInfo.systemUptime - start) app=\(UIApplication.shared.applicationState.rawValue) key=\(self.window?.isKeyWindow ?? false) scene=\(String(describing: self.window?.windowScene?.activationState)) presented=\(String(describing: self.presenter?.presentedViewController)) coordinator=\(String(describing: self.presenter?.transitionCoordinator)) animations=\(UIView.areAnimationsEnabled)"
+            XCTFail("\(message); \(diagnostics)", file: file, line: line)
         }
     }
 
     private func openOverlay(file: StaticString = #filePath, line: UInt = #line) {
         var completed = false
-        XCTAssertTrue(overlay.open(from: presenter, animated: false) { completed = true }, file: file, line: line)
+        XCTAssertTrue(self.overlay.open(from: presenter, animated: false) { completed = true }, file: file, line: line)
         waitUntil(5, "overlay did not open", {
-            completed && overlay.presentingViewController != nil && overlay.isOpen
+            completed && self.overlay.presentingViewController != nil && self.overlay.isOpen
         }, file: file, line: line)
     }
 
     private func closeOverlay(file: StaticString = #filePath, line: UInt = #line) {
-        overlay.close(animated: false, completion: nil)
+        self.overlay.close(animated: false, completion: nil)
         waitUntil(5, "overlay did not close", {
-            overlay.presentingViewController == nil && !overlay.isOpen
+            self.overlay.presentingViewController == nil && !self.overlay.isOpen
         }, file: file, line: line)
     }
 
@@ -127,72 +158,72 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
 
     func testOpenCloseReopenCycle() throws {
         openOverlay()
-        XCTAssertEqual(overlay.view.accessibilityIdentifier, SpicyAccessibility.overlayIdentifier)
+        XCTAssertEqual(self.overlay.view.accessibilityIdentifier, SpicyAccessibility.overlayIdentifier)
 
         closeOverlay()
-        XCTAssertNil(overlay.presentingViewController)
+        XCTAssertNil(self.overlay.presentingViewController)
 
         // Reopen the same instance — must work without reinitialization.
         openOverlay()
-        XCTAssertEqual(overlay.presentingViewController, presenter)
+        XCTAssertEqual(self.overlay.presentingViewController, presenter)
 
         closeOverlay()
     }
 
     func testOpenIsIdempotent() {
         openOverlay()
-        overlay.open(from: presenter, animated: false, completion: nil)
+        self.overlay.open(from: presenter, animated: false, completion: nil)
         spinRunLoop(0.1)
-        XCTAssertTrue(overlay.isOpen)
-        XCTAssertEqual(overlay.presentingViewController, presenter)
+        XCTAssertTrue(self.overlay.isOpen)
+        XCTAssertEqual(self.overlay.presentingViewController, presenter)
         closeOverlay()
     }
 
     func testCloseButtonNotifiesBridgeAndCloses() {
         openOverlay()
-        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
 
         waitUntil(5, "close button did not dismiss via bridge+close", {
-            bridge.closeRequests == 1 && overlay.presentingViewController == nil
+            self.bridge.closeRequests == 1 && self.overlay.presentingViewController == nil
         })
-        waitUntil(5, "overlay.isOpen did not clear after dismissal", {
-            !overlay.isOpen
+        waitUntil(5, "self.overlay.isOpen did not clear after dismissal", {
+            !self.overlay.isOpen
         })
     }
 
     func testControlDispatchViaSendActionsReachesPersistenceAndBridge() {
         openOverlay()
-        overlay.settingsView.soundSwitch.isOn = false
-        overlay.settingsView.soundSwitch.sendActions(for: .valueChanged)
+        self.overlay.settingsView.soundSwitch.isOn = false
+        self.overlay.settingsView.soundSwitch.sendActions(for: .valueChanged)
 
         XCTAssertFalse(preferences.soundEnabled)
-        XCTAssertEqual(bridge.settingsChanges.count, 1)
+        XCTAssertEqual(self.bridge.settingsChanges.count, 1)
         XCTAssertFalse(SpicyPreferences(suiteName: suiteName).soundEnabled, "setting must persist")
         closeOverlay()
     }
 
     func testCloseIsIdempotent() {
-        overlay.close(animated: false, completion: nil)
+        self.overlay.close(animated: false, completion: nil)
         spinRunLoop(0.1)
-        XCTAssertFalse(overlay.isOpen)
-        XCTAssertNil(overlay.presentingViewController)
+        XCTAssertFalse(self.overlay.isOpen)
+        XCTAssertNil(self.overlay.presentingViewController)
     }
     func testExternalDismissalClearsStateAndAllowsReopen() {
         openOverlay()
-        presenter.dismiss(animated: false)
-        waitUntil(5, "external dismissal did not clear state", { !overlay.isOpen && overlay.presentingViewController == nil })
+        self.presenter.dismiss(animated: false)
+        waitUntil(5, "external dismissal did not clear state", { !self.overlay.isOpen && self.overlay.presentingViewController == nil })
         openOverlay()
         closeOverlay()
     }
 
     func testBusyPresenterIsRejectedWithoutFalseOpenState() {
         let blocker = UIViewController()
-        presenter.present(blocker, animated: false)
-        waitUntil(5, "blocker not presented", { presenter.presentedViewController === blocker })
-        XCTAssertFalse(overlay.open(from: presenter, animated: false))
-        XCTAssertFalse(overlay.isOpen)
-        XCTAssertNil(overlay.presentingViewController)
-        presenter.dismiss(animated: false)
+        self.presenter.present(blocker, animated: false)
+        waitUntil(5, "blocker not presented", { self.presenter.presentedViewController === blocker })
+        XCTAssertFalse(self.overlay.open(from: presenter, animated: false))
+        XCTAssertFalse(self.overlay.isOpen)
+        XCTAssertNil(self.overlay.presentingViewController)
+        self.presenter.dismiss(animated: false)
     }
 
     func testPreferencesReloadWhenReopened() {
@@ -200,30 +231,30 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         closeOverlay()
         preferences.soundEnabled = false
         openOverlay()
-        XCTAssertFalse(overlay.settingsView.soundSwitch.isOn)
+        XCTAssertFalse(self.overlay.settingsView.soundSwitch.isOn)
         closeOverlay()
     }
 
     func testAnimatedTransitionRejectsDuplicateRequests() {
         var opened = false
-        XCTAssertTrue(overlay.open(from: presenter, animated: true) { opened = true })
-        XCTAssertFalse(overlay.open(from: presenter, animated: true))
-        XCTAssertFalse(overlay.close(animated: true))
+        XCTAssertTrue(self.overlay.open(from: presenter, animated: true) { opened = true })
+        XCTAssertFalse(self.overlay.open(from: presenter, animated: true))
+        XCTAssertFalse(self.overlay.close(animated: true))
         waitUntil(5, "animated presentation completion missing", { opened })
         var closed = false
-        XCTAssertTrue(overlay.close(animated: true) { closed = true })
-        XCTAssertFalse(overlay.close(animated: true))
-        XCTAssertFalse(overlay.open(from: presenter, animated: true))
-        waitUntil(5, "animated dismissal completion missing", { closed && !overlay.isOpen })
+        XCTAssertTrue(self.overlay.close(animated: true) { closed = true })
+        XCTAssertFalse(self.overlay.close(animated: true))
+        XCTAssertFalse(self.overlay.open(from: presenter, animated: true))
+        waitUntil(5, "animated dismissal completion missing", { closed && !self.overlay.isOpen })
     }
 
     func testArabicHeaderActuallyMirrorsAndCanClose() {
-        overlay.refreshLocalization(language: "ar")
+        self.overlay.refreshLocalization(language: "ar")
         openOverlay()
-        overlay.view.layoutIfNeeded()
-        let header = overlay.headerView!
-        let mark = header.markImageView.convert(header.markImageView.bounds, to: overlay.view)
-        let close = header.closeButton.convert(header.closeButton.bounds, to: overlay.view)
+        self.overlay.view.layoutIfNeeded()
+        let header = self.overlay.headerView!
+        let mark = header.markImageView.convert(header.markImageView.bounds, to: self.overlay.view)
+        let close = header.closeButton.convert(header.closeButton.bounds, to: self.overlay.view)
         XCTAssertGreaterThan(mark.midX, close.midX, "Arabic leading/trailing geometry must mirror, not just translate text")
         XCTAssertGreaterThanOrEqual(close.width, 44)
         XCTAssertGreaterThanOrEqual(close.height, 44)
@@ -232,11 +263,11 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
     }
 
     func testUserCloseDuringOpeningIsQueuedOnceAndAllowsReopen() {
-        XCTAssertTrue(overlay.open(from: presenter, animated: true))
-        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
-        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
-        XCTAssertEqual(bridge.closeRequests, 1, "Repeated user taps during opening must not duplicate the bridge request")
-        waitUntil(5, "queued user close was dropped", { overlay.presentingViewController == nil && !overlay.isOpen })
+        XCTAssertTrue(self.overlay.open(from: presenter, animated: true))
+        self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(self.bridge.closeRequests, 1, "Repeated user taps during opening must not duplicate the bridge request")
+        waitUntil(5, "queued user close was dropped", { self.overlay.presentingViewController == nil && !self.overlay.isOpen })
         openOverlay()
         closeOverlay()
     }
@@ -245,11 +276,11 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         openOverlay()
         var closedCount = 0
         var openedCount = 0
-        XCTAssertTrue(overlay.close(animated: true) {
+        XCTAssertTrue(self.overlay.close(animated: true) {
             closedCount += 1
             XCTAssertTrue(self.overlay.open(from: self.presenter, animated: true) { openedCount += 1 })
         })
-        waitUntil(5, "reentrant reopen did not finish", { closedCount == 1 && openedCount == 1 && overlay.isOpen })
+        waitUntil(5, "reentrant reopen did not finish", { closedCount == 1 && openedCount == 1 && self.overlay.isOpen })
         XCTAssertEqual(closedCount, 1)
         XCTAssertEqual(openedCount, 1)
         closeOverlay()
@@ -265,21 +296,21 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
 
     func testRejectedPresentationLateCompletionIsDeliveredOnlyOnce() {
         let rejecting = DeferredRejectingPresenter()
-        window.rootViewController = rejecting
+        self.window.rootViewController = rejecting
         rejecting.view.layoutIfNeeded()
         spinRunLoop(0.2)
         var completions = 0
-        XCTAssertFalse(overlay.open(from: rejecting, animated: true) { completions += 1 })
+        XCTAssertFalse(self.overlay.open(from: rejecting, animated: true) { completions += 1 })
         XCTAssertEqual(completions, 1)
-        XCTAssertFalse(overlay.isOpen)
+        XCTAssertFalse(self.overlay.isOpen)
         rejecting.deferredCompletion?()
         XCTAssertEqual(completions, 1, "Rejected presentation must not complete twice")
         openOverlayAfterRestoringPresenter()
     }
 
     private func openOverlayAfterRestoringPresenter() {
-        window.rootViewController = presenter
-        presenter.view.layoutIfNeeded()
+        self.window.rootViewController = presenter
+        self.presenter.view.layoutIfNeeded()
         spinRunLoop(0.2)
         openOverlay()
         closeOverlay()
@@ -287,17 +318,17 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
 
     func testReentrantBridgeCloseRequestIsDeduplicatedWhileOpening() {
         var nested = false
-        bridge.onCloseRequest = {
+        self.bridge.onCloseRequest = {
             if !nested {
                 nested = true
                 self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
             }
         }
-        XCTAssertTrue(overlay.open(from: presenter, animated: true))
-        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
-        XCTAssertEqual(bridge.closeRequests, 1)
-        waitUntil(5, "reentrant user close did not finish", { overlay.presentingViewController == nil && !overlay.isOpen })
-        bridge.onCloseRequest = nil
+        XCTAssertTrue(self.overlay.open(from: presenter, animated: true))
+        self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(self.bridge.closeRequests, 1)
+        waitUntil(5, "reentrant user close did not finish", { self.overlay.presentingViewController == nil && !self.overlay.isOpen })
+        self.bridge.onCloseRequest = nil
         openOverlay()
         closeOverlay()
     }
@@ -305,41 +336,41 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
     func testReentrantCloseBridgeWhileOpenFiresOncePerCycle() {
         openOverlay()
         var nested = false
-        bridge.onCloseRequest = {
+        self.bridge.onCloseRequest = {
             if !nested {
                 nested = true
                 self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
             }
         }
-        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
-        XCTAssertEqual(bridge.closeRequests, 1)
-        waitUntil(5, "reentrant open-state close did not finish", { overlay.presentingViewController == nil && !overlay.isOpen })
-        bridge.onCloseRequest = nil
+        self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(self.bridge.closeRequests, 1)
+        waitUntil(5, "reentrant open-state close did not finish", { self.overlay.presentingViewController == nil && !self.overlay.isOpen })
+        self.bridge.onCloseRequest = nil
         openOverlay()
-        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
-        XCTAssertEqual(bridge.closeRequests, 2, "New presentation must re-arm the user-close event")
-        waitUntil(5, "second-cycle user close did not finish", { overlay.presentingViewController == nil && !overlay.isOpen })
+        self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(self.bridge.closeRequests, 2, "New presentation must re-arm the user-close event")
+        waitUntil(5, "second-cycle user close did not finish", { self.overlay.presentingViewController == nil && !self.overlay.isOpen })
     }
 
     func testDetachedCloseButtonDoesNotNotifyBridge() {
-        overlay.loadViewIfNeeded()
-        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
-        XCTAssertEqual(bridge.closeRequests, 0)
+        self.overlay.loadViewIfNeeded()
+        self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(self.bridge.closeRequests, 0)
         openOverlay()
         closeOverlay()
-        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
-        XCTAssertEqual(bridge.closeRequests, 0, "Programmatic dismissal and stale control events are not user close requests")
+        self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(self.bridge.closeRequests, 0, "Programmatic dismissal and stale control events are not user close requests")
     }
 
     func testNonanimatedOpenCompletionMayCloseWithoutFalseRejection() {
         var opened = 0
         var closed = 0
-        let accepted = overlay.open(from: presenter, animated: false) {
+        let accepted = self.overlay.open(from: presenter, animated: false) {
             opened += 1
             XCTAssertTrue(self.overlay.close(animated: false) { closed += 1 })
         }
         XCTAssertTrue(accepted, "Accepted nonanimated presentation may finish and close before open returns")
-        waitUntil(5, "completion-driven dismissal did not finish", { opened == 1 && closed == 1 && overlay.presentingViewController == nil })
+        waitUntil(5, "completion-driven dismissal did not finish", { opened == 1 && closed == 1 && self.overlay.presentingViewController == nil })
         XCTAssertEqual(opened, 1)
         XCTAssertEqual(closed, 1)
         openOverlay()

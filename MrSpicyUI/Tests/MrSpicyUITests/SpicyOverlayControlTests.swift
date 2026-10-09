@@ -135,9 +135,11 @@ final class SpicyOverlayControlTests: XCTestCase {
         XCTAssertFalse(bridge.settingsChanges.isEmpty, "reset must notify the bridge")
     }
 
-    func testCloseButtonNotifiesBridgeThenRequestsClose() {
+    func testDetachedCloseHandlerDoesNotNotifyBridge() {
+        // No modal presentation in this suite. Real user-close dispatch is
+        // covered in hosted lifecycle tests; stale detached handlers do nothing.
         overlay.headerView.closeTapped()
-        XCTAssertEqual(bridge.closeRequests, 1, "close button must notify the host bridge")
+        XCTAssertEqual(bridge.closeRequests, 0, "detached handler must not notify the host bridge")
     }
 
     // MARK: View-level configuration (no presentation required)

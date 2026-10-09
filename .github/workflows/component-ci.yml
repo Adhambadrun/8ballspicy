@@ -204,6 +204,21 @@ jobs:
           echo "hosted_status=$status" >> test-status.txt
           exit $status
 
+      - name: Repeat animated transition regression (real animations)
+        run: |
+          set +e
+          set -o pipefail
+          xcodebuild test \
+            -project MrSpicyDemoHost.xcodeproj \
+            -scheme MrSpicyDemoHost \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -only-testing:MrSpicyHostedTests/SpicyOverlayLifecycleTests/testAnimatedTransitionRejectsDuplicateRequests \
+            -test-iterations 10 -run-tests-until-failure \
+            -resultBundlePath MrSpicyAnimatedRepeat-tests.xcresult 2>&1 | tee xcodebuild-animated-repeat.log
+          status=${PIPESTATUS[0]}
+          echo "animated_repeat_status=$status" >> test-status.txt
+          exit $status
+
       - name: Record hosted provenance
         if: always()
         run: python3 ../tools/ci_provenance.py hosted-tests provenance.json
