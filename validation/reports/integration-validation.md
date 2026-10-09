@@ -3,6 +3,46 @@
 **Date:** 2026-10-09. **Session:** `arena/6264dd0a-8ballspicy`.
 **Status:** **BLOCKED — actual game integration NOT IMPLEMENTED.**
 
+## Addendum — session `arena/a4ebad6a-8ballspicy` (2026-10-09)
+
+Everything above was re-verified against the live repositories, bytes and logs;
+see `session-a4ebad6a-verification.md` for the command-by-command evidence. No
+status below changed. What this session added:
+
+- **A release-integrity gate.** `tools/verify_release_state.py` re-derives every
+  delivery claim from the files that actually exist. It fails the build if a
+  release artifact appears without a genuine integration, if the immutable input
+  IPA changes, if the manifest claims a delivery the filesystem does not support,
+  if a feature row advertises an implementation that was not established, or if
+  the component gains advertising, networking or host-loading code. Current
+  result on this repository: **27 PASS, 7 WARN, 0 FAIL**.
+- **Negative tests for the gate.** `tools/test_verify_release_state.py` (26
+  tests) proves the gate fails for a placeholder `output/pool8Signed.ipa`, a
+  renamed demo app, an unsigned component ZIP labelled as a release, a manifest
+  claiming delivery or overstating Pro/ad-free, a matrix row claiming an
+  implemented game feature, an ad SDK in the component, and `dlopen`
+  host-loading code. A gate that cannot fail would be worthless.
+- **A CI variant that enforces it.**
+  `validation/ci/component-ci.release-gated.yml.txt` adds a `release-gate` job
+  and makes `publish-evidence` refuse to publish unless the gate succeeded, so a
+  failing gate can no longer be published as a successful run.
+- **A reproducible feature-matrix auditor.** `tools/audit_feature_matrix.py`
+  reads the loader bytes out of the immutable IPA and confirms every citation in
+  the matrix and in `validation/evidence/feature-string-search.json`. It found
+  four case-drifted citations (`wait time` where the bytes read `Wait Time`, and
+  a duplicate `watch an ad` alongside `Watch an ad` where the bytes read
+  `Watch an ad for +1h`) which have been corrected; the auditor now reports
+  **96 citations, 96 PASS, 0 WARN, 0 FAIL**.
+- **A re-verified CI limitation.** The GitHub App token still cannot create or
+  update workflow files: `git push` is rejected with *"refusing to allow a
+  GitHub App to create or update workflow `.github/workflows/component-ci.yml`
+  without `workflows` permission"*, and the contents API returns **403 Resource
+  not accessible by integration**. `Adhambadrun/8ballspicy` reports **0 workflow
+  runs**, so this branch cannot produce its own build evidence.
+
+None of this changes the integration blockers listed below; it makes them
+impossible to paper over.
+
 ## Verified available artifacts
 
 - Existing `MrSpicyUI/` Swift/UIKit source, original component-owned

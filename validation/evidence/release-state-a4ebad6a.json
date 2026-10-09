@@ -1,0 +1,305 @@
+{
+  "method": "Filesystem, git-object, ZIP and Mach-O verification of the actual repository state against the recorded delivery claims. UNVERIFIED means a check could not be evaluated, not that it passed.",
+  "input_ipa": {
+    "path": "pool8Signed.ipa",
+    "size_bytes": 99010014,
+    "sha256": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+    "expected_sha256": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+    "unchanged": true
+  },
+  "release_ipa": {
+    "status": "NOT PRODUCED",
+    "output_ipa_exists": false,
+    "output_checksum_exists": false
+  },
+  "summary": {
+    "PASS": 27,
+    "WARN": 7
+  },
+  "passed": true,
+  "checks": [
+    {
+      "check": "input_zip_crc",
+      "result": "PASS",
+      "detail": "ZIP CRC PASS",
+      "entries": 3527
+    },
+    {
+      "check": "input_ipa_unchanged",
+      "result": "PASS",
+      "detail": "input IPA size and SHA-256 match the immutable record",
+      "size_bytes": 99010014,
+      "sha256": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+      "entries": 3527
+    },
+    {
+      "check": "release_ipa_not_produced",
+      "result": "PASS",
+      "detail": "output/pool8Signed.ipa and output/pool8Signed.sha256 are absent; output/ holds only README.md (status NOT PRODUCED)"
+    },
+    {
+      "check": "no_placeholder_release",
+      "result": "PASS",
+      "detail": "no .ipa, app bundle, Payload tree or provisioning profile other than the immutable input"
+    },
+    {
+      "check": "component_artifact[37925407220-component]",
+      "result": "PASS",
+      "detail": "artifact hash, size, CRC and Mach-O type match recorded provenance",
+      "path": "validation/ci/runs/37925407220-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+      "size_bytes": 1725060,
+      "sha256": "db7f20d59ca849386ec44e3f2f43c8de6a190f78bdb08506eb91ba2c224e8e1c",
+      "mach_o": "thin arm64 MH_OBJECT (relocatable component)",
+      "source_commit": "2d17a44d706d276ab4bac18dee274c2597f4b3b6"
+    },
+    {
+      "check": "component_artifact[37926156116-component]",
+      "result": "PASS",
+      "detail": "artifact hash, size, CRC and Mach-O type match recorded provenance",
+      "path": "validation/ci/runs/37926156116-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+      "size_bytes": 1725063,
+      "sha256": "b9f53a40003c834fdeae906f6dc4595853b9719e806b35cc486c2d5337051380",
+      "mach_o": "thin arm64 MH_OBJECT (relocatable component)",
+      "source_commit": "902ec19f29fef712e9735fcf44c1dcc88b463c8f"
+    },
+    {
+      "check": "component_artifact[37927299718-component]",
+      "result": "WARN",
+      "detail": "artifact or provenance missing for this run",
+      "path": "validation/ci/runs/37927299718-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip"
+    },
+    {
+      "check": "component_artifact[37928629998-component]",
+      "result": "PASS",
+      "detail": "artifact hash, size, CRC and Mach-O type match recorded provenance",
+      "path": "validation/ci/runs/37928629998-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+      "size_bytes": 1729023,
+      "sha256": "3a872657371e155a2bda05deeb73342e2e848e6ca0d99e1c484c4e651a90c5a6",
+      "mach_o": "thin arm64 MH_OBJECT (relocatable component)",
+      "source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71"
+    },
+    {
+      "check": "source_provenance[37925407220-component]",
+      "result": "WARN",
+      "detail": "run recorded a different source tree than the working copy",
+      "recorded": {
+        "MrSpicyUI": "c94bd5bfc998fa5b2534a94052d89f01ad8b3474",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "9616459e152de70e1aef0cf6cb25abeaa2302dbf"
+      },
+      "working_copy": {
+        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "source_commit": "2d17a44d706d276ab4bac18dee274c2597f4b3b6"
+    },
+    {
+      "check": "source_provenance[37925407220-hosted-tests]",
+      "result": "WARN",
+      "detail": "run recorded a different source tree than the working copy",
+      "recorded": {
+        "MrSpicyUI": "c94bd5bfc998fa5b2534a94052d89f01ad8b3474",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "9616459e152de70e1aef0cf6cb25abeaa2302dbf"
+      },
+      "working_copy": {
+        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "source_commit": "2d17a44d706d276ab4bac18dee274c2597f4b3b6"
+    },
+    {
+      "check": "source_provenance[37926156116-component]",
+      "result": "WARN",
+      "detail": "run recorded a different source tree than the working copy",
+      "recorded": {
+        "MrSpicyUI": "99749f3e9a139a851b18522647afe49e53d751be",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "02452f073eff54c297a7fe79860d0cbd5ba03268"
+      },
+      "working_copy": {
+        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "source_commit": "902ec19f29fef712e9735fcf44c1dcc88b463c8f"
+    },
+    {
+      "check": "source_provenance[37926156116-hosted-tests]",
+      "result": "WARN",
+      "detail": "run recorded a different source tree than the working copy",
+      "recorded": {
+        "MrSpicyUI": "99749f3e9a139a851b18522647afe49e53d751be",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "02452f073eff54c297a7fe79860d0cbd5ba03268"
+      },
+      "working_copy": {
+        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "source_commit": "902ec19f29fef712e9735fcf44c1dcc88b463c8f"
+    },
+    {
+      "check": "source_provenance[37927299718-component]",
+      "result": "WARN",
+      "detail": "run recorded a different source tree than the working copy",
+      "recorded": {
+        "MrSpicyUI": "144daf5b5bd7c062b4c14786d8e63d13d581ffa3",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "working_copy": {
+        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "source_commit": "51f0ba1ae2b75f98cc6bc43ba9687bd2aef71dea"
+    },
+    {
+      "check": "source_provenance[37927299718-hosted-tests]",
+      "result": "WARN",
+      "detail": "run recorded a different source tree than the working copy",
+      "recorded": {
+        "MrSpicyUI": "144daf5b5bd7c062b4c14786d8e63d13d581ffa3",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "working_copy": {
+        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "source_commit": "51f0ba1ae2b75f98cc6bc43ba9687bd2aef71dea"
+    },
+    {
+      "check": "source_provenance",
+      "result": "PASS",
+      "detail": "2 CI run(s) recorded exactly the working-copy source trees",
+      "working_copy_trees": {
+        "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+        "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+        "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+      },
+      "runs_verified": 2
+    },
+    {
+      "check": "manifest_release_status",
+      "result": "PASS",
+      "detail": "manifest records the release as NOT PRODUCED with a null hash"
+    },
+    {
+      "check": "manifest_matches_filesystem",
+      "result": "PASS",
+      "detail": "manifest release status agrees with the absence of output artifacts"
+    },
+    {
+      "check": "manifest_input_evidence",
+      "result": "PASS",
+      "detail": "manifest input hash and size agree with the immutable IPA",
+      "sha256": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+      "size_bytes": 99010014
+    },
+    {
+      "check": "manifest_component_artifact",
+      "result": "PASS",
+      "detail": "manifest component artifact hash and size agree with the file",
+      "path": "validation/ci/runs/37928629998-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+      "size_bytes": 1729023,
+      "sha256": "3a872657371e155a2bda05deeb73342e2e848e6ca0d99e1c484c4e651a90c5a6"
+    },
+    {
+      "check": "manifest_component_installable",
+      "result": "PASS",
+      "detail": "manifest records the component package as not installable"
+    },
+    {
+      "check": "manifest_brand_asset",
+      "result": "PASS",
+      "detail": "manifest brand-mark hash agrees with the file",
+      "sha256": "7c6b53e4e2b2ef752759d8b99fd7bcb992aa1d270f9060c9dec37fd5b22786f1"
+    },
+    {
+      "check": "manifest_signature_claim",
+      "result": "PASS",
+      "detail": "manifest records the Apple input-signature verification failure (exit 1) rather than claiming a valid signature",
+      "diagnostic": "invalid Info.plist (plist or signature have been modified)"
+    },
+    {
+      "check": "manifest_category_count",
+      "result": "PASS",
+      "detail": "manifest advertised-category count agrees with the matrix",
+      "count": 42
+    },
+    {
+      "check": "manifest_feature_claim[pro]",
+      "result": "PASS",
+      "detail": "manifest feature claim stays within the verified scope",
+      "claim": "Localized read-only unavailable disclosure; no entitlement backend, unlocked status or paid feature implementation"
+    },
+    {
+      "check": "manifest_feature_claim[ad_free]",
+      "result": "PASS",
+      "detail": "manifest feature claim stays within the verified scope",
+      "claim": "Component adds no ad SDK/network code; no game ad removal/config or integrated runtime verification"
+    },
+    {
+      "check": "manifest_feature_claim[automation]",
+      "result": "PASS",
+      "detail": "manifest feature claim stays within the verified scope",
+      "claim": "Reference only, not implemented; no online aim, gameplay automation, evasion or bypass"
+    },
+    {
+      "check": "localization_key_parity",
+      "result": "PASS",
+      "detail": "English and Arabic define the same key set",
+      "keys": 16
+    },
+    {
+      "check": "localization_keys_resolve",
+      "result": "PASS",
+      "detail": "every key referenced by the component resolves in en.lproj and ar.lproj",
+      "referenced": 16
+    },
+    {
+      "check": "localization_arabic_non_empty",
+      "result": "PASS",
+      "detail": "all 16 Arabic values are non-empty",
+      "keys": 16
+    },
+    {
+      "check": "component_scope",
+      "result": "PASS",
+      "detail": "11 component/host source files contain no advertising SDK, networking client or dynamic host-loading reference"
+    },
+    {
+      "check": "feature_matrix_count",
+      "result": "PASS",
+      "detail": "matrix contains exactly 42 advertised categories",
+      "count": 42
+    },
+    {
+      "check": "feature_matrix_statuses",
+      "result": "PASS",
+      "detail": "every feature row carries an honest availability status",
+      "tally": {
+        "unavailable": 38,
+        "implemented (component only)": 2,
+        "UI-only": 1,
+        "awaiting verification": 1
+      }
+    },
+    {
+      "check": "feature_matrix_component_only_claims",
+      "result": "PASS",
+      "detail": "only the English/Arabic menu rows claim implementation, and only in the component — no game feature is claimed"
+    },
+    {
+      "check": "reports_present",
+      "result": "PASS",
+      "detail": "all five validation reports are present"
+    }
+  ]
+}

@@ -275,7 +275,7 @@
       ],
       "hits": [
         {
-          "term": "wait time",
+          "term": "Wait Time",
           "offset": 10038728,
           "excerpt": "Wait Time"
         }
@@ -613,12 +613,7 @@
       ],
       "hits": [
         {
-          "term": "Watch an ad",
-          "offset": 10040475,
-          "excerpt": "Watch an ad for +1h"
-        },
-        {
-          "term": "watch an ad",
+          "term": "Watch an ad for +1h",
           "offset": 10040475,
           "excerpt": "Watch an ad for +1h"
         }

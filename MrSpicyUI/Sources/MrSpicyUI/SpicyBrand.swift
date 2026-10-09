@@ -2,10 +2,14 @@ import UIKit
 
 /// Brand marks for the Mr. Spicy interface.
 ///
-/// Asset provenance: `spicy-s-mark.png` is a NEW monogram generated for this
-/// repository on 2026-10-09 because the previously used Spicy S asset lived
-/// only in sibling repositories that are no longer reachable. It is not a
-/// recovered copy of the historical asset.
+/// Asset provenance (verified 2026-10-09, see `validation/reports/forensic-analysis.md`
+/// and `validation/manifests/release-manifest.json`): `spicy-s-mark.png` is the
+/// **existing generated replacement** carried forward from the earlier
+/// implementation of this component. It is *not* a recovered copy of the
+/// historical Spicy S brand asset, and no new mark was generated for this
+/// repository. The bundled file is byte-identical to the one that was built and
+/// tested in the verified CI run, and its SHA-256 is recorded in the release
+/// manifest so provenance stays checkable.
 public enum SpicyBrand {
 
     /// Name of the bundled S-monogram image resource.
