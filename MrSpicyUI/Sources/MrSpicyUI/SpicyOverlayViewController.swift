@@ -144,8 +144,9 @@ public final class SpicyOverlayViewController: UIViewController {
             guard let self = self else { return }
             // A real user close request during presentation must not be dropped.
             if self.isOpening {
-                if !self.pendingUserClose { self.bridge?.spicyOverlayDidRequestClose(self) }
+                guard !self.pendingUserClose else { return }
                 self.pendingUserClose = true
+                self.bridge?.spicyOverlayDidRequestClose(self)
             } else if !self.isClosing && !self.isBeingDismissed {
                 self.bridge?.spicyOverlayDidRequestClose(self)
                 self.close(animated: true, completion: nil)
@@ -202,9 +203,15 @@ public final class SpicyOverlayViewController: UIViewController {
         settingsView.reloadFromPreferences()
         presentationCycle &+= 1
         let cycle = presentationCycle
+        var completionDelivered = false
+        let completeOnce = {
+            guard !completionDelivered else { return }
+            completionDelivered = true
+            completion?()
+        }
         isOpening = true
         presenter.present(self, animated: animated) { [weak self] in
-            guard let self = self, self.presentationCycle == cycle else { completion?(); return }
+            guard let self = self, self.presentationCycle == cycle else { completeOnce(); return }
             self.isOpening = false
             if self.pendingUserClose {
                 self.pendingUserClose = false
@@ -214,11 +221,14 @@ public final class SpicyOverlayViewController: UIViewController {
             }
             // Completion reports the accepted presentation finishing, not that
             // it remains visible (a queued user close may already be dismissing).
-            completion?()
+            completeOnce()
         }
         if presentingViewController == nil {
+            // Invalidate a possible deferred UIKit completion after rejection.
+            if presentationCycle == cycle { presentationCycle &+= 1 }
             isOpening = false
-            completion?()
+            pendingUserClose = false
+            completeOnce()
             return false
         }
         return true

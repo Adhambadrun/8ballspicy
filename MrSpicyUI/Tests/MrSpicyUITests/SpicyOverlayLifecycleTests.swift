@@ -15,8 +15,12 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
 
     private final class SpyBridge: SpicyHostBridge {
         var closeRequests = 0
+        var onCloseRequest: (() -> Void)?
         var settingsChanges: [[String: Any]] = []
-        func spicyOverlayDidRequestClose(_ overlay: SpicyOverlayViewController) { closeRequests += 1 }
+        func spicyOverlayDidRequestClose(_ overlay: SpicyOverlayViewController) {
+            closeRequests += 1
+            onCloseRequest?()
+        }
         func spicyPreferencesDidChange(_ preferences: SpicyPreferences) {
             settingsChanges.append(preferences.snapshot())
         }
@@ -248,6 +252,53 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         waitUntil(5, "reentrant reopen did not finish", { closedCount == 1 && openedCount == 1 && overlay.isOpen })
         XCTAssertEqual(closedCount, 1)
         XCTAssertEqual(openedCount, 1)
+        closeOverlay()
+    }
+
+    // A deliberate failure-path stub, NOT proof of real modal presentation.
+    private final class DeferredRejectingPresenter: UIViewController {
+        var deferredCompletion: (() -> Void)?
+        override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+            deferredCompletion = completion
+        }
+    }
+
+    func testRejectedPresentationLateCompletionIsDeliveredOnlyOnce() {
+        let rejecting = DeferredRejectingPresenter()
+        window.rootViewController = rejecting
+        rejecting.view.layoutIfNeeded()
+        spinRunLoop(0.2)
+        var completions = 0
+        XCTAssertFalse(overlay.open(from: rejecting, animated: true) { completions += 1 })
+        XCTAssertEqual(completions, 1)
+        XCTAssertFalse(overlay.isOpen)
+        rejecting.deferredCompletion?()
+        XCTAssertEqual(completions, 1, "Rejected presentation must not complete twice")
+        openOverlayAfterRestoringPresenter()
+    }
+
+    private func openOverlayAfterRestoringPresenter() {
+        window.rootViewController = presenter
+        presenter.view.layoutIfNeeded()
+        spinRunLoop(0.2)
+        openOverlay()
+        closeOverlay()
+    }
+
+    func testReentrantBridgeCloseRequestIsDeduplicatedWhileOpening() {
+        var nested = false
+        bridge.onCloseRequest = {
+            if !nested {
+                nested = true
+                self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+            }
+        }
+        XCTAssertTrue(overlay.open(from: presenter, animated: true))
+        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(bridge.closeRequests, 1)
+        waitUntil(5, "reentrant user close did not finish", { overlay.presentingViewController == nil && !overlay.isOpen })
+        bridge.onCloseRequest = nil
+        openOverlay()
         closeOverlay()
     }
 
