@@ -31,6 +31,10 @@ read game state, change aim, grant Pro access or remove advertising.
 - `open`/`close` return a discardable Bool; false rejects detached/busy
   presenters or in-flight transitions without duplicate UIKit requests.
 - Host retains the adapter; component holds the bridge weakly.
+- Close-button taps during opening queue once; reentrant bridge callbacks are
+  deduplicated per presentation. Programmatic/detached close calls do not emit
+  a user-close event. Accepted completion reports the transition finishing,
+  not continued visibility. Reopen from host dismissal completion.
 - Reload stored values on reopening; refresh explicit `en`/`ar` content and RTL.
 - Audio, haptics, notification permission, personalization consent and account
   nickname must each be wired only to the owner's documented, allowed APIs.
