@@ -1,0 +1,737 @@
+{
+  "method": "Read-only re-derivation of matrix citations from the immutable IPA; no game execution, patching or redistribution.",
+  "loader": {
+    "path": "Payload/pool.app/Frameworks/libloader.framework/libloader",
+    "size_bytes": 12265804,
+    "sha256": "bc6e41931e80a1fb7832612626ac05aacc7a45ecfbe7d73b45adbb889929823a"
+  },
+  "matrix": "validation/reports/feature-verification-matrix.md",
+  "evidence": "validation/evidence/feature-string-search.json",
+  "advertised_categories": 42,
+  "summary": {
+    "PASS": 96,
+    "WARN": 0,
+    "FAIL": 0
+  },
+  "passed": true,
+  "findings": [
+    {
+      "result": "PASS",
+      "check": "loader_sha256",
+      "sha256": "bc6e41931e80a1fb7832612626ac05aacc7a45ecfbe7d73b45adbb889929823a",
+      "detail": "loader SHA-256 matches the recorded evidence hash"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_binary_sha256",
+      "detail": "evidence JSON binary_sha256 matches the IPA bytes"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Prediction Lines",
+      "term": "GBPredictionDrawView",
+      "offset": 9961311,
+      "detail": "Prediction Lines: evidence hit 'GBPredictionDrawView' @ 9961311"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Opponent Prediction",
+      "term": "_cachedOpponentResult",
+      "offset": 9978733,
+      "detail": "Opponent Prediction: evidence hit '_cachedOpponentResult' @ 9978733"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Pocket Hints",
+      "term": "GBMenuPocketStylePanel",
+      "offset": 9960856,
+      "detail": "Pocket Hints: evidence hit 'GBMenuPocketStylePanel' @ 9960856"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Pocket Hints",
+      "term": "_drawPockets",
+      "offset": 9978902,
+      "detail": "Pocket Hints: evidence hit '_drawPockets' @ 9978902"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Table Outline",
+      "term": "feature.table_outline",
+      "offset": 10036905,
+      "detail": "Table Outline: evidence hit 'feature.table_outline' @ 10036905"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "End Dots / Impact Indicators",
+      "term": "_drawImpactDots",
+      "offset": 9960297,
+      "detail": "End Dots / Impact Indicators: evidence hit '_drawImpactDots' @ 9960297"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "End Dots / Impact Indicators",
+      "term": "_impactDotLayers",
+      "offset": 9987249,
+      "detail": "End Dots / Impact Indicators: evidence hit '_impactDotLayers' @ 9987249"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Precise Paths",
+      "term": "lineThickness",
+      "offset": 9998930,
+      "detail": "Precise Paths: evidence hit 'lineThickness' @ 9998930"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Precise Paths",
+      "term": "lineOpacity",
+      "offset": 9998944,
+      "detail": "Precise Paths: evidence hit 'lineOpacity' @ 9998944"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Scratch Alerts",
+      "term": "_scratchWarning",
+      "offset": 9967182,
+      "detail": "Scratch Alerts: evidence hit '_scratchWarning' @ 9967182"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Scratch Alerts",
+      "term": "scratchAlertEnabled",
+      "offset": 10003879,
+      "detail": "Scratch Alerts: evidence hit 'scratchAlertEnabled' @ 10003879"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Wrong-Ball / Foul Alerts",
+      "term": "_wrongBallWarning",
+      "offset": 9987708,
+      "detail": "Wrong-Ball / Foul Alerts: evidence hit '_wrongBallWarning' @ 9987708"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Wrong-Ball / Foul Alerts",
+      "term": "wrongBallAlertEnabled",
+      "offset": 10003899,
+      "detail": "Wrong-Ball / Foul Alerts: evidence hit 'wrongBallAlertEnabled' @ 10003899"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Golden Shot Support",
+      "term": "goldenOrLucky",
+      "offset": 10124876,
+      "detail": "Golden Shot Support: evidence hit 'goldenOrLucky' @ 10124876"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Lucky Shot Support",
+      "term": "goldenOrLucky",
+      "offset": 10124876,
+      "detail": "Lucky Shot Support: evidence hit 'goldenOrLucky' @ 10124876"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Best-Shot Ghost Line",
+      "term": "_ghostTrajectoryLayers",
+      "offset": 9987187,
+      "detail": "Best-Shot Ghost Line: evidence hit '_ghostTrajectoryLayers' @ 9987187"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Best-Shot Ghost Line",
+      "term": "_cachedGhostLayout",
+      "offset": 9978660,
+      "detail": "Best-Shot Ghost Line: evidence hit '_cachedGhostLayout' @ 9978660"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Aim Mode",
+      "term": "Aim Mode",
+      "offset": 10038551,
+      "detail": "Aim Mode: evidence hit 'Aim Mode' @ 10038551"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Aim Strength",
+      "term": "Aim Strength",
+      "offset": 10038665,
+      "detail": "Aim Strength: evidence hit 'Aim Strength' @ 10038665"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Maximum Aim Speed",
+      "term": "Max Aim Speed",
+      "offset": 10038698,
+      "detail": "Maximum Aim Speed: evidence hit 'Max Aim Speed' @ 10038698"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Aim-speed adjustment",
+      "term": "Max Aim Speed",
+      "offset": 10038698,
+      "detail": "Aim-speed adjustment: evidence hit 'Max Aim Speed' @ 10038698"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Initial pull-length adjustment",
+      "term": "meter.initial_pull",
+      "offset": 10038450,
+      "detail": "Initial pull-length adjustment: evidence hit 'meter.initial_pull' @ 10038450"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Wait-time adjustment",
+      "term": "Wait Time",
+      "offset": 10038728,
+      "detail": "Wait-time adjustment: evidence hit 'Wait Time' @ 10038728"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Normal graphics mode",
+      "term": "lightGraphics",
+      "offset": 10028571,
+      "detail": "Normal graphics mode: evidence hit 'lightGraphics' @ 10028571"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Auto Aim",
+      "term": "autoAimEnabled",
+      "offset": 10028678,
+      "detail": "Auto Aim: evidence hit 'autoAimEnabled' @ 10028678"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Auto Aim",
+      "term": "autoAimMode",
+      "offset": 10028693,
+      "detail": "Auto Aim: evidence hit 'autoAimMode' @ 10028693"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Auto Play — casual",
+      "term": "autoPlaySkill",
+      "offset": 10028797,
+      "detail": "Auto Play — casual: evidence hit 'autoPlaySkill' @ 10028797"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Auto Play — Pro",
+      "term": "autoPlayEnabled",
+      "offset": 10028781,
+      "detail": "Auto Play — Pro: evidence hit 'autoPlayEnabled' @ 10028781"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Auto Play — Pro",
+      "term": "autoPlaySkill",
+      "offset": 10028797,
+      "detail": "Auto Play — Pro: evidence hit 'autoPlaySkill' @ 10028797"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Humanized movement — low",
+      "term": "humanization",
+      "offset": 10028705,
+      "detail": "Humanized movement — low: evidence hit 'humanization' @ 10028705"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Humanized movement — medium",
+      "term": "humanization",
+      "offset": 10028705,
+      "detail": "Humanized movement — medium: evidence hit 'humanization' @ 10028705"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Humanized movement — high",
+      "term": "humanization",
+      "offset": 10028705,
+      "detail": "Humanized movement — high: evidence hit 'humanization' @ 10028705"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Ball-in-Hand assistance",
+      "term": "autoBallInHand",
+      "offset": 10028931,
+      "detail": "Ball-in-Hand assistance: evidence hit 'autoBallInHand' @ 10028931"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Pause-on-touch",
+      "term": "autoPauseOnTouch",
+      "offset": 10028946,
+      "detail": "Pause-on-touch: evidence hit 'autoPauseOnTouch' @ 10028946"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Automatic queuing",
+      "term": "GBAutoQueueCountdownOverlay",
+      "offset": 9959864,
+      "detail": "Automatic queuing: evidence hit 'GBAutoQueueCountdownOverlay' @ 9959864"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Automatic queuing",
+      "term": "com.i3rby.8poolmod.autoqueue.tiercode.v1",
+      "offset": 10028341,
+      "detail": "Automatic queuing: evidence hit 'com.i3rby.8poolmod.autoqueue.tiercode.v1' @ 10028341"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Arabic menu",
+      "term": "useArabic",
+      "offset": 10028655,
+      "detail": "Arabic menu: evidence hit 'useArabic' @ 10028655"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Arabic menu",
+      "term": "isArabic",
+      "offset": 10001490,
+      "detail": "Arabic menu: evidence hit 'isArabic' @ 10001490"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "English menu",
+      "term": "Aim Mode",
+      "offset": 10038551,
+      "detail": "English menu: evidence hit 'Aim Mode' @ 10038551"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Advanced settings mode",
+      "term": "segment.ui_mode.advanced",
+      "offset": 10040056,
+      "detail": "Advanced settings mode: evidence hit 'segment.ui_mode.advanced' @ 10040056"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Graphics and presentation options",
+      "term": "lightGraphics",
+      "offset": 10028571,
+      "detail": "Graphics and presentation options: evidence hit 'lightGraphics' @ 10028571"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Streaming display mode",
+      "term": "streamProof",
+      "offset": 10028643,
+      "detail": "Streaming display mode: evidence hit 'streamProof' @ 10028643"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Pro access",
+      "term": "PRO key",
+      "offset": 10045166,
+      "detail": "Pro access: evidence hit 'PRO key' @ 10045166"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Pro access",
+      "term": "activate a key in Account",
+      "offset": 10045207,
+      "detail": "Pro access: evidence hit 'activate a key in Account' @ 10045207"
+    },
+    {
+      "result": "PASS",
+      "check": "evidence_hit",
+      "feature": "Ad-free experience",
+      "term": "Watch an ad for +1h",
+      "offset": 10040475,
+      "detail": "Ad-free experience: evidence hit 'Watch an ad for +1h' @ 10040475"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "GBPredictionDrawView",
+      "offset": 9961311,
+      "detail": "matrix citation 'GBPredictionDrawView' @ 9961311"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "_cachedOpponentResult",
+      "offset": 9978733,
+      "detail": "matrix citation '_cachedOpponentResult' @ 9978733"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "GBMenuPocketStylePanel",
+      "offset": 9960856,
+      "detail": "matrix citation 'GBMenuPocketStylePanel' @ 9960856"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "_drawPockets",
+      "offset": 9978902,
+      "detail": "matrix citation '_drawPockets' @ 9978902"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "feature.table_outline",
+      "offset": 10036905,
+      "detail": "matrix citation 'feature.table_outline' @ 10036905"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "_drawImpactDots",
+      "offset": 9960297,
+      "detail": "matrix citation '_drawImpactDots' @ 9960297"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "_impactDotLayers",
+      "offset": 9987249,
+      "detail": "matrix citation '_impactDotLayers' @ 9987249"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "lineThickness",
+      "offset": 9998930,
+      "detail": "matrix citation 'lineThickness' @ 9998930"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "lineOpacity",
+      "offset": 9998944,
+      "detail": "matrix citation 'lineOpacity' @ 9998944"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "_scratchWarning",
+      "offset": 9967182,
+      "detail": "matrix citation '_scratchWarning' @ 9967182"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "scratchAlertEnabled",
+      "offset": 10003879,
+      "detail": "matrix citation 'scratchAlertEnabled' @ 10003879"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "_wrongBallWarning",
+      "offset": 9987708,
+      "detail": "matrix citation '_wrongBallWarning' @ 9987708"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "wrongBallAlertEnabled",
+      "offset": 10003899,
+      "detail": "matrix citation 'wrongBallAlertEnabled' @ 10003899"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "goldenOrLucky",
+      "offset": 10124876,
+      "detail": "matrix citation 'goldenOrLucky' @ 10124876"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "goldenOrLucky",
+      "offset": 10124876,
+      "detail": "matrix citation 'goldenOrLucky' @ 10124876"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "_ghostTrajectoryLayers",
+      "offset": 9987187,
+      "detail": "matrix citation '_ghostTrajectoryLayers' @ 9987187"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "_cachedGhostLayout",
+      "offset": 9978660,
+      "detail": "matrix citation '_cachedGhostLayout' @ 9978660"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "Aim Mode",
+      "offset": 10038551,
+      "detail": "matrix citation 'Aim Mode' @ 10038551"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "Aim Strength",
+      "offset": 10038665,
+      "detail": "matrix citation 'Aim Strength' @ 10038665"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "Max Aim Speed",
+      "offset": 10038698,
+      "detail": "matrix citation 'Max Aim Speed' @ 10038698"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "Max Aim Speed",
+      "offset": 10038698,
+      "detail": "matrix citation 'Max Aim Speed' @ 10038698"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "meter.initial_pull",
+      "offset": 10038450,
+      "detail": "matrix citation 'meter.initial_pull' @ 10038450"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "Wait Time",
+      "offset": 10038728,
+      "detail": "matrix citation 'Wait Time' @ 10038728"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "lightGraphics",
+      "offset": 10028571,
+      "detail": "matrix citation 'lightGraphics' @ 10028571"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "autoAimEnabled",
+      "offset": 10028678,
+      "detail": "matrix citation 'autoAimEnabled' @ 10028678"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "autoAimMode",
+      "offset": 10028693,
+      "detail": "matrix citation 'autoAimMode' @ 10028693"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "autoPlaySkill",
+      "offset": 10028797,
+      "detail": "matrix citation 'autoPlaySkill' @ 10028797"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "autoPlayEnabled",
+      "offset": 10028781,
+      "detail": "matrix citation 'autoPlayEnabled' @ 10028781"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "autoPlaySkill",
+      "offset": 10028797,
+      "detail": "matrix citation 'autoPlaySkill' @ 10028797"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "humanization",
+      "offset": 10028705,
+      "detail": "matrix citation 'humanization' @ 10028705"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "humanization",
+      "offset": 10028705,
+      "detail": "matrix citation 'humanization' @ 10028705"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "humanization",
+      "offset": 10028705,
+      "detail": "matrix citation 'humanization' @ 10028705"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "autoBallInHand",
+      "offset": 10028931,
+      "detail": "matrix citation 'autoBallInHand' @ 10028931"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "autoPauseOnTouch",
+      "offset": 10028946,
+      "detail": "matrix citation 'autoPauseOnTouch' @ 10028946"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "GBAutoQueueCountdownOverlay",
+      "offset": 9959864,
+      "detail": "matrix citation 'GBAutoQueueCountdownOverlay' @ 9959864"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "com.i3rby.8poolmod.autoqueue.tiercode.v1",
+      "offset": 10028341,
+      "detail": "matrix citation 'com.i3rby.8poolmod.autoqueue.tiercode.v1' @ 10028341"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "useArabic",
+      "offset": 10028655,
+      "detail": "matrix citation 'useArabic' @ 10028655"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "isArabic",
+      "offset": 10001490,
+      "detail": "matrix citation 'isArabic' @ 10001490"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "Aim Mode",
+      "offset": 10038551,
+      "detail": "matrix citation 'Aim Mode' @ 10038551"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "segment.ui_mode.advanced",
+      "offset": 10040056,
+      "detail": "matrix citation 'segment.ui_mode.advanced' @ 10040056"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "lightGraphics",
+      "offset": 10028571,
+      "detail": "matrix citation 'lightGraphics' @ 10028571"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "streamProof",
+      "offset": 10028643,
+      "detail": "matrix citation 'streamProof' @ 10028643"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "PRO key",
+      "offset": 10045166,
+      "detail": "matrix citation 'PRO key' @ 10045166"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "activate a key in Account",
+      "offset": 10045207,
+      "detail": "matrix citation 'activate a key in Account' @ 10045207"
+    },
+    {
+      "result": "PASS",
+      "check": "matrix_citation",
+      "term": "Watch an ad for +1h",
+      "offset": 10040475,
+      "detail": "matrix citation 'Watch an ad for +1h' @ 10040475"
+    },
+    {
+      "result": "PASS",
+      "check": "feature_population",
+      "count": 42,
+      "detail": "matrix and evidence describe the same 42 features"
+    },
+    {
+      "result": "PASS",
+      "check": "advertised_category_count",
+      "count": 42,
+      "detail": "matrix contains exactly 42 advertised categories"
+    },
+    {
+      "result": "PASS",
+      "check": "no_match_consistency",
+      "features": [
+        "Auto Play — stealth",
+        "Automatic angle-setting mode",
+        "Basic settings mode",
+        "Floating play/pause",
+        "High graphics mode",
+        "Improved automation accuracy",
+        "Multi-shot mode",
+        "Single-shot mode"
+      ],
+      "detail": "every \"No match\" row corresponds to a zero-hit evidence feature"
+    },
+    {
+      "result": "PASS",
+      "check": "feature_status_honesty",
+      "detail": "no advertised feature is reported as implemented in the game"
+    }
+  ]
+}

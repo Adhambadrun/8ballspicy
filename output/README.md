@@ -33,6 +33,29 @@ python3 tools/verify_component_evidence.py 37928629998 \
 sha256sum validation/ci/runs/37928629998-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip
 ```
 
+## How the NOT PRODUCED status is enforced
+
+`output/` is checked, not asserted. From the repository root:
+
+```bash
+python3 tools/verify_release_state.py          # exits non-zero on any violation
+python3 tools/audit_feature_matrix.py          # re-derives the 42-category evidence
+PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py'
+```
+
+The gate fails if `output/` gains any file other than `README.md`, if any other
+`.ipa`, app bundle, `Payload/` tree or provisioning profile appears anywhere in
+the repository, if the immutable input IPA changes, if the release manifest
+claims a delivery the filesystem does not support, if a feature row advertises an
+implementation that was not established, or if the component gains advertising,
+networking or host-loading code. `tools/test_verify_release_state.py` contains
+negative cases proving each of those failures. CI enforcement is prepared in
+`../validation/ci/component-ci.release-gated.yml.txt` (see
+`../validation/ci/WORKFLOW-NOT-INSTALLED.md` for why it is not installed).
+
+Latest result on this repository: **26 PASS / 10 WARN / 0 FAIL**; local test
+suite **36/36**. Full evidence: `../validation/reports/session-a4ebad6a-verification.md`.
+
 ## Reports and exact next steps
 
 - [Forensics](../validation/reports/forensic-analysis.md): Apple input signature

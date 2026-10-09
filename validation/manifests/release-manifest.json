@@ -2,7 +2,7 @@
   "manifest_version": "2.0",
   "generated_utc": "2026-10-09T12:32:23.967141+00:00",
   "project": "8 Ball Pool / MR. SPICY independent component",
-  "session_branch": "arena/6264dd0a-8ballspicy",
+  "session_branch": "arena/a4ebad6a-8ballspicy",
   "final_status": "COMPONENT VERIFIED — GAME INTEGRATION / SIGNED IPA BLOCKED",
   "release_ipa": {
     "status": "NOT PRODUCED",
@@ -144,7 +144,33 @@
       "result": "SUCCESS",
       "installable": false
     },
-    "controls_scope": "Persistence/callbacks, reset, en/ar RTL, accessibility metadata/theme, UIKit lifecycle only; no host/system/game effects"
+    "controls_scope": "Persistence/callbacks, reset, en/ar RTL, accessibility metadata/theme, UIKit lifecycle only; no host/system/game effects",
+    "cross_repository_provenance": {
+      "local_branch": "arena/a4ebad6a-8ballspicy",
+      "local_commit": "aa71e174867509205c82c3c5cc60821855d2eb62",
+      "upstream_repository": "abadrun/8ballspicy",
+      "verified_source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71",
+      "method": "git fetch of the upstream commit, then git rev-parse of each source tree on both sides",
+      "at_session_start": {
+        "source_trees_match": true,
+        "note": "At the start of session arena/a4ebad6a the local working copy, local HEAD and upstream fae2937 all had MrSpicyUI 3a775121085d8abdec4c0812c4b72cd8a150ea08, HostApp 8704ef1e59bf1731e7f90e5379b2cd4387603413, tools 18d176a13edf88d4816eadae42e4d0a07867c43d."
+      },
+      "after_session_edits": {
+        "source_trees_match": false,
+        "divergent_directories": [
+          "MrSpicyUI",
+          "tools"
+        ],
+        "current_trees": {
+          "MrSpicyUI": "5bb1ed6770542299e9b81d338611c609d0c0dc38",
+          "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+          "tools": "f2a55a04c2bbd5180c29f35c70a05f8590658fdf"
+        },
+        "compiled_output_unchanged": true,
+        "evidence": "MrSpicyUI/Package.swift and MrSpicyUI/Sources/MrSpicyUI/SpicyBrand.swift differ only inside comments; after stripping comments and normalising whitespace the executable code is byte-identical to the CI-tested revision. MrSpicyUI/README.md is documentation and is not compiled. HostApp is untouched. tools/ci_provenance.py and four new tools/ files are real changes but are not part of the component build.",
+        "consequence": "The verified artifact 3a872657...c5a6 was produced from the pre-edit trees. Its component-behaviour evidence still holds because the compiled code is unchanged, but tree-level provenance for the current working copy requires a fresh CI run, which is blocked by E6 (workflows permission). The gate reports this as a WARN rather than hiding it."
+      }
+    }
   },
   "ci": {
     "run_id": 37928629998,
@@ -172,7 +198,16 @@
     },
     "evidence_file": "validation/evidence/component-verification-37928629998.json",
     "actions_artifacts_metadata": "validation/evidence/artifacts-37928629998.json",
-    "retrieval": "git fetch of fixed session branch; bytes independently verified"
+    "retrieval": "git fetch of fixed session branch; bytes independently verified",
+    "session_branch_can_run_ci": false,
+    "workflow_installation_blocked": {
+      "reverified_utc": "2026-10-09",
+      "git_push_error": "! [remote rejected] (refusing to allow a GitHub App to create or update workflow `.github/workflows/component-ci.yml` without `workflows` permission)",
+      "contents_api_status": 403,
+      "contents_api_message": "Resource not accessible by integration",
+      "session_branch_workflow_runs": 0,
+      "mitigation": "validation/ci/component-ci.release-gated.yml.txt is the recommended installation; see validation/ci/WORKFLOW-NOT-INSTALLED.md"
+    }
   },
   "tests": {
     "hostless": {
@@ -272,7 +307,12 @@
     "integration_report": "validation/reports/integration-validation.md",
     "device_report": "validation/reports/device-test-report.md",
     "feature_matrix": "validation/reports/feature-verification-matrix.md",
-    "output_readme": "output/README.md"
+    "output_readme": "output/README.md",
+    "session_report": "validation/reports/session-a4ebad6a-verification.md",
+    "release_gate": "tools/verify_release_state.py",
+    "release_gate_tests": "tools/test_verify_release_state.py",
+    "feature_matrix_auditor": "tools/audit_feature_matrix.py",
+    "release_gated_workflow": "validation/ci/component-ci.release-gated.yml.txt"
   },
   "limitations": [
     "No proprietary source, call graph or feature functionality inferred from binary strings",
@@ -297,5 +337,136 @@
       "evidence": "validation/evidence/component-verification-37927299718.json",
       "result": "FAILURE"
     }
-  ]
+  ],
+  "previous_session_branch": "arena/6264dd0a-8ballspicy",
+  "verification_session": {
+    "branch": "arena/a4ebad6a-8ballspicy",
+    "repository": "Adhambadrun/8ballspicy",
+    "head_commit": "0fee3e9625d1e3ba108d8552355cd5d001590683",
+    "date": "2026-10-09",
+    "analysis_host": "Linux x86_64, Python 3.11.2; no Xcode/Swift/codesign/LIEF installed",
+    "report": "validation/reports/session-a4ebad6a-verification.md",
+    "reverified_claims": 17,
+    "defects_found_and_corrected": 3,
+    "component_rebuilt": false,
+    "component_rebuild_reason": "Working-copy source trees are byte-identical (git tree ID) to the source that produced the verified artifact, so a rebuild could add no evidence; no Xcode is available."
+  },
+  "release_integrity_gate": {
+    "tool": "tools/verify_release_state.py",
+    "tests": "tools/test_verify_release_state.py",
+    "matrix_auditor": "tools/audit_feature_matrix.py",
+    "matrix_auditor_tests": "tools/test_audit_feature_matrix.py",
+    "result": {
+      "PASS": 26,
+      "WARN": 10,
+      "FAIL": 0
+    },
+    "warnings_explained": "Run 37927299718 failed before producing an artifact; runs 37925407220/37926156116/37927299718/37928629998 recorded older source trees than the working copy because this session edited documentation and tooling (see component.cross_repository_provenance).",
+    "local_test_suite": {
+      "executed": 36,
+      "passed": 36,
+      "failed": 0,
+      "breakdown": {
+        "forensic_parser": 4,
+        "release_gate": 26,
+        "matrix_auditor": 6
+      }
+    },
+    "matrix_audit": {
+      "citations": 96,
+      "pass": 96,
+      "warn": 0,
+      "fail": 0,
+      "note": "Four case-drifted citations were corrected in validation/reports/feature-verification-matrix.md and validation/evidence/feature-string-search.json; the underlying findings are unchanged."
+    },
+    "enforces": [
+      "output/pool8Signed.ipa and output/pool8Signed.sha256 must not exist",
+      "no other .ipa, app bundle, Payload tree or provisioning profile in the repository",
+      "input IPA size and SHA-256 must match the immutable record",
+      "component artifact hash, size, CRC and thin-arm64 MH_OBJECT type must match provenance",
+      "manifest release status must agree with the filesystem",
+      "manifest must record the failed Apple input-signature verification",
+      "manifest Pro/ad-free/automation claims must stay within the verified scope",
+      "advertised-category count must match the matrix",
+      "en/ar localization key parity and every referenced key must resolve",
+      "component must contain no ad SDK, networking or host-loading code",
+      "no feature row may advertise an implementation that was not established"
+    ]
+  },
+  "blockers": {
+    "code_level": [
+      {
+        "item": "Component build reproducibility",
+        "status": "RESOLVED",
+        "evidence": "Working-copy tree IDs == CI provenance == upstream fae2937"
+      },
+      {
+        "item": "Component test suite",
+        "status": "PASSING",
+        "evidence": "34/0/17 hostless, 51/0/0 hosted, 10/10 repeat, 4/4 parser, 36/36 local gate tests"
+      },
+      {
+        "item": "Feature-evidence citation accuracy",
+        "status": "RESOLVED",
+        "evidence": "96/96 citations byte-exact after correcting four case-drifted quotes"
+      },
+      {
+        "item": "Release could be faked by CI",
+        "status": "RESOLVED (pending workflow install)",
+        "evidence": "component-ci.release-gated.yml.txt plus 26 negative gate tests"
+      },
+      {
+        "item": "Provenance on non-macOS runners",
+        "status": "RESOLVED",
+        "evidence": "tools/ci_provenance.py records unavailability instead of inventing a toolchain"
+      },
+      {
+        "item": "Provenance-comment contradictions",
+        "status": "RESOLVED",
+        "evidence": "SpicyBrand.swift and Package.swift now match the verified provenance"
+      }
+    ],
+    "external_prerequisites": [
+      {
+        "id": "E1",
+        "item": "Owner-authorized buildable game source or official integration SDK with documented presentation/settings API, plus written permitted UI scope",
+        "status": "BLOCKING",
+        "evidence": "Full reachable history of both repositories fetched; no Miniclip source, overlay SDK or documented extension point. SpicyHostBridge is component-owned; the game does not acquire it."
+      },
+      {
+        "id": "E2",
+        "item": "Clean owner baseline and documented protection/build pipeline",
+        "status": "BLOCKING",
+        "evidence": "Apple codesign --verify --deep --strict exit 1 \"invalid Info.plist (plist or signature have been modified)\"; 593 mismatching CodeDirectory pages per CD; 98 mismatching resource hashes; 61 missing seal entries; libloader has no LC_CODE_SIGNATURE."
+      },
+      {
+        "id": "E3",
+        "item": "Apple-issued identity and matching provisioning profiles for com.miniclip.8ballpoolmult and four extensions",
+        "status": "BLOCKING",
+        "evidence": "No certificate/profile in this environment; no embedded.mobileprovision in the IPA; GitHub secrets API returns 403 so remote availability is UNKNOWN."
+      },
+      {
+        "id": "E4",
+        "item": "Official permitted Pro and ad-free APIs, entitlement source/configuration and legitimate test access",
+        "status": "BLOCKING",
+        "evidence": "Only third-party PRO-key/rewarded-ad strings in libloader; no entitlement service or official ad-free configuration; no bypass implemented or attempted."
+      },
+      {
+        "id": "E5",
+        "item": "Authorized physical iOS device in developer mode with documented model/iOS/UDID provisioning",
+        "status": "BLOCKING",
+        "evidence": "No device access from this Linux sandbox; no Xcode or codesign."
+      },
+      {
+        "id": "E6",
+        "item": "Maintainer with the GitHub App workflows permission",
+        "status": "BLOCKING",
+        "evidence": "Re-verified: git push rejected and contents API 403; Adhambadrun/8ballspicy reports 0 workflow runs."
+      }
+    ]
+  },
+  "next_step": {
+    "most_important": "Obtain owner authorization for a real integration path (E1) — buildable game source or an official SDK with a documented presentation/settings API and written permitted feature scope — together with a clean baseline (E2). Nothing else can produce output/pool8Signed.ipa.",
+    "cheapest_immediately_actionable": "E6 — a maintainer with the workflows scope copies validation/ci/component-ci.release-gated.yml.txt to .github/workflows/component-ci.yml so this branch can build, test and gate itself."
+  }
 }

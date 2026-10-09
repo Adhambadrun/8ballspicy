@@ -40,6 +40,29 @@ A localized read-only unavailable disclosure replaces unsupported Pro controls.
 No ads or network code are added by the component; game-wide ad-free behavior
 is not implemented or verified.
 
+## Delivery-integrity checks (run from the repository root)
+
+These verify the repository's delivery claims against the files that actually
+exist. They need only Python 3 — no Xcode — and they exit non-zero on any
+violation.
+
+```bash
+python3 tools/verify_release_state.py     # release status, provenance, localization, scope
+python3 tools/audit_feature_matrix.py     # re-derive the 42-category evidence from the IPA
+PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py'
+```
+
+`tools/verify_release_state.py` fails if `output/pool8Signed.ipa` or
+`output/pool8Signed.sha256` appears without a genuine integration, if any other
+`.ipa`/app bundle/`Payload/` tree/provisioning profile appears in the repository,
+if the immutable input IPA changes, if the release manifest claims a delivery the
+filesystem does not support, if a feature row advertises an implementation that
+was not established, or if the component gains advertising, networking or
+host-loading code. CI enforcement is prepared in
+`../validation/ci/component-ci.release-gated.yml.txt`; see
+`../validation/ci/WORKFLOW-NOT-INSTALLED.md` for why it is not installed on this
+branch. Current result: 26 PASS / 10 WARN / 0 FAIL; 36/36 local tests.
+
 ## Requirements
 
 - iOS 13.0+
