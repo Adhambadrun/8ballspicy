@@ -122,7 +122,7 @@ public final class SpicyOverlayViewController: UIViewController {
     public func refreshLocalization() {
         headerView?.refreshLocalization()
         settingsView?.refreshLocalization()
-        versionLabel?.text = SpicyVersion.displayString
+        versionLabel.text = SpicyVersion.displayString
     }
 
     // MARK: Open / close / reopen
