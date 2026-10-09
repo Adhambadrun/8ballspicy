@@ -26,7 +26,12 @@ sha256sum pool8Signed.ipa
   not executable payloads or reconstructed original source.
 - `tools/inspect_ipa_apple.sh`: macOS CI static `lipo`, `otool`, and
   `codesign --verify --deep --strict` validation of the **input**, never signing.
-  Actual executed result is recorded in the build report; no success inferred.
+  Run **37926156116** executed it: **exit 1**, `invalid Info.plist (plist or
+  signature have been modified)`. Before/after input hashes match. See
+  `../ci/runs/37926156116-component/input-apple-verification.txt`.
+  This is actual Apple verification failure, not just a Python inference.
+  The step intentionally records signature failure without failing independent
+  component compilation; a green inspection step is not a valid-signature claim.
 - The Python parser has four passing synthetic-fixture unit tests, including
   detecting a mutated code page. The fixtures are **not** Apple signatures.
   CodeDirectory layout was cross-checked against Apple's published XNU
@@ -151,6 +156,28 @@ assert exactly who injected it, how it bypasses protection, that every named
 feature is implemented, or that gameplay automation runs.
 No loader code was used in MrSpicyUI; no key/activation/anti-cheat bypass was
 implemented. Full category audit: `feature-verification-matrix.md`.
+
+### Advertising-source distinction
+
+- **Supplied game bundle:** static framework paths include `AdSurgeSDK`,
+  `AppLovinSDK`, `BigoADS`, `DTBiOSSDK`, `FBAudienceNetwork`, `InMobiSDK`,
+  `MolocoSDK`, `OMSDK_Appodeal`, and `GoogleAdsOnDeviceConversion` under
+  `Payload/pool.app/Frameworks/`. Exact plist identities, hashes and declared
+  dependencies are in `ipa-inspection.json`. This proves embedded SDK material,
+  not an ad impression or which service is active. `AppLovinSDK` hash mismatches
+  also mean this dump cannot establish a pristine original implementation.
+- **Existing third-party loader:** PRO-key / rewarded-ad queue-time text is
+  present (offsets above and in the matrix). Whether it actually loads an ad
+  or gates a feature was not executed or verified. Do not attribute this
+  monetization to the original game or to our component.
+- **MR. SPICY component:** inspected Swift source/resources and Package.swift
+  contain no ad SDK dependency, ad-loading API or network client. No adverts
+  are added. This is a source/component-scope claim only.
+
+No SDK removal, DNS/network blocking, entitlement bypass or ad-free host
+configuration was performed. Game-wide ad-free requires an official supported
+configuration or entitlement and integrated runtime tests. Analytics, crash
+reporting and essential networking were not disabled or presumed advertising.
 
 ## 6. Runtime architecture and source distinctions
 

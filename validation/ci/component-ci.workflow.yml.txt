@@ -17,7 +17,7 @@ name: component-ci
 on:
   push:
     branches:
-      - arena/627c356f-8ballspicy
+      - arena/6264dd0a-8ballspicy
     paths:
       - "MrSpicyUI/**"
       - "HostApp/**"
@@ -260,7 +260,7 @@ jobs:
           SESSION_BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          test "$SESSION_BRANCH" = "arena/627c356f-8ballspicy"
+          test "$SESSION_BRANCH" = "arena/6264dd0a-8ballspicy"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Deliberate small evidence archive exception to ignored build outputs.
