@@ -1,0 +1,17 @@
+"mr.spicy.header.title" = "مستر سبايسي";
+"mr.spicy.header.subtitle" = "أدوات الطاولة المميزة";
+
+"mr.spicy.settings.sound" = "المؤثرات الصوتية";
+"mr.spicy.settings.haptics" = "الاستجابة اللمسية";
+"mr.spicy.settings.hapticIntensity" = "شدة الاستجابة اللمسية";
+"mr.spicy.settings.haptic.off" = "إيقاف";
+"mr.spicy.settings.haptic.light" = "خفيفة";
+"mr.spicy.settings.haptic.medium" = "متوسطة";
+"mr.spicy.settings.haptic.strong" = "قوية";
+"mr.spicy.settings.notifications" = "إشعارات المباريات";
+"mr.spicy.settings.personalization" = "نصائح مخصصة";
+"mr.spicy.settings.nickname" = "الاسم المستعار";
+"mr.spicy.settings.reset" = "إعادة الإعدادات الافتراضية";
+
+"mr.spicy.a11y.close" = "إغلاق مستر سبايسي";
+"mr.spicy.a11y.reset" = "إعادة جميع إعدادات مستر سبايسي إلى الافتراضي";

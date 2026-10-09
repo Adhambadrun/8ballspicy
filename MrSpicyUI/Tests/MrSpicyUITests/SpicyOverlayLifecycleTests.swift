@@ -1,0 +1,175 @@
+import XCTest
+@testable import MrSpicyUI
+
+/// Modal presentation lifecycle tests: open → close → reopen on one instance,
+/// plus end-to-end control dispatch through `sendActions`.
+///
+/// Both facilities require UIApplicationMain (a host application). In the
+/// hostless `xctest` process used for Swift package tests UIKit asserts
+/// "UIApp is nil which means we cannot dispatch control actions to their
+/// targets" and modal transitions never complete. When no UIApplication is
+/// present these tests SKIP with that documented reason instead of producing
+/// false results; on a hosted test runner (or a UI test target) they execute
+/// in full.
+final class SpicyOverlayLifecycleTests: XCTestCase {
+
+    private final class SpyBridge: SpicyHostBridge {
+        var closeRequests = 0
+        var settingsChanges: [[String: Any]] = []
+        func spicyOverlayDidRequestClose(_ overlay: SpicyOverlayViewController) { closeRequests += 1 }
+        func spicyPreferencesDidChange(_ preferences: SpicyPreferences) {
+            settingsChanges.append(preferences.snapshot())
+        }
+    }
+
+    /// True only when the tests run inside a real UIApplication (host app).
+    ///
+    /// Hosted unit-test bundles execute inside the host app (.app main bundle);
+    /// Swift-package tests execute in the bare `xctest` runner, where UIKit
+    /// asserts "UIApp is nil which means we cannot dispatch control actions to
+    /// their targets" and modal transitions never complete.
+    private func requireApplicationHost() throws {
+        let hosted = Bundle.main.bundleURL.pathExtension == "app"
+        try XCTSkipUnless(
+            hosted,
+            "Requires a UIApplication host app: hostless xctest cannot run UIKit modal presentation or control event dispatch (UIKit: 'UIApp is nil which means we cannot dispatch control actions to their targets')"
+        )
+    }
+
+    private var window: UIWindow!
+    private var presenter: UIViewController!
+    private var suiteName: String!
+    private var preferences: SpicyPreferences!
+    private var bridge: SpyBridge!
+    private var overlay: SpicyOverlayViewController!
+
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try requireApplicationHost()
+
+        suiteName = "com.mrspicy.tests.overlay.\(UUID().uuidString)"
+        preferences = SpicyPreferences(suiteName: suiteName)
+        bridge = SpyBridge()
+        overlay = SpicyOverlayViewController(preferences: preferences, bridge: bridge)
+
+        presenter = UIViewController()
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = presenter
+        window.makeKeyAndVisible()
+        // Let UIKit complete the root view controller's appearance transition
+        // before attempting modal presentations.
+        presenter.view.layoutIfNeeded()
+        spinRunLoop(0.2)
+    }
+
+    override func tearDown() {
+        overlay?.close(animated: false, completion: nil)
+        spinRunLoop(0.1)
+        window?.isHidden = true
+        window = nil
+        presenter = nil
+        overlay = nil
+        bridge = nil
+        if let suiteName = suiteName {
+            UserDefaults().removePersistentDomain(forName: suiteName)
+        }
+        preferences = nil
+        suiteName = nil
+        super.tearDown()
+    }
+
+    // MARK: Helpers
+
+    private func spinRunLoop(_ seconds: TimeInterval) {
+        let end = Date().addingTimeInterval(seconds)
+        while Date() < end {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.02))
+        }
+    }
+
+    private func waitUntil(
+        _ timeout: TimeInterval = 5,
+        _ message: String = "condition not met",
+        _ condition: () -> Bool,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if condition() { return }
+            RunLoop.main.run(until: Date().addingTimeInterval(0.02))
+        }
+        if !condition() {
+            XCTFail(message, file: file, line: line)
+        }
+    }
+
+    private func openOverlay(file: StaticString = #filePath, line: UInt = #line) {
+        overlay.open(from: presenter, animated: false, completion: nil)
+        waitUntil(5, "overlay did not open", {
+            overlay.presentingViewController != nil && overlay.isOpen
+        }, file: file, line: line)
+    }
+
+    private func closeOverlay(file: StaticString = #filePath, line: UInt = #line) {
+        overlay.close(animated: false, completion: nil)
+        waitUntil(5, "overlay did not close", {
+            overlay.presentingViewController == nil && !overlay.isOpen
+        }, file: file, line: line)
+    }
+
+    // MARK: Lifecycle
+
+    func testOpenCloseReopenCycle() throws {
+        openOverlay()
+        XCTAssertEqual(overlay.view.accessibilityIdentifier, SpicyAccessibility.overlayIdentifier)
+
+        closeOverlay()
+        XCTAssertNil(overlay.presentingViewController)
+
+        // Reopen the same instance — must work without reinitialization.
+        openOverlay()
+        XCTAssertEqual(overlay.presentingViewController, presenter)
+
+        closeOverlay()
+    }
+
+    func testOpenIsIdempotent() {
+        openOverlay()
+        overlay.open(from: presenter, animated: false, completion: nil)
+        spinRunLoop(0.1)
+        XCTAssertTrue(overlay.isOpen)
+        XCTAssertEqual(overlay.presentingViewController, presenter)
+        closeOverlay()
+    }
+
+    func testCloseButtonNotifiesBridgeAndCloses() {
+        openOverlay()
+        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+
+        waitUntil(5, "close button did not dismiss via bridge+close", {
+            bridge.closeRequests == 1 && overlay.presentingViewController == nil
+        })
+        waitUntil(5, "overlay.isOpen did not clear after dismissal", {
+            !overlay.isOpen
+        })
+    }
+
+    func testControlDispatchViaSendActionsReachesPersistenceAndBridge() {
+        openOverlay()
+        overlay.settingsView.soundSwitch.isOn = false
+        overlay.settingsView.soundSwitch.sendActions(for: .valueChanged)
+
+        XCTAssertFalse(preferences.soundEnabled)
+        XCTAssertEqual(bridge.settingsChanges.count, 1)
+        XCTAssertFalse(SpicyPreferences(suiteName: suiteName).soundEnabled, "setting must persist")
+        closeOverlay()
+    }
+
+    func testCloseIsIdempotent() {
+        overlay.close(animated: false, completion: nil)
+        spinRunLoop(0.1)
+        XCTAssertFalse(overlay.isOpen)
+        XCTAssertNil(overlay.presentingViewController)
+    }
+}
