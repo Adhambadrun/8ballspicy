@@ -27,15 +27,15 @@ Commands run from the repository root. Exit codes are the shell's.
 
 | Command | Exit | Result |
 |---|---|---|
-| `python3 tools/verify_release_state.py` | 1 pre-commit / see change log | `summary: {'PASS': 27, 'WARN': 10, 'FAIL': 1}`. FAIL: `manifest_source_snapshot`, expected before the commit exists. |
-| `PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py'` | 1 pre-commit / see change log | 69 run, 68 passed, 0 failed, 1 skipped. The one failure is `test_real_repository_passes_the_gate`, for the same snapshot reason. |
+| `python3 tools/verify_release_state.py` | 0 (on C1) | `summary: {'PASS': 28, 'WARN': 10}`, `RESULT: PASS`. The 10 WARNs are W1–W10. Before C1 existed the same check reported 27/10/1, its FAIL being `manifest_source_snapshot`. |
+| `PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py'` | 0 (on C1) | 69 run, OK, 1 skipped (`test_installed_copy_is_identical_to_the_canonical_text`, which runs once the patch is installed). Before C1 existed, the real-repository gate test failed for the same snapshot reason. |
 | per module | — | `test_inspect_ipa` 4 OK; `test_verify_release_state` 33 (1 failure, same reason); `test_audit_feature_matrix` 19 OK; `test_ci_workflow` 13 (1 skipped). |
 | `python3 tools/audit_feature_matrix.py` | 0 | 98 PASS / 0 WARN / 0 FAIL on the real IPA, 42 categories. |
 | `python3 tools/verify_component_evidence.py 37928629998 --output /tmp/component-verification.json` | 0 | Source `fae2937…`; zip sha256 `3a872657…c5a6`, 1,729,023 bytes; CRC PASS; thin arm64 MH_OBJECT; hostless 34 pass / 0 fail / 17 skip; hosted 51 pass / 0 fail; device build succeeded. Copy kept at `validation/evidence/component-verification-recheck-734fc10e-37928629998.json`. |
 | `sha256sum validation/ci/runs/37928629998-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip` | 0 | `3a872657371e155a2bda05deeb73342e2e848e6ca0d99e1c484c4e651a90c5a6`, matching the verified value. |
 | `sha256sum pool8Signed.ipa` | 0 | `6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84`, 99,010,014 bytes. Unchanged from baseline. Not modified, copied or repackaged. |
 | YAML parse of `installable/component-ci.yml` (pyyaml in `/tmp/yamlvenv`) | 0 | Parses. Triggers only on `arena/734fc10e-8ballspicy`. Jobs: `component`, `hosted-tests`, `release-gate`, `publish-evidence`. Publication needs all three. Top-level `contents: read`. |
-| `git apply --check` of the install patch onto the session commit | see change log | Recorded in the change log. |
+| `git apply --check` and `git apply` of the install patch in a clean clone of C1 | 0 / 0 | Applied. Installed copy byte-identical to canonical. With it applied: 69 tests OK, 0 skipped; gate 28/10/0. |
 
 Two items that the earlier session described differently are now measured:
 
@@ -55,6 +55,8 @@ Full register: `validation/reports/warning-register-734fc10e.md`.
 None was converted to PASS, hidden or relabelled. The gate checks were not changed to alter any WARN. The gate diff has no removed lines.
 
 ## D. CI activation
+
+**Push result for C1 (`d6c7394`):** accepted. `origin/arena/734fc10e-8ballspicy` points to C1. **CI runs: 0.** No workflow file is on the branch (`/contents/.github/workflows` → 404).
 
 * Attempted: `git push origin arena/734fc10e-8ballspicy` with `.github/workflows/component-ci.yml` in the commit.
 * Result: **rejected**.

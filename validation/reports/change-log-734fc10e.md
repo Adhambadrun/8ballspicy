@@ -7,17 +7,16 @@ Session branch: `arena/734fc10e-8ballspicy` (remote `origin` = `Adhambadrun/8bal
 
 | Commit | Content | Pushed |
 |---|---|---|
-| C1 | All source, tool, evidence, manifest and documentation changes listed below | see "Push outcome" |
-| C2 | Doc-only: this change log's "Commits" and "Post-commit verification" sections, and the push outcome | see "Push outcome" |
+| C1 | `d6c73949b5911db3d74a93ec7f58e3739b1cb6cc`. All source, tool, evidence, manifest and documentation changes listed below | **Pushed; accepted.** `origin/arena/734fc10e-8ballspicy` = C1 (verified with `git ls-remote`). |
+| C2 | Doc-only: this change log's "Commits", "Push outcome" and "Post-commit verification" sections. Its ID is the head of the branch after the push (`git log -1`). | Pushed in the same way as C1. |
 
 Commit IDs are written in C2 because a commit cannot contain its own ID. C2 changes no file that
 is part of any source tree, so the manifest's tree snapshot still matches.
 
 ## Push outcome
 
-* C1 push: recorded in C2 below.
-* CI run for C1: **none.** The workflow is not installed. Installation is blocked (E6). See
-  `validation/ci/installable/INSTALL.md`.
+* C1 push: **accepted.** `git push origin arena/734fc10e-8ballspicy` exited 0. The GitHub App token accepted the commit because it contains no workflow file under `.github/`.
+* CI run for C1: **none.** `gh run list --branch arena/734fc10e-8ballspicy` returns 0 runs. `repos/Adhambadrun/8ballspicy/contents/.github/workflows` returns HTTP 404. The workflow is not installed. Installation is blocked (E6). See `validation/ci/installable/INSTALL.md`.
 
 ## Changes
 
@@ -105,11 +104,16 @@ is part of any source tree, so the manifest's tree snapshot still matches.
 * **No pull request** was opened or merged.
 * The manifest's `current_trees` correction is recorded, not hidden.
 
-## Post-commit verification
+## Post-commit verification (on C1, `d6c7394`)
 
-To be filled in C2. These commands are run on C1 after it is committed, and the results are recorded here:
+| Command | Exit | Result |
+|---|---|---|
+| `python3 tools/verify_release_state.py` | 0 | `summary: {'PASS': 28, 'WARN': 10}`, `RESULT: PASS`. The 10 WARNs are W1–W10. No FAIL. |
+| `PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py'` | 0 | 69 run, OK, 1 skipped (installed-copy identity test, which runs only once the patch is applied). |
+| `python3 tools/audit_feature_matrix.py` | 0 | 98 PASS, 0 WARN, 0 FAIL. |
+| Install-path test in a clean clone of C1: `git apply --check` / `git apply` of `install-component-ci.patch` | 0 / 0 | Applied. The installed `.github/workflows/component-ci.yml` is byte-identical to `validation/ci/installable/component-ci.yml`. |
+| Same clone, after applying the patch: unit tests | 0 | 69 run, **OK, 0 skipped** (identity test active). |
+| Same clone: gate | 0 | 28 PASS / 10 WARN / 0 FAIL. |
+| Same clone: YAML parse of the installed workflow | 0 | Jobs `component`, `hosted-tests`, `release-gate`, `publish-evidence`. |
 
-* `python3 tools/verify_release_state.py` → expected 28 PASS / 10 WARN / 0 FAIL, exit 0.
-* `PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py'` → expected 69 run, 68 passed, 1 skipped, exit 0.
-* `python3 tools/audit_feature_matrix.py` → expected 98 PASS, exit 0.
-* `git apply --check` and clean-tree application of the install patch → expected to succeed, and `test_ci_workflow` to pass with the installed-copy test active.
+The clone was deleted after the check. The installed copy was never committed to the session branch, so the repository still has no active workflow.
