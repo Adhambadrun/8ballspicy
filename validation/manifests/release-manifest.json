@@ -114,6 +114,12 @@
     "release_export": "NOT RUN — requires Apple-issued identity + provisioning (missing)."
   },
 
+  "release_publication": {
+    "github_release": "NOT PUBLISHED — binary asset upload requires uploads.github.com, which is unreachable from this session sandbox (verified: release creation aborts on asset upload EOF).",
+    "artifact_available_at": "repository branch 'ci/artifacts' (git transport — verified fetchable), path runs/37915278092-component/dist/",
+    "sources_branch": "arena/50b0a530-8ballspicy (pushed)"
+  },
+
   "limitations": [
     "No authorized host source or integration interface for 8 Ball Pool — integration cannot proceed (external requirement).",
     "No Apple signing identity or provisioning profile in any reachable environment — signed release export cannot proceed (external requirement).",
