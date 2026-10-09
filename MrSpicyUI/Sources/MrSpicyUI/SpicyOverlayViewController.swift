@@ -4,7 +4,7 @@ import UIKit
 ///
 /// Lifecycle contract for hosts:
 /// 1. `open(from:animated:completion:)` presents the interface.
-/// 2. The close button (or `close(animated:completion:)`) dismisses it and
+/// 2. The close button (or `close(animated:completion:)`) dismisses it. Only a user close-button request
 ///    notifies `SpicyHostBridge`.
 /// 3. The same instance can be opened again after it closes (verified by tests).
 ///
@@ -20,7 +20,11 @@ public final class SpicyOverlayViewController: UIViewController {
     public weak var bridge: SpicyHostBridge?
 
     /// True while the interface is on screen (presented and not dismissed).
-    public private(set) var isOpen = false
+    public var isOpen: Bool { presentingViewController != nil && !isBeingDismissed }
+    private var isOpening = false
+    private var isClosing = false
+    private var language: String?
+    private var proReferenceLabel: UILabel!
 
     // MARK: Subviews
 
@@ -55,14 +59,15 @@ public final class SpicyOverlayViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = SpicyAccessibility.overlayIdentifier
+        view.accessibilityViewIsModal = true
         applyLayoutDirection()
         buildLayout()
         wireCallbacks()
-        refreshLocalization()
+        refreshLocalization(language: language)
     }
 
     private func applyLayoutDirection() {
-        let rtl = SpicyLocalization.isRightToLeft()
+        let rtl = SpicyLocalization.isRightToLeft(language: language)
         view.semanticContentAttribute = rtl ? .forceRightToLeft : .forceLeftToRight
     }
 
@@ -85,24 +90,50 @@ public final class SpicyOverlayViewController: UIViewController {
         versionLabel.textAlignment = .center
         versionLabel.accessibilityIdentifier = SpicyAccessibility.versionIdentifier
 
-        let contentStack = UIStackView(arrangedSubviews: [headerView, settingsView, versionLabel])
+        let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        cardView.addSubview(scroll)
+        proReferenceLabel = UILabel()
+        proReferenceLabel.numberOfLines = 0
+        proReferenceLabel.font = .preferredFont(forTextStyle: .footnote)
+        proReferenceLabel.adjustsFontForContentSizeCategory = true
+        proReferenceLabel.textColor = theme.textSecondary
+        proReferenceLabel.accessibilityIdentifier = "mr.spicy.pro.reference"
+        let referenceContainer = UIView()
+        referenceContainer.addSubview(proReferenceLabel)
+        proReferenceLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            proReferenceLabel.topAnchor.constraint(equalTo: referenceContainer.topAnchor, constant: 8),
+            proReferenceLabel.bottomAnchor.constraint(equalTo: referenceContainer.bottomAnchor, constant: -12),
+            proReferenceLabel.leadingAnchor.constraint(equalTo: referenceContainer.leadingAnchor, constant: theme.contentInset),
+            proReferenceLabel.trailingAnchor.constraint(equalTo: referenceContainer.trailingAnchor, constant: -theme.contentInset)
+        ])
+        let contentStack = UIStackView(arrangedSubviews: [headerView, settingsView, referenceContainer, versionLabel])
         contentStack.translatesAutoresizingMaskIntoConstraints = false
         contentStack.axis = .vertical
         contentStack.spacing = 0
-        cardView.addSubview(contentStack)
+        scroll.addSubview(contentStack)
 
         NSLayoutConstraint.activate([
             cardView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            cardView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            cardView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+            cardView.topAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+            cardView.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
             cardView.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 24),
             cardView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -24),
             cardView.widthAnchor.constraint(lessThanOrEqualToConstant: 480),
             cardView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9).withPriority(.defaultHigh),
 
-            contentStack.topAnchor.constraint(equalTo: cardView.topAnchor),
-            contentStack.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
-            contentStack.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
-            contentStack.bottomAnchor.constraint(equalTo: cardView.bottomAnchor)
+            scroll.topAnchor.constraint(equalTo: cardView.topAnchor),
+            scroll.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
+            scroll.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
+            scroll.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
+            scroll.heightAnchor.constraint(equalTo: contentStack.heightAnchor).withPriority(.defaultHigh),
+            contentStack.topAnchor.constraint(equalTo: scroll.contentLayoutGuide.topAnchor),
+            contentStack.leadingAnchor.constraint(equalTo: scroll.contentLayoutGuide.leadingAnchor),
+            contentStack.trailingAnchor.constraint(equalTo: scroll.contentLayoutGuide.trailingAnchor),
+            contentStack.bottomAnchor.constraint(equalTo: scroll.contentLayoutGuide.bottomAnchor),
+            contentStack.widthAnchor.constraint(equalTo: scroll.frameLayoutGuide.widthAnchor)
         ])
     }
 
@@ -119,10 +150,13 @@ public final class SpicyOverlayViewController: UIViewController {
     }
 
     /// Re-resolves localized content (safe to call at any time).
-    public func refreshLocalization() {
-        headerView?.refreshLocalization()
-        settingsView?.refreshLocalization()
+    public func refreshLocalization(language: String? = nil) {
+        self.language = language
+        if isViewLoaded { applyLayoutDirection() }
+        headerView?.refreshLocalization(language: language)
+        settingsView?.refreshLocalization(language: language)
         versionLabel.text = SpicyVersion.displayString
+        proReferenceLabel?.text = SpicyLocalization.string("mr.spicy.pro.reference", language: language)
     }
 
     // MARK: Open / close / reopen
@@ -132,49 +166,71 @@ public final class SpicyOverlayViewController: UIViewController {
     /// Safe to call when already open (keeps the interface on screen and still
     /// invokes `completion`) and safe to call again after a close — the same
     /// instance supports unlimited open/close/reopen cycles.
+    /// Returns false for detached/busy presenters or in-flight transitions.
+    /// Completion is called even for rejected requests; inspect the Bool result.
+    @discardableResult
     public func open(
         from presenter: UIViewController,
         animated: Bool,
         completion: (() -> Void)? = nil
-    ) {
-        if isOpen || presentingViewController != nil {
-            isOpen = true
+    ) -> Bool {
+        precondition(Thread.isMainThread, "UIKit presentation requires the main thread")
+        // Reject ambiguous transitions; don't issue a second UIKit presentation.
+        guard !isOpening, !isClosing, !isBeingDismissed else {
             completion?()
-            return
+            return false
         }
-        presenter.present(self, animated: animated) { [weak self] in
-            self?.isOpen = true
-            completion?()
-        }
-        // UIKit establishes the presentation relationship synchronously when
-        // it accepts the request; the completion may be deferred to the end of
-        // the transition. Reflect accepted state immediately so callers (and
-        // tests) can rely on `isOpen` without waiting for animations.
         if presentingViewController != nil {
-            isOpen = true
-        }
-    }
-
-    /// Dismisses the interface. Idempotent.
-    public func close(animated: Bool, completion: (() -> Void)? = nil) {
-        guard presentingViewController != nil else {
-            isOpen = false
             completion?()
-            return
+            return true
         }
-        dismiss(animated: animated) { [weak self] in
-            self?.isOpen = false
+        guard presenter !== self, presenter.viewIfLoaded?.window != nil,
+              presenter.presentedViewController == nil,
+              !presenter.isBeingPresented, !presenter.isBeingDismissed else {
+            completion?()
+            return false
+        }
+        loadViewIfNeeded()
+        settingsView.reloadFromPreferences()
+        isOpening = true
+        presenter.present(self, animated: animated) { [weak self] in
+            self?.isOpening = false
             completion?()
         }
         if presentingViewController == nil {
-            isOpen = false
+            isOpening = false
+            completion?()
+            return false
         }
+        return true
+    }
+
+    /// Dismisses the interface. Returns false if a transition is still running.
+    /// Programmatic close does not emit a user-request bridge callback.
+    @discardableResult
+    public func close(animated: Bool, completion: (() -> Void)? = nil) -> Bool {
+        precondition(Thread.isMainThread, "UIKit dismissal requires the main thread")
+        guard !isOpening, !isClosing, !isBeingDismissed else {
+            completion?()
+            return false
+        }
+        guard presentingViewController != nil else {
+            completion?()
+            return true
+        }
+        isClosing = true
+        dismiss(animated: animated) { [weak self] in
+            self?.isClosing = false
+            completion?()
+        }
+        return true
     }
 
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         if presentingViewController == nil {
-            isOpen = false
+            isOpening = false
+            isClosing = false
         }
     }
 }

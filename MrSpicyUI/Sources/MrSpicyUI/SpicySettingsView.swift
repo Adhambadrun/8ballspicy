@@ -13,6 +13,8 @@ public final class SpicySettingsView: UIView {
     private let theme: SpicyTheme
 
     private let stack = UIStackView()
+    private var localizedRows: [(key: String, label: UILabel, control: UIView)] = []
+    private var language: String?
     public private(set) var soundSwitch = UISwitch()
     public private(set) var hapticsSwitch = UISwitch()
     public private(set) var intensityControl = UISegmentedControl(items: [])
@@ -63,6 +65,7 @@ public final class SpicySettingsView: UIView {
             action: #selector(hapticsChanged)
         ))
 
+        intensityControl.accessibilityIdentifier = "mr.spicy.hapticIntensity"
         intensityControl.translatesAutoresizingMaskIntoConstraints = false
         intensityControl.addTarget(self, action: #selector(intensityChanged), for: .valueChanged)
         stack.addArrangedSubview(makeRow(
@@ -83,6 +86,10 @@ public final class SpicySettingsView: UIView {
             action: #selector(personalizationChanged)
         ))
 
+        nicknameField.accessibilityIdentifier = "mr.spicy.nickname"
+        nicknameField.textColor = theme.textPrimary
+        nicknameField.backgroundColor = theme.background
+        nicknameField.textAlignment = .natural
         nicknameField.translatesAutoresizingMaskIntoConstraints = false
         nicknameField.borderStyle = .roundedRect
         nicknameField.addTarget(self, action: #selector(nicknameChanged), for: .editingChanged)
@@ -92,11 +99,11 @@ public final class SpicySettingsView: UIView {
         ))
 
         resetButton.translatesAutoresizingMaskIntoConstraints = false
-        resetButton.setTitle(SpicyLocalization.string("mr.spicy.settings.reset"), for: .normal)
+        resetButton.setTitle(SpicyLocalization.string("mr.spicy.settings.reset", language: language), for: .normal)
         resetButton.setTitleColor(theme.destructive, for: .normal)
         resetButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         resetButton.accessibilityIdentifier = SpicyAccessibility.resetIdentifier
-        resetButton.accessibilityLabel = SpicyLocalization.string("mr.spicy.a11y.reset")
+        resetButton.accessibilityLabel = SpicyLocalization.string("mr.spicy.a11y.reset", language: language)
         resetButton.addTarget(self, action: #selector(resetTapped), for: .touchUpInside)
         stack.addArrangedSubview(resetButton)
     }
@@ -119,12 +126,16 @@ public final class SpicySettingsView: UIView {
     private func makeRow(titleKey: String, control: UIView) -> UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: .systemFont(ofSize: 16, weight: .regular))
+        label.numberOfLines = 0
         label.textColor = theme.textPrimary
         label.text = SpicyLocalization.string(titleKey)
         label.adjustsFontForContentSizeCategory = true
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
+        control.accessibilityLabel = label.text
+        label.isAccessibilityElement = false
+        localizedRows.append((titleKey, label, control))
         let row = UIStackView(arrangedSubviews: [label, control])
         row.axis = .horizontal
         row.alignment = .center
@@ -145,7 +156,7 @@ public final class SpicySettingsView: UIView {
         intensityControl.removeAllSegments()
         for (index, intensity) in SpicyHapticIntensity.allCases.enumerated() {
             intensityControl.insertSegment(
-                withTitle: SpicyLocalization.string("mr.spicy.settings.haptic.\(intensity.rawValue)"),
+                withTitle: SpicyLocalization.string("mr.spicy.settings.haptic.\(intensity.rawValue)", language: language),
                 at: index,
                 animated: false
             )
@@ -157,9 +168,16 @@ public final class SpicySettingsView: UIView {
     }
 
     /// Re-resolves localized strings after a language change.
-    public func refreshLocalization() {
-        resetButton.setTitle(SpicyLocalization.string("mr.spicy.settings.reset"), for: .normal)
-        resetButton.accessibilityLabel = SpicyLocalization.string("mr.spicy.a11y.reset")
+    public func refreshLocalization(language: String? = nil) {
+        self.language = language
+        semanticContentAttribute = SpicyLocalization.isRightToLeft(language: language) ? .forceRightToLeft : .forceLeftToRight
+        for row in localizedRows {
+            let text = SpicyLocalization.string(row.key, language: language)
+            row.label.text = text
+            row.control.accessibilityLabel = text
+        }
+        resetButton.setTitle(SpicyLocalization.string("mr.spicy.settings.reset", language: language), for: .normal)
+        resetButton.accessibilityLabel = SpicyLocalization.string("mr.spicy.a11y.reset", language: language)
         reloadFromPreferences()
     }
 

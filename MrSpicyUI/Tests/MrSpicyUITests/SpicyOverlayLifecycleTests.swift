@@ -172,4 +172,44 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         XCTAssertFalse(overlay.isOpen)
         XCTAssertNil(overlay.presentingViewController)
     }
+    func testExternalDismissalClearsStateAndAllowsReopen() {
+        openOverlay()
+        presenter.dismiss(animated: false)
+        waitUntil(5, "external dismissal did not clear state", { !overlay.isOpen && overlay.presentingViewController == nil })
+        openOverlay()
+        closeOverlay()
+    }
+
+    func testBusyPresenterIsRejectedWithoutFalseOpenState() {
+        let blocker = UIViewController()
+        presenter.present(blocker, animated: false)
+        waitUntil(5, "blocker not presented", { presenter.presentedViewController === blocker })
+        XCTAssertFalse(overlay.open(from: presenter, animated: false))
+        XCTAssertFalse(overlay.isOpen)
+        XCTAssertNil(overlay.presentingViewController)
+        presenter.dismiss(animated: false)
+    }
+
+    func testPreferencesReloadWhenReopened() {
+        openOverlay()
+        closeOverlay()
+        preferences.soundEnabled = false
+        openOverlay()
+        XCTAssertFalse(overlay.settingsView.soundSwitch.isOn)
+        closeOverlay()
+    }
+
+    func testAnimatedTransitionRejectsDuplicateRequests() {
+        var opened = false
+        XCTAssertTrue(overlay.open(from: presenter, animated: true) { opened = true })
+        XCTAssertFalse(overlay.open(from: presenter, animated: true))
+        XCTAssertFalse(overlay.close(animated: true))
+        waitUntil(5, "animated presentation completion missing", { opened })
+        var closed = false
+        XCTAssertTrue(overlay.close(animated: true) { closed = true })
+        XCTAssertFalse(overlay.close(animated: true))
+        XCTAssertFalse(overlay.open(from: presenter, animated: true))
+        waitUntil(5, "animated dismissal completion missing", { closed && !overlay.isOpen })
+    }
+
 }

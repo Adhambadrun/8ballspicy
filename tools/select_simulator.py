@@ -22,10 +22,12 @@ def simctl(*args):
 def main() -> int:
     data = simctl("devices", "available")
     name = None
+    udid = None
     for _runtime, devices in data.get("devices", {}).items():
         for d in devices:
             if d.get("isAvailable") and d.get("name", "").startswith("iPhone"):
                 name = d["name"]
+                udid = d["udid"]
                 break
         if name:
             break
@@ -44,15 +46,15 @@ def main() -> int:
             print("::error::No iPhone device type or iOS runtime available", file=sys.stderr)
             return 1
         name = "MrSpicySim-" + uuid.uuid4().hex[:6]
-        subprocess.run(
+        udid = subprocess.check_output(
             ["xcrun", "simctl", "create", name, iphone["identifier"], ios_rt["identifier"]],
-            check=True,
-        )
+            text=True,
+        ).strip()
 
     print(f"Selected simulator: {name}")
     if len(sys.argv) > 1:
         with open(sys.argv[1], "w") as f:
-            f.write(f"SIM_NAME={name}\n")
+            f.write(f"SIM_NAME={name}\nSIM_UDID={udid}\n")
     return 0
 
 

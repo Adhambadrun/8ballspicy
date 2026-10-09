@@ -15,3 +15,5 @@
 
 "mr.spicy.a11y.close" = "Close Mr. Spicy";
 "mr.spicy.a11y.reset" = "Reset all Mr. Spicy settings to defaults";
+
+"mr.spicy.pro.reference" = "PRO — Not authorized / unavailable\nPrediction and table aids: reference only; not implemented.\nAim and automation: unavailable; no gameplay controls.\nNo Pro entitlement service or game integration is connected.\nThese preferences affect component storage only. The interface adds no ads; game-wide ad-free status is not verified.";

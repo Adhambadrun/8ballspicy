@@ -79,3 +79,16 @@ overlay.close(animated: true)
 closed-source third-party software; integration requires owner-authorized
 source or a supported integration interface that this workspace does not
 contain (see `../validation/reports/integration-validation.md`).
+
+## Continued audit and lifecycle contract
+
+This session continues the existing implementation, including its bundled mark;
+its original-generation provenance above is historical, not a new asset recovery.
+Use all UIKit APIs on the main thread. Retain your bridge adapter (the component
+holds it weakly). `open`/`close` now return a discardable Bool: `false` means an
+in-flight transition or detached/busy presenter rejected the request. Wait for
+completion and retry from the host's visible controller. Already-open/closed
+calls remain idempotent. Only a close-button request emits the close bridge event.
+`refreshLocalization(language: "ar")` refreshes all rows, controls, and RTL layout;
+no host app display name or bundle identifier is changed. Persisted component
+preferences do not by themselves change game behavior or system permissions.

@@ -163,4 +163,66 @@ final class SpicyOverlayControlTests: XCTestCase {
     func testVersionLabelShowsComponentVersion() {
         XCTAssertEqual(overlay.versionLabel.text, SpicyVersion.displayString)
     }
+    func testArabicRefreshUpdatesEveryControlAndDirection() {
+        overlay.refreshLocalization(language: "ar")
+        let settings = overlay.settingsView!
+        XCTAssertEqual(overlay.view.semanticContentAttribute, .forceRightToLeft)
+        XCTAssertEqual(overlay.headerView.titleLabel.text, SpicyLocalization.string("mr.spicy.header.title", language: "ar"))
+        XCTAssertEqual(settings.soundSwitch.accessibilityLabel, SpicyLocalization.string("mr.spicy.settings.sound", language: "ar"))
+        XCTAssertEqual(settings.nicknameField.accessibilityLabel, SpicyLocalization.string("mr.spicy.settings.nickname", language: "ar"))
+        XCTAssertEqual(settings.intensityControl.titleForSegment(at: 0), SpicyLocalization.string("mr.spicy.settings.haptic.off", language: "ar"))
+        overlay.refreshLocalization(language: "en")
+        XCTAssertEqual(overlay.view.semanticContentAttribute, .forceLeftToRight)
+        XCTAssertEqual(settings.soundSwitch.accessibilityLabel, SpicyLocalization.string("mr.spicy.settings.sound", language: "en"))
+    }
+
+    func testAllSettingsHaveAccessibilityLabels() {
+        let settings = overlay.settingsView!
+        for control in [settings.soundSwitch, settings.hapticsSwitch, settings.notificationsSwitch,
+                        settings.personalizationSwitch, settings.intensityControl, settings.nicknameField,
+                        settings.resetButton] as [UIView] {
+            XCTAssertFalse(control.accessibilityLabel?.isEmpty ?? true)
+            XCTAssertNotNil(control.accessibilityIdentifier)
+        }
+        XCTAssertTrue(overlay.view.accessibilityViewIsModal)
+    }
+
+    func testInvalidIntensityDoesNotMutateOrNotify() {
+        overlay.settingsView.intensityControl.selectedSegmentIndex = UISegmentedControl.noSegment
+        overlay.settingsView.intensityChanged()
+        XCTAssertEqual(preferences.hapticIntensity, .medium)
+        XCTAssertTrue(bridge.settingsChanges.isEmpty)
+    }
+
+    func testDetachedPresenterIsRejectedAndCompletionRuns() {
+        var completed = false
+        XCTAssertFalse(overlay.open(from: UIViewController(), animated: false) { completed = true })
+        XCTAssertTrue(completed)
+        XCTAssertFalse(overlay.isOpen)
+        XCTAssertNil(overlay.presentingViewController)
+    }
+
+    func testLanguageSelectedBeforeLoadingIsRetained() {
+        let fresh = SpicyOverlayViewController(preferences: preferences)
+        fresh.refreshLocalization(language: "ar")
+        fresh.loadViewIfNeeded()
+        XCTAssertEqual(fresh.view.semanticContentAttribute, .forceRightToLeft)
+        XCTAssertEqual(fresh.settingsView.soundSwitch.accessibilityLabel, SpicyLocalization.string("mr.spicy.settings.sound", language: "ar"))
+    }
+
+    func testProReferenceDisclosesUnavailableWithoutActivationControls() {
+        overlay.refreshLocalization(language: "en")
+        func findLabel(_ view: UIView) -> UILabel? {
+            if view.accessibilityIdentifier == "mr.spicy.pro.reference" { return view as? UILabel }
+            for child in view.subviews { if let label = findLabel(child) { return label } }
+            return nil
+        }
+        let label = findLabel(overlay.view)
+        XCTAssertEqual(label?.text, SpicyLocalization.string("mr.spicy.pro.reference", language: "en"))
+        XCTAssertTrue(label?.text?.contains("unavailable") ?? false)
+        XCTAssertFalse(label?.isUserInteractionEnabled ?? true)
+        overlay.refreshLocalization(language: "ar")
+        XCTAssertEqual(label?.text, SpicyLocalization.string("mr.spicy.pro.reference", language: "ar"))
+    }
+
 }

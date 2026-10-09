@@ -7,10 +7,9 @@ name: component-ci
 #                            UIApplicationMain host app (MrSpicyDemoHost) so
 #                            modal lifecycle and control dispatch execute
 #
-# All logs and built artifacts are committed to the `ci/artifacts` branch
-# (github.com git transport), because Actions artifact/log downloads are not
-# reachable from the session sandbox. Error excerpts are also emitted as
-# ::error:: annotations.
+# Evidence is transferred with Actions artifacts, then published ONLY to the
+# fixed session branch for reachable git transport. Publication fails honestly;
+# no false success after a failed push, and no separate artifact-branch writes.
 #
 # This workflow deliberately does NOT attempt to modify, re-sign, or repackage
 # the 8 Ball Pool application. See validation/reports/integration-validation.md.
@@ -18,11 +17,20 @@ name: component-ci
 on:
   push:
     branches:
-      - arena/50b0a530-8ballspicy
+      - arena/6264dd0a-8ballspicy
+    paths:
+      - "MrSpicyUI/**"
+      - "HostApp/**"
+      - "tools/**"
+      - ".github/workflows/component-ci.yml"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: component-ci-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   component:
@@ -34,6 +42,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Test read-only forensic parser
+        run: PYTHONPATH=../tools python3 -m unittest discover -s ../tools -p 'test_*.py' -v
 
       - name: Show toolchain
         run: |
@@ -53,7 +64,7 @@ jobs:
         id: sim
         run: |
           python3 ../tools/select_simulator.py sim-choice.txt
-          echo "name=$(grep '^SIM_NAME=' sim-choice.txt | cut -d= -f2-)" >> "$GITHUB_OUTPUT"
+          echo "udid=$(grep '^SIM_UDID=' sim-choice.txt | cut -d= -f2-)" >> "$GITHUB_OUTPUT"
 
       - name: Run unit tests (iOS Simulator, hostless)
         run: |
@@ -61,7 +72,7 @@ jobs:
           set -o pipefail
           xcodebuild test \
             -scheme MrSpicyUI \
-            -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.name }}" \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
             -resultBundlePath MrSpicyUI-tests.xcresult 2>&1 | tee xcodebuild-test.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
@@ -137,40 +148,22 @@ jobs:
           shasum -a 256 dist/MrSpicyUI-iphoneos-arm64-unsigned.zip | tee dist/MrSpicyUI-iphoneos-arm64-unsigned.sha256
           cat dist/MrSpicyUI-iphoneos-arm64-unsigned.sha256 | sed 's/^/::notice::artifact sha256: /'
 
-      - name: Publish results to ci/artifacts branch
+      - name: Record build provenance
         if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set +e
-          cd "$GITHUB_WORKSPACE"
-          PUBLISH_DIR="runs/${GITHUB_RUN_ID}-${GITHUB_JOB}"
-          mkdir -p "$PUBLISH_DIR"
-          find "$GITHUB_WORKSPACE/MrSpicyUI" -maxdepth 1 -type f \
-            \( -name 'toolchain.txt' -o -name 'sim-choice.txt' -o -name 'test-status.txt' \
-               -o -name 'xcodebuild-*.log' -o -name 'products.txt' \) -exec cp {} "$PUBLISH_DIR/" \;
-          cp -R MrSpicyUI/dist "$PUBLISH_DIR/" 2>/dev/null
-          du -sh "$PUBLISH_DIR"
+        run: python3 ../tools/ci_provenance.py component provenance.json
 
-          rm -rf /tmp/ci-publish
-          mkdir -p /tmp/ci-publish && cd /tmp/ci-publish
-          git init -q
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch -q origin ci/artifacts
-          if [ $? -eq 0 ]; then
-            git checkout -q -b ci/artifacts origin/ci/artifacts
-          else
-            git checkout -q --orphan ci/artifacts
-            git rm -rfq . >/dev/null 2>&1
-          fi
-          mkdir -p runs
-          cp -R "$GITHUB_WORKSPACE/$PUBLISH_DIR" "runs/"
-          git add -A
-          git commit -q -m "ci: ${GITHUB_JOB} run ${GITHUB_RUN_ID} ($(date -u +%FT%TZ))"
-          git push -q origin ci/artifacts
-          echo "::notice::Published run results to ci/artifacts branch"
+      - name: Transfer component evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: component-evidence
+          path: |
+            MrSpicyUI/*.txt
+            MrSpicyUI/*.log
+            MrSpicyUI/provenance.json
+            MrSpicyUI/dist/
+          if-no-files-found: error
+          retention-days: 30
 
   hosted-tests:
     name: Hosted lifecycle tests (UIApplication host)
@@ -188,7 +181,7 @@ jobs:
         id: sim
         run: |
           python3 ../tools/select_simulator.py sim-choice.txt
-          echo "name=$(grep '^SIM_NAME=' sim-choice.txt | cut -d= -f2-)" >> "$GITHUB_OUTPUT"
+          echo "udid=$(grep '^SIM_UDID=' sim-choice.txt | cut -d= -f2-)" >> "$GITHUB_OUTPUT"
 
       - name: Run hosted tests
         run: |
@@ -197,7 +190,7 @@ jobs:
           xcodebuild test \
             -project MrSpicyDemoHost.xcodeproj \
             -scheme MrSpicyDemoHost \
-            -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.name }}" \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
             -resultBundlePath MrSpicyHosted-tests.xcresult 2>&1 | tee xcodebuild-hosted.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
@@ -208,36 +201,52 @@ jobs:
           echo "hosted_status=$status" >> test-status.txt
           exit $status
 
-      - name: Publish results to ci/artifacts branch
+      - name: Record hosted provenance
         if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set +e
-          cd "$GITHUB_WORKSPACE"
-          PUBLISH_DIR="runs/${GITHUB_RUN_ID}-${GITHUB_JOB}"
-          mkdir -p "$PUBLISH_DIR"
-          find "$GITHUB_WORKSPACE/HostApp" -maxdepth 1 -type f \
-            \( -name 'sim-choice.txt' -o -name 'test-status.txt' -o -name 'xcodebuild-*.log' \) \
-            -exec cp {} "$PUBLISH_DIR/" \;
-          du -sh "$PUBLISH_DIR"
+        run: python3 ../tools/ci_provenance.py hosted-tests provenance.json
 
-          rm -rf /tmp/ci-publish
-          mkdir -p /tmp/ci-publish && cd /tmp/ci-publish
-          git init -q
+      - name: Transfer hosted evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-evidence
+          path: |
+            HostApp/*.txt
+            HostApp/*.log
+            HostApp/provenance.json
+          if-no-files-found: error
+          retention-days: 30
+
+  publish-evidence:
+    name: Publish auditable evidence on session branch
+    needs: [component, hosted-tests]
+    if: always()
+    runs-on: macos-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: component-evidence
+          path: validation/ci/runs/${{ github.run_id }}-component
+      - uses: actions/download-artifact@v4
+        with:
+          name: hosted-evidence
+          path: validation/ci/runs/${{ github.run_id }}-hosted-tests
+      - name: Publish without masking failures or changing branches
+        env:
+          SESSION_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          test "$SESSION_BRANCH" = "arena/6264dd0a-8ballspicy"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch -q origin ci/artifacts
-          if [ $? -eq 0 ]; then
-            git checkout -q -b ci/artifacts origin/ci/artifacts
-          else
-            git checkout -q --orphan ci/artifacts
-            git rm -rfq . >/dev/null 2>&1
-          fi
-          mkdir -p runs
-          cp -R "$GITHUB_WORKSPACE/$PUBLISH_DIR" "runs/"
-          git add -A
-          git commit -q -m "ci: ${GITHUB_JOB} run ${GITHUB_RUN_ID} ($(date -u +%FT%TZ))"
-          git push -q origin ci/artifacts
-          echo "::notice::Published run results to ci/artifacts branch"
+          # Deliberate small evidence archive exception to ignored build outputs.
+          # Never copy or publish the proprietary IPA.
+          git add -f "validation/ci/runs/${GITHUB_RUN_ID}-component" "validation/ci/runs/${GITHUB_RUN_ID}-hosted-tests"
+          git commit -m "ci: verified evidence for run ${GITHUB_RUN_ID} (source ${GITHUB_SHA})"
+          git push origin "HEAD:${SESSION_BRANCH}"

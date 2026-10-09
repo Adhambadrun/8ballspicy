@@ -16,7 +16,8 @@ public final class SpicyHeaderView: UIView {
     public let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 24, weight: .bold)
+        label.font = UIFontMetrics(forTextStyle: .title2).scaledFont(for: .systemFont(ofSize: 24, weight: .bold))
+        label.numberOfLines = 0
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
@@ -24,7 +25,8 @@ public final class SpicyHeaderView: UIView {
     public let subtitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 13, weight: .medium)
+        label.font = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: .systemFont(ofSize: 13, weight: .medium))
+        label.numberOfLines = 0
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
@@ -72,12 +74,14 @@ public final class SpicyHeaderView: UIView {
 
             textStack.leadingAnchor.constraint(equalTo: markImageView.trailingAnchor, constant: 12),
             textStack.centerYAnchor.constraint(equalTo: centerYAnchor),
+            textStack.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 12),
+            textStack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -12),
             textStack.trailingAnchor.constraint(lessThanOrEqualTo: closeButton.leadingAnchor, constant: -12),
 
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -theme.contentInset),
             closeButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            closeButton.widthAnchor.constraint(equalToConstant: 36),
-            closeButton.heightAnchor.constraint(equalToConstant: 36),
+            closeButton.widthAnchor.constraint(equalToConstant: 44),
+            closeButton.heightAnchor.constraint(equalToConstant: 44),
 
             heightAnchor.constraint(greaterThanOrEqualToConstant: 92)
         ])
@@ -85,24 +89,24 @@ public final class SpicyHeaderView: UIView {
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
     }
 
-    private func applyContent() {
+    private func applyContent(language: String? = nil) {
+        semanticContentAttribute = SpicyLocalization.isRightToLeft(language: language) ? .forceRightToLeft : .forceLeftToRight
         backgroundColor = theme.surface
         titleLabel.textColor = theme.textPrimary
         subtitleLabel.textColor = theme.textSecondary
         closeButton.tintColor = theme.textSecondary
 
         markImageView.image = SpicyBrand.markImage()
-        titleLabel.text = SpicyLocalization.string("mr.spicy.header.title")
-        subtitleLabel.text = SpicyLocalization.string("mr.spicy.header.subtitle")
+        titleLabel.text = SpicyLocalization.string("mr.spicy.header.title", language: language)
+        subtitleLabel.text = SpicyLocalization.string("mr.spicy.header.subtitle", language: language)
 
-        SpicyAccessibility.apply(labelKey: "mr.spicy.a11y.close", to: closeButton)
-        closeButton.accessibilityLabel = SpicyLocalization.string("mr.spicy.a11y.close")
+        closeButton.accessibilityLabel = SpicyLocalization.string("mr.spicy.a11y.close", language: language)
     }
 
     /// Re-resolves localized strings (after a language change) without
     /// rebuilding the view hierarchy.
-    public func refreshLocalization() {
-        applyContent()
+    public func refreshLocalization(language: String? = nil) {
+        applyContent(language: language)
     }
 
     @objc func closeTapped() {

@@ -19,3 +19,9 @@ Package.resolved
 # immutable evidence artifact for this project (SHA-256
 # 6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84).
 # Never modify or replace it.
+
+# Local audit scratch and retrieved component binaries (not game releases)
+.cache/
+output/component/
+*.log
+__pycache__/

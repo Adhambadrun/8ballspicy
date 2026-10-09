@@ -40,7 +40,7 @@ public enum SpicyLocalization {
     /// The device-preferred language restricted to supported languages.
     public static func preferredLanguage() -> String {
         for candidate in Locale.preferredLanguages {
-            let lang = normalizedLanguage(candidate)
+            let lang = candidate.lowercased().split(whereSeparator: { $0 == "-" || $0 == "_" }).first.map(String.init) ?? candidate
             if supportedLanguages.contains(lang) {
                 return lang
             }
