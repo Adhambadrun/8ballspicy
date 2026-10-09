@@ -25,6 +25,7 @@ public final class SpicyOverlayViewController: UIViewController {
     private var isClosing = false
     private var pendingUserClose = false
     private var presentationCycle: UInt = 0
+    private var userCloseCycle: UInt?
     private var language: String?
     private var proReferenceLabel: UILabel!
 
@@ -142,15 +143,21 @@ public final class SpicyOverlayViewController: UIViewController {
     private func wireCallbacks() {
         headerView.onCloseTapped = { [weak self] in
             guard let self = self else { return }
-            // A real user close request during presentation must not be dropped.
+            let cycle = self.presentationCycle
+            guard self.userCloseCycle != cycle,
+                  self.isOpening || (self.presentingViewController != nil && !self.isClosing && !self.isBeingDismissed) else { return }
+            // Set before arbitrary host code: reentrant taps must not duplicate
+            // the event, and a host close/reopen must not close the new cycle.
+            self.userCloseCycle = cycle
             if self.isOpening {
-                guard !self.pendingUserClose else { return }
                 self.pendingUserClose = true
                 self.bridge?.spicyOverlayDidRequestClose(self)
-            } else if !self.isClosing && !self.isBeingDismissed {
-                self.bridge?.spicyOverlayDidRequestClose(self)
-                self.close(animated: true, completion: nil)
+                return
             }
+            self.bridge?.spicyOverlayDidRequestClose(self)
+            guard self.presentationCycle == cycle, self.presentingViewController != nil,
+                  !self.isClosing, !self.isBeingDismissed else { return }
+            self.close(animated: true, completion: nil)
         }
         settingsView.onSettingsChanged = { [weak self] preferences in
             guard let self = self else { return }

@@ -34,7 +34,11 @@ def main():
     hosted=a.root/f'{a.run}-hosted-tests'
     prov=json.loads((component/'provenance.json').read_text())
     hprov=json.loads((hosted/'provenance.json').read_text())
-    if prov['source_commit'] != hprov['source_commit'] or prov['source_commit'] != prov['checked_out_commit']:
+    if (prov['source_commit'] != hprov['source_commit']
+            or prov['source_commit'] != prov['checked_out_commit']
+            or hprov['source_commit'] != hprov['checked_out_commit']
+            or prov['source_trees'] != hprov['source_trees']
+            or prov['run_id'] != a.run or hprov['run_id'] != a.run):
         raise ValueError('source provenance mismatch')
     source=prov['source_commit']
     for tree,oid in prov['source_trees'].items():

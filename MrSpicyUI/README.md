@@ -8,15 +8,18 @@ Mr. Spicy project identity).
 The mission brief referenced existing work under
 `ExistingIPAWorkspace/OverlaySource/` and a prior device-component checksum
 `c0e66b306465fb0093a83893664982a54a914f6b49f69a2c1f001cb6f751088b`.
-Neither exists in this repository, its git history, or any reachable
-repository (see `../validation/reports/forensic-analysis.md` §7 for the full
-recovery investigation, including sibling repositories that were observed and
-then became unreachable during the session).
+That exact source/checksum was not recovered from the examined trees/history.
+The accessible `Adhambadrun/8ballspicy` historical branch contains the input
+and reports but no overlay/host source. See the forensic report for scope and
+uncertainty; earlier claims that this named repository was unreachable are
+superseded.
 
-This package is therefore an **original implementation** of the documented
-component scope, written in this session. The bundled
-`Resources/Branding/spicy-s-mark.png` is a **newly generated** Spicy S monogram
-— it is *not* a recovered copy of any historical asset.
+This session **continues the existing original component** introduced in the
+`abadrun/8ballspicy` history, rather than rebuilding it from scratch. It is not
+recovered Miniclip or i3rby source. The bundled
+`Resources/Branding/spicy-s-mark.png` is the **existing AI-generated replacement**
+from the earlier implementation, not a recovered historical brand asset and
+not a new image generated during this continuation.
 
 ## Scope
 
@@ -31,8 +34,11 @@ component scope, written in this session. The bundled
 | Accessibility | Stable identifiers + localized labels (`SpicyAccessibility`) |
 | Host integration | `SpicyHostBridge` protocol — the only supported seam |
 
-Every control performs a real action (persisted write or lifecycle call). No
-decorative controls.
+Controls update component preferences or lifecycle only. They do not apply
+game audio, haptics, permissions, consent, graphics, account or Pro effects.
+A localized read-only unavailable disclosure replaces unsupported Pro controls.
+No ads or network code are added by the component; game-wide ad-free behavior
+is not implemented or verified.
 
 ## Requirements
 
@@ -61,13 +67,14 @@ import MrSpicyUI
 
 final class HostAdapter: SpicyHostBridge {
     func spicyOverlayDidRequestClose(_ overlay: SpicyOverlayViewController) {
-        // host reacts (analytics, game state), UI closes itself
+        // optional authorized host UI response; component dismisses itself
     }
     func spicyPreferencesDidChange(_ preferences: SpicyPreferences) {
         // apply settings to authorized host functionality
     }
 }
 
+let adapter = HostAdapter() // retain for at least the overlay lifetime
 let overlay = SpicyOverlayViewController(bridge: adapter)
 overlay.open(from: hostViewController, animated: true)
 // later:
@@ -100,3 +107,7 @@ menu remains visible: a queued user close may immediately begin dismissal.
 Per-presentation cycle tokens prevent old asynchronous completions mutating
 state after a new open. External host dismissals do not synthesize user-button
 bridge events. Host-driven reopen should occur from dismissal completion.
+
+Close bridge events are deduplicated per presentation before invoking host code;
+reentrant callbacks cannot dismiss a newer presentation. Detached close-button
+events are ignored. Rejected presentations deliver completion at most once.

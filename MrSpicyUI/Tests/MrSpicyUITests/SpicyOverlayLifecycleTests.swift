@@ -302,4 +302,33 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         closeOverlay()
     }
 
+    func testReentrantCloseBridgeWhileOpenFiresOncePerCycle() {
+        openOverlay()
+        var nested = false
+        bridge.onCloseRequest = {
+            if !nested {
+                nested = true
+                self.overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+            }
+        }
+        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(bridge.closeRequests, 1)
+        waitUntil(5, "reentrant open-state close did not finish", { overlay.presentingViewController == nil && !overlay.isOpen })
+        bridge.onCloseRequest = nil
+        openOverlay()
+        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(bridge.closeRequests, 2, "New presentation must re-arm the user-close event")
+        waitUntil(5, "second-cycle user close did not finish", { overlay.presentingViewController == nil && !overlay.isOpen })
+    }
+
+    func testDetachedCloseButtonDoesNotNotifyBridge() {
+        overlay.loadViewIfNeeded()
+        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(bridge.closeRequests, 0)
+        openOverlay()
+        closeOverlay()
+        overlay.headerView.closeButton.sendActions(for: .touchUpInside)
+        XCTAssertEqual(bridge.closeRequests, 0, "Programmatic dismissal and stale control events are not user close requests")
+    }
+
 }
