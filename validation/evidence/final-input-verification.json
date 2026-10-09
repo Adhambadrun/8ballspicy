@@ -1,0 +1,11 @@
+{
+  "verified_utc": "2026-10-09T12:32:23.967141+00:00",
+  "path": "/home/user/8ballspicy/pool8Signed.ipa",
+  "size_bytes": 99010014,
+  "sha256": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+  "zip_entries": 3527,
+  "zip_crc": "PASS",
+  "unchanged": true,
+  "output_ipa_exists": false,
+  "output_checksum_exists": false
+}

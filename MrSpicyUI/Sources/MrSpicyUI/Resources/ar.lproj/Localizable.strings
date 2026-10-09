@@ -1,0 +1,19 @@
+"mr.spicy.header.title" = "MR. SPICY";
+"mr.spicy.header.subtitle" = "تفضيلات المكون • غير متكامل مع اللعبة";
+
+"mr.spicy.settings.sound" = "المؤثرات الصوتية";
+"mr.spicy.settings.haptics" = "الاستجابة اللمسية";
+"mr.spicy.settings.hapticIntensity" = "شدة الاستجابة اللمسية";
+"mr.spicy.settings.haptic.off" = "إيقاف";
+"mr.spicy.settings.haptic.light" = "خفيفة";
+"mr.spicy.settings.haptic.medium" = "متوسطة";
+"mr.spicy.settings.haptic.strong" = "قوية";
+"mr.spicy.settings.notifications" = "إشعارات المباريات";
+"mr.spicy.settings.personalization" = "نصائح مخصصة";
+"mr.spicy.settings.nickname" = "الاسم المستعار";
+"mr.spicy.settings.reset" = "إعادة الإعدادات الافتراضية";
+
+"mr.spicy.a11y.close" = "إغلاق مستر سبايسي";
+"mr.spicy.a11y.reset" = "إعادة جميع إعدادات مستر سبايسي إلى الافتراضي";
+
+"mr.spicy.pro.reference" = "PRO — غير مصرح / غير متاح\nالتنبؤ ومساعدات الطاولة: مرجع فقط؛ غير منفذة.\nالتصويب والأتمتة: غير متاحين؛ لا توجد أدوات للتحكم باللعب.\nلا توجد خدمة اشتراك Pro أو تكامل متصل باللعبة.\nتؤثر هذه التفضيلات على تخزين المكون فقط. الواجهة لا تضيف إعلانات؛ لم يتم التحقق من خلو اللعبة من الإعلانات.";

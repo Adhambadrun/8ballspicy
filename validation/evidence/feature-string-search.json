@@ -1,0 +1,628 @@
+{
+  "artifact": "Payload/pool.app/Frameworks/libloader.framework/libloader",
+  "binary_sha256": "bc6e41931e80a1fb7832612626ac05aacc7a45ecfbe7d73b45adbb889929823a",
+  "advertised_source": "User-supplied inventory; not independently retrieved public description",
+  "method": "Case-insensitive exact substrings with file offsets; absence does not prove feature absence; presence does not prove execution",
+  "features": [
+    {
+      "feature": "Prediction Lines",
+      "advertised_description": "Shot-path and trajectory guides",
+      "searched_terms": [
+        "GBPredictionDrawView",
+        "predictionEnabled"
+      ],
+      "hits": [
+        {
+          "term": "GBPredictionDrawView",
+          "offset": 9961311,
+          "excerpt": "GBPredictionDrawView\",&,N,V_xm8o539l9331k0p6m"
+        }
+      ]
+    },
+    {
+      "feature": "Opponent Prediction",
+      "advertised_description": "Possible opponent shot estimates",
+      "searched_terms": [
+        "_cachedOpponentResult"
+      ],
+      "hits": [
+        {
+          "term": "_cachedOpponentResult",
+          "offset": 9978733,
+          "excerpt": "_cachedOpponentResult"
+        }
+      ]
+    },
+    {
+      "feature": "Pocket Hints",
+      "advertised_description": "Pocket visual indicators",
+      "searched_terms": [
+        "GBMenuPocketStylePanel",
+        "_drawPockets"
+      ],
+      "hits": [
+        {
+          "term": "GBMenuPocketStylePanel",
+          "offset": 9960856,
+          "excerpt": "GBMenuPocketStylePanel\",&,N,V_x8k42o1ppo2km13lpm1"
+        },
+        {
+          "term": "_drawPockets",
+          "offset": 9978902,
+          "excerpt": "_drawPockets"
+        }
+      ]
+    },
+    {
+      "feature": "Table Outline",
+      "advertised_description": "Prediction table boundary guides",
+      "searched_terms": [
+        "feature.table_outline"
+      ],
+      "hits": [
+        {
+          "term": "feature.table_outline",
+          "offset": 10036905,
+          "excerpt": "feature.table_outline"
+        }
+      ]
+    },
+    {
+      "feature": "End Dots / Impact Indicators",
+      "advertised_description": "Predicted endpoints / impacts",
+      "searched_terms": [
+        "_drawImpactDots",
+        "_impactDotLayers"
+      ],
+      "hits": [
+        {
+          "term": "_drawImpactDots",
+          "offset": 9960297,
+          "excerpt": "_drawImpactDots"
+        },
+        {
+          "term": "_impactDotLayers",
+          "offset": 9987249,
+          "excerpt": "_impactDotLayers"
+        }
+      ]
+    },
+    {
+      "feature": "Precise Paths",
+      "advertised_description": "Detailed configurable prediction paths",
+      "searched_terms": [
+        "precise",
+        "lineThickness",
+        "lineOpacity"
+      ],
+      "hits": [
+        {
+          "term": "lineThickness",
+          "offset": 9998930,
+          "excerpt": "lineThickness:lineOpacity:ghostOK:"
+        },
+        {
+          "term": "lineOpacity",
+          "offset": 9998944,
+          "excerpt": "lineOpacity:ghostOK:"
+        }
+      ]
+    },
+    {
+      "feature": "Scratch Alerts",
+      "advertised_description": "Predicted cue-ball scratch warnings",
+      "searched_terms": [
+        "_scratchWarning",
+        "scratchAlertEnabled"
+      ],
+      "hits": [
+        {
+          "term": "_scratchWarning",
+          "offset": 9967182,
+          "excerpt": "_scratchWarning"
+        },
+        {
+          "term": "scratchAlertEnabled",
+          "offset": 10003879,
+          "excerpt": "scratchAlertEnabled:wrongBallAlertEnabled:flashPhase:"
+        }
+      ]
+    },
+    {
+      "feature": "Wrong-Ball / Foul Alerts",
+      "advertised_description": "Predicted wrong contact / foul warnings",
+      "searched_terms": [
+        "_wrongBallWarning",
+        "wrongBallAlertEnabled"
+      ],
+      "hits": [
+        {
+          "term": "_wrongBallWarning",
+          "offset": 9987708,
+          "excerpt": "_wrongBallWarning"
+        },
+        {
+          "term": "wrongBallAlertEnabled",
+          "offset": 10003899,
+          "excerpt": "wrongBallAlertEnabled:flashPhase:"
+        }
+      ]
+    },
+    {
+      "feature": "Golden Shot Support",
+      "advertised_description": "Golden Shot category",
+      "searched_terms": [
+        "goldenOrLucky"
+      ],
+      "hits": [
+        {
+          "term": "goldenOrLucky",
+          "offset": 10124876,
+          "excerpt": "goldenOrLucky\"B\"tutorial\"B\"tournament\"B\"twoPlayer\"B\"playerMatch\"B\"offline\"B\"quickFire\"B\"creatorMode\"B\"gameMode\"i\"ballsStopped\"B\"ba"
+        }
+      ]
+    },
+    {
+      "feature": "Lucky Shot Support",
+      "advertised_description": "Lucky Shot category",
+      "searched_terms": [
+        "goldenOrLucky"
+      ],
+      "hits": [
+        {
+          "term": "goldenOrLucky",
+          "offset": 10124876,
+          "excerpt": "goldenOrLucky\"B\"tutorial\"B\"tournament\"B\"twoPlayer\"B\"playerMatch\"B\"offline\"B\"quickFire\"B\"creatorMode\"B\"gameMode\"i\"ballsStopped\"B\"ba"
+        }
+      ]
+    },
+    {
+      "feature": "Best-Shot Ghost Line",
+      "advertised_description": "Suggested-shot visual path",
+      "searched_terms": [
+        "_ghostTrajectoryLayers",
+        "_cachedGhostLayout"
+      ],
+      "hits": [
+        {
+          "term": "_ghostTrajectoryLayers",
+          "offset": 9987187,
+          "excerpt": "_ghostTrajectoryLayers"
+        },
+        {
+          "term": "_cachedGhostLayout",
+          "offset": 9978660,
+          "excerpt": "_cachedGhostLayout"
+        }
+      ]
+    },
+    {
+      "feature": "Aim Mode",
+      "advertised_description": "Aim configuration",
+      "searched_terms": [
+        "Aim Mode"
+      ],
+      "hits": [
+        {
+          "term": "Aim Mode",
+          "offset": 10038551,
+          "excerpt": "Aim Mode"
+        }
+      ]
+    },
+    {
+      "feature": "Aim Strength",
+      "advertised_description": "Aim intensity setting",
+      "searched_terms": [
+        "Aim Strength"
+      ],
+      "hits": [
+        {
+          "term": "Aim Strength",
+          "offset": 10038665,
+          "excerpt": "Aim Strength"
+        }
+      ]
+    },
+    {
+      "feature": "Maximum Aim Speed",
+      "advertised_description": "Maximum aim movement speed",
+      "searched_terms": [
+        "Max Aim Speed"
+      ],
+      "hits": [
+        {
+          "term": "Max Aim Speed",
+          "offset": 10038698,
+          "excerpt": "Max Aim Speed"
+        }
+      ]
+    },
+    {
+      "feature": "Aim-speed adjustment",
+      "advertised_description": "Adjust aim speed",
+      "searched_terms": [
+        "Max Aim Speed"
+      ],
+      "hits": [
+        {
+          "term": "Max Aim Speed",
+          "offset": 10038698,
+          "excerpt": "Max Aim Speed"
+        }
+      ]
+    },
+    {
+      "feature": "Initial pull-length adjustment",
+      "advertised_description": "Initial power / pull setting",
+      "searched_terms": [
+        "meter.initial_pull"
+      ],
+      "hits": [
+        {
+          "term": "meter.initial_pull",
+          "offset": 10038450,
+          "excerpt": "meter.initial_pull"
+        }
+      ]
+    },
+    {
+      "feature": "Wait-time adjustment",
+      "advertised_description": "Automation delay setting",
+      "searched_terms": [
+        "wait time",
+        "waitTime"
+      ],
+      "hits": [
+        {
+          "term": "wait time",
+          "offset": 10038728,
+          "excerpt": "Wait Time"
+        }
+      ]
+    },
+    {
+      "feature": "Automatic angle-setting mode",
+      "advertised_description": "Automatic angle configuration",
+      "searched_terms": [
+        "angleSetting",
+        "settingMode"
+      ],
+      "hits": []
+    },
+    {
+      "feature": "Single-shot mode",
+      "advertised_description": "Single-shot operation",
+      "searched_terms": [
+        "single_shot",
+        "singleShot"
+      ],
+      "hits": []
+    },
+    {
+      "feature": "Multi-shot mode",
+      "advertised_description": "Multi-shot operation",
+      "searched_terms": [
+        "multi_shot",
+        "multiShot"
+      ],
+      "hits": []
+    },
+    {
+      "feature": "Normal graphics mode",
+      "advertised_description": "Normal graphics preset",
+      "searched_terms": [
+        "lightGraphics"
+      ],
+      "hits": [
+        {
+          "term": "lightGraphics",
+          "offset": 10028571,
+          "excerpt": "lightGraphics"
+        }
+      ]
+    },
+    {
+      "feature": "High graphics mode",
+      "advertised_description": "High graphics preset",
+      "searched_terms": [
+        "highGraphics"
+      ],
+      "hits": []
+    },
+    {
+      "feature": "Auto Aim",
+      "advertised_description": "Suggestion / assistance / guidance",
+      "searched_terms": [
+        "autoAimEnabled",
+        "autoAimMode"
+      ],
+      "hits": [
+        {
+          "term": "autoAimEnabled",
+          "offset": 10028678,
+          "excerpt": "autoAimEnabled"
+        },
+        {
+          "term": "autoAimMode",
+          "offset": 10028693,
+          "excerpt": "autoAimMode"
+        }
+      ]
+    },
+    {
+      "feature": "Auto Play \u2014 casual",
+      "advertised_description": "Casual-labelled automation",
+      "searched_terms": [
+        "autoPlaySkill",
+        "casual"
+      ],
+      "hits": [
+        {
+          "term": "autoPlaySkill",
+          "offset": 10028797,
+          "excerpt": "autoPlaySkill"
+        }
+      ]
+    },
+    {
+      "feature": "Auto Play \u2014 Pro",
+      "advertised_description": "Pro-labelled automation",
+      "searched_terms": [
+        "autoPlayEnabled",
+        "autoPlaySkill"
+      ],
+      "hits": [
+        {
+          "term": "autoPlayEnabled",
+          "offset": 10028781,
+          "excerpt": "autoPlayEnabled"
+        },
+        {
+          "term": "autoPlaySkill",
+          "offset": 10028797,
+          "excerpt": "autoPlaySkill"
+        }
+      ]
+    },
+    {
+      "feature": "Auto Play \u2014 stealth",
+      "advertised_description": "Stealth-labelled automation",
+      "searched_terms": [
+        "stealth"
+      ],
+      "hits": []
+    },
+    {
+      "feature": "Humanized movement \u2014 low",
+      "advertised_description": "Low movement setting",
+      "searched_terms": [
+        "humanization"
+      ],
+      "hits": [
+        {
+          "term": "humanization",
+          "offset": 10028705,
+          "excerpt": "humanization"
+        }
+      ]
+    },
+    {
+      "feature": "Humanized movement \u2014 medium",
+      "advertised_description": "Medium movement setting",
+      "searched_terms": [
+        "humanization"
+      ],
+      "hits": [
+        {
+          "term": "humanization",
+          "offset": 10028705,
+          "excerpt": "humanization"
+        }
+      ]
+    },
+    {
+      "feature": "Humanized movement \u2014 high",
+      "advertised_description": "High movement setting",
+      "searched_terms": [
+        "humanization"
+      ],
+      "hits": [
+        {
+          "term": "humanization",
+          "offset": 10028705,
+          "excerpt": "humanization"
+        }
+      ]
+    },
+    {
+      "feature": "Ball-in-Hand assistance",
+      "advertised_description": "Automatic cue-ball positioning",
+      "searched_terms": [
+        "autoBallInHand"
+      ],
+      "hits": [
+        {
+          "term": "autoBallInHand",
+          "offset": 10028931,
+          "excerpt": "autoBallInHand"
+        }
+      ]
+    },
+    {
+      "feature": "Floating play/pause",
+      "advertised_description": "Floating automation control",
+      "searched_terms": [
+        "floating",
+        "playPause"
+      ],
+      "hits": []
+    },
+    {
+      "feature": "Pause-on-touch",
+      "advertised_description": "Pause automation when touched",
+      "searched_terms": [
+        "autoPauseOnTouch"
+      ],
+      "hits": [
+        {
+          "term": "autoPauseOnTouch",
+          "offset": 10028946,
+          "excerpt": "autoPauseOnTouch"
+        }
+      ]
+    },
+    {
+      "feature": "Automatic queuing",
+      "advertised_description": "Queue matches automatically",
+      "searched_terms": [
+        "GBAutoQueueCountdownOverlay",
+        "com.i3rby.8poolmod.autoqueue.tiercode.v1"
+      ],
+      "hits": [
+        {
+          "term": "GBAutoQueueCountdownOverlay",
+          "offset": 9959864,
+          "excerpt": "GBAutoQueueCountdownOverlay\",W,N,V_x1765442"
+        },
+        {
+          "term": "com.i3rby.8poolmod.autoqueue.tiercode.v1",
+          "offset": 10028341,
+          "excerpt": "com.i3rby.8poolmod.autoqueue.tiercode.v1"
+        }
+      ]
+    },
+    {
+      "feature": "Improved automation accuracy",
+      "advertised_description": "Advertised later-version accuracy",
+      "searched_terms": [
+        "accuracy"
+      ],
+      "hits": []
+    },
+    {
+      "feature": "Arabic menu",
+      "advertised_description": "Arabic translation + RTL",
+      "searched_terms": [
+        "useArabic",
+        "isArabic"
+      ],
+      "hits": [
+        {
+          "term": "useArabic",
+          "offset": 10028655,
+          "excerpt": "useArabic"
+        },
+        {
+          "term": "isArabic",
+          "offset": 10001490,
+          "excerpt": "isArabic:"
+        }
+      ]
+    },
+    {
+      "feature": "English menu",
+      "advertised_description": "English translation",
+      "searched_terms": [
+        "Aim Mode"
+      ],
+      "hits": [
+        {
+          "term": "Aim Mode",
+          "offset": 10038551,
+          "excerpt": "Aim Mode"
+        }
+      ]
+    },
+    {
+      "feature": "Basic settings mode",
+      "advertised_description": "Basic menu mode",
+      "searched_terms": [
+        "segment.ui_mode.basic"
+      ],
+      "hits": []
+    },
+    {
+      "feature": "Advanced settings mode",
+      "advertised_description": "Advanced menu mode",
+      "searched_terms": [
+        "segment.ui_mode.advanced"
+      ],
+      "hits": [
+        {
+          "term": "segment.ui_mode.advanced",
+          "offset": 10040056,
+          "excerpt": "segment.ui_mode.advanced"
+        }
+      ]
+    },
+    {
+      "feature": "Graphics and presentation options",
+      "advertised_description": "Graphics configuration",
+      "searched_terms": [
+        "lightGraphics"
+      ],
+      "hits": [
+        {
+          "term": "lightGraphics",
+          "offset": 10028571,
+          "excerpt": "lightGraphics"
+        }
+      ]
+    },
+    {
+      "feature": "Streaming display mode",
+      "advertised_description": "Visibility in recording / streaming",
+      "searched_terms": [
+        "streamProof"
+      ],
+      "hits": [
+        {
+          "term": "streamProof",
+          "offset": 10028643,
+          "excerpt": "streamProof"
+        }
+      ]
+    },
+    {
+      "feature": "Pro access",
+      "advertised_description": "Subscription / key-gated access",
+      "searched_terms": [
+        "PRO key",
+        "activate a key in Account"
+      ],
+      "hits": [
+        {
+          "term": "PRO key",
+          "offset": 10045166,
+          "excerpt": "PRO key. Watch an ad to add one hour, or activate a key in Account."
+        },
+        {
+          "term": "activate a key in Account",
+          "offset": 10045207,
+          "excerpt": "activate a key in Account."
+        }
+      ]
+    },
+    {
+      "feature": "Ad-free experience",
+      "advertised_description": "No intrusive advertisements",
+      "searched_terms": [
+        "Watch an ad",
+        "watch an ad"
+      ],
+      "hits": [
+        {
+          "term": "Watch an ad",
+          "offset": 10040475,
+          "excerpt": "Watch an ad for +1h"
+        },
+        {
+          "term": "watch an ad",
+          "offset": 10040475,
+          "excerpt": "Watch an ad for +1h"
+        }
+      ]
+    }
+  ]
+}

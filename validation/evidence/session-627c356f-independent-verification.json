@@ -1,0 +1,339 @@
+{
+  "verification_session": "arena/627c356f-8ballspicy",
+  "verified_at_utc": "2026-10-09T12:29:35Z",
+  "verification_host": {
+    "os": "Debian GNU/Linux 12 (bookworm) x86_64",
+    "macos": false,
+    "apple_tooling_present": false,
+    "absent_tools": [
+      "codesign",
+      "otool",
+      "lipo",
+      "plutil",
+      "xcodebuild",
+      "xcrun",
+      "security"
+    ],
+    "method": "python3 zipfile/plistlib/struct/hashlib + openssl pkcs7 -print_certs; read-only, in-memory",
+    "note": "Structural inspection only. This is NOT Apple CMS trust validation; codesign was unavailable."
+  },
+  "input_ipa": {
+    "path": "/home/user/8ballspicy/pool8Signed.ipa",
+    "size_bytes": 99010014,
+    "sha256": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+    "git_blob_sha1": "35a53a1d34658065bd5e39b143493f4a720a2ba0",
+    "unchanged_vs_baseline_5ab43b4": true,
+    "zip_entries": 3527,
+    "zip_crc_test": "pass (zipfile.testzip() returned None)",
+    "app_identity": {
+      "CFBundleIdentifier": "com.miniclip.8ballpoolmult",
+      "CFBundleName": "8 Ball Pool",
+      "CFBundleDisplayName": "8 Ball Pool",
+      "CFBundleExecutable": "pool",
+      "CFBundleShortVersionString": "56.31.0",
+      "CFBundleVersion": "5330",
+      "MinimumOSVersion": "13.0"
+    }
+  },
+  "independent_macho_findings": {
+    "main_executable": {
+      "path": "Payload/pool.app/pool",
+      "size_bytes": 81997008,
+      "magic": "0xFEEDFACF",
+      "arch": "arm64",
+      "filetype": "MH_EXECUTE",
+      "ncmds": 125,
+      "LC_ENCRYPTION_INFO_64": "PRESENT (cmd 0x2C) with cryptid=0 -> FairPlay-decrypted dump; a genuine App Store device build has cryptid=1",
+      "LC_CODE_SIGNATURE": "PRESENT (cmd 0x1D) dataoff=79904240 datasize=2092768; superblob 0xFADE0CC0 with 6 slots incl. CMS blob 0xFADE0B01 (4392 B)",
+      "cms_certificate_chain": [
+        "C=US, O=Apple Inc., OU=iPhone, CN=Apple iPhone OS Application Signing",
+        "CN=Apple iPhone Certification Authority, OU=Certification Authority, O=Apple Inc., C=US",
+        "C=US, O=Apple Inc., OU=Apple Certification Authority, CN=Apple Root CA"
+      ],
+      "cms_chain_interpretation": "Confirms genuine App Store download provenance (Apple's App Store signing authority), not a developer or enterprise identity.",
+      "injected_load_command": "LC_LOAD_DYLIB @executable_path/Frameworks/libloader.framework/libloader",
+      "non_system_dylibs": [
+        "AdSurgeSDK",
+        "AppLovinSDK",
+        "InMobiSDK",
+        "FBAudienceNetwork",
+        "DTBiOSSDK",
+        "MolocoSDK",
+        "libloader"
+      ]
+    },
+    "injected_framework": {
+      "path": "Payload/pool.app/Frameworks/libloader.framework/libloader",
+      "size_bytes": 12265804,
+      "arch": "arm64",
+      "filetype": "MH_DYLIB",
+      "ncmds": 45,
+      "LC_CODE_SIGNATURE": "ABSENT -> unsigned injected dylib",
+      "info_plist_CFBundleIdentifier": "com.appdome.libloader",
+      "note": "Reuses the Appdome RASP loader bundle id; content is not an Appdome build."
+    }
+  },
+  "corrections_to_earlier_report": [
+    "EARLIER CLAIM: 'LC_ENCRYPTION_INFO absent'. CORRECTED: LC_ENCRYPTION_INFO_64 IS PRESENT with cryptid=0. The decryption evidence is cryptid=0, not an absent load command.",
+    "EARLIER CLAIM: 'LC_CODE_SIGNATURE absent from main executable'. CORRECTED: LC_CODE_SIGNATURE IS PRESENT with a full CMS chain from Apple iPhone OS Application Signing. Only the injected libloader dylib lacks a code signature.",
+    "EARLIER CLAIM: 'main executable pool: not sealed (absent from files2)' cited as tampering evidence. CORRECTED: the main executable is never listed in CodeResources by design; it is covered by its own embedded signature. Not evidence of tampering.",
+    "EARLIER CLAIM: Adhambadrun/8ballspicy is archived and rejects pushes. CORRECTED: isArchived=false, viewerPermission=ADMIN, push succeeds for non-workflow paths.",
+    "EARLIER CLAIM: no MrSpicyUI component or CI exists to recover. CORRECTED: real component source, CI workflow, 13+ workflow runs, 4 artifacts and published evidence exist on abadrun/8ballspicy."
+  ],
+  "code_seal_audit": {
+    "files2_entries": 3422,
+    "sha256_match": 3312,
+    "sha256_mismatch": 49,
+    "equivalent_hash_comparisons": "6624 matching / 98 mismatching (SHA-1 + SHA-256 per entry)",
+    "missing_sealed_entries": 61,
+    "missing_all_type": "SC_Info/*.supp|*.supf FairPlay artifacts",
+    "mismatching_groups": [
+      "libloader.framework",
+      "all ad SDK frameworks (AppLovin/AdSurge/Bigo/DTExchange/FBAudienceNetwork/InMobi/Moloco/OMSDK_Appodeal)",
+      "all Firebase/Google measurement frameworks",
+      "PlugIns"
+    ],
+    "control_matches": [
+      "Assets.car",
+      "Frameworks/libswift_Concurrency.dylib"
+    ],
+    "embedded_mobileprovision": "ABSENT everywhere -> bundle not installable as-is"
+  },
+  "piracy_provenance": {
+    "info_plist_key": "DecryptedBy",
+    "value": "@FastDecryptBot - https://t.me/FastDecryptBot",
+    "git_history_prior_filename": "8-ball-pool-i3rby-IPAOMTK.COM.ipa",
+    "conclusion": "Self-declared decrypted dump from a Telegram decryption bot, redistributed via a modified-IPA site. Possession is not authorization to modify, sign or redistribute."
+  },
+  "injected_mod_evidence": {
+    "source": "printable strings extracted from libloader binary (8,268 strings)",
+    "confirmed_identifiers": [
+      "com.i3rby.8poolmod.autobreak.illegal.v1",
+      "com.i3rby.8poolmod.autoqueue.tiercode.v1",
+      "com.i3rby.8poolmod.tg.ad_session_id",
+      "com.i3rby.8poolmod.tg.ad_session_scope",
+      "com.i3rby.autoplay",
+      "com.i3rby.autoplay.debug",
+      "com.i3rby.breaklog",
+      "com.i3rby.breaklog.debug"
+    ],
+    "confirmed_classes": [
+      "GBModMenuDelegate",
+      "GBPredictionDrawView",
+      "GBAutoQueueCountdownOverlay",
+      "GBMenuPocketStylePanel",
+      "GBMenuChoiceTile",
+      "GBMenuDrawingStylePanel",
+      "GBMenuEntitlementCard"
+    ],
+    "confirmed_settings_struct": "{?=\"predictionLines\"B\"opponentPrediction\"B\"tableBorder\"B\"pocketHints\"B\"impactDots\"B\"followMovingBalls\"B\"shiftX\"f\"shiftY\"f\"scaleX\"f\"scaleY\"f\"initialPow...",
+    "confirmed_ui_strings": [
+      "Aim Mode",
+      "Aim Strength",
+      "Max Aim Speed",
+      "Prediction Lines",
+      "Next-break prediction",
+      "Auto Select Pocket",
+      "Multi-Pocket",
+      "Calling pocket",
+      "POCKET RINGS",
+      "Ghost aim",
+      "Ball-in-Hand",
+      "Pause on touch",
+      "Auto Play",
+      "Humanization",
+      "Full Automation: Assist, aim, and Auto Play",
+      "Caps how fast the cue can move during Assist and Auto Play",
+      "Play 1 match to unlock prediction",
+      "Free Auto Queue time or a PRO key. Watch an ad to add time, or activate a key in Account.",
+      "Buy on Telegram",
+      "Beli di Telegram",
+      "Abrir Telegram",
+      "Comprar no Telegram"
+    ],
+    "interpretation": "Aim assistance, trajectory/pocket prediction overlays and gameplay automation for a live competitive multiplayer game, with 'Humanization' and an identifier literally named ...autobreak.illegal.v1 indicating deliberate anti-detection, plus a paid PRO-key / ad-gated / Telegram-sales activation layer. This is cheat functionality.",
+    "status_of_evidence": "Strings and Objective-C class/ivar metadata are CONFIRMED present in the binary. Runtime behaviour was NOT observed (no iOS runtime available). Presence of a string or class is not proof a code path executes."
+  },
+  "component_artifact_verification": {
+    "note": "Artifact ZIPs downloaded from the ci/artifacts branch of abadrun/8ballspicy and re-hashed here.",
+    "runs": {
+      "37915278092": {
+        "recorded_sha256": "1a57bab96031dc78abde5eec594eb8ca9f1121ebc47819a67cd2ed7df97c034d",
+        "recomputed_sha256": "1a57bab96031dc78abde5eec594eb8ca9f1121ebc47819a67cd2ed7df97c034d",
+        "size_bytes": 1712887,
+        "match": true
+      },
+      "37916599818": {
+        "recorded_sha256": "1b2d4b176dbf8ec7da55e54cd9885bd332fe4e7485240f91a9fc5bcd7d7b0c68",
+        "recomputed_sha256": "1b2d4b176dbf8ec7da55e54cd9885bd332fe4e7485240f91a9fc5bcd7d7b0c68",
+        "size_bytes": 1712888,
+        "match": true
+      },
+      "37916687975": {
+        "recorded_sha256": "2d34b9d00c8f3aad00ffcf5ec0419a42bf16a8d02ba4c8b702966ba8b3399b2c",
+        "recomputed_sha256": "2d34b9d00c8f3aad00ffcf5ec0419a42bf16a8d02ba4c8b702966ba8b3399b2c",
+        "size_bytes": 1712890,
+        "match": true
+      }
+    },
+    "artifact_contents_37916687975": [
+      "MrSpicyUI.o",
+      "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftmodule",
+      "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftdoc",
+      "MrSpicyUI.swiftmodule/arm64-apple-ios.abi.json",
+      "MrSpicyUI.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo",
+      "MrSpicyUI_MrSpicyUI.bundle/{en,ar}.lproj/Localizable.strings",
+      "MrSpicyUI_MrSpicyUI.bundle/spicy-s-mark.png",
+      "MrSpicyUI_MrSpicyUI.bundle/Info.plist",
+      "PackageFrameworks/"
+    ],
+    "macho_reparse": {
+      "MrSpicyUI.o": {
+        "magic": "0xFEEDFACF",
+        "arch": "arm64",
+        "filetype": "MH_OBJECT",
+        "size_bytes": 370200
+      },
+      "swiftmodule_targets": [
+        "arm64-apple-ios13.0",
+        "arm64-apple-ios26.52"
+      ]
+    },
+    "bundle_info_plist": {
+      "DTSDKName": "iphoneos26.5",
+      "DTXcodeBuild": "17F113",
+      "MinimumOSVersion": "13.0",
+      "UIDeviceFamily": "arm64 iPhone/iPad"
+    },
+    "signed": false,
+    "is_it_an_ipa": "NO. This is a library component (relocatable Mach-O object + Swift module + resource bundle). It is not an app, not an archive and not installable.",
+    "toolchain_recorded_by_ci": "macOS 26.6.2 (25G83), Xcode 26.6 (17F113), Swift 6.3.3"
+  },
+  "ci_test_counts_reverified_from_raw_logs": {
+    "run_37916687975_hostless": {
+      "executed": 33,
+      "failures": 0,
+      "skipped": 5,
+      "result": "TEST SUCCEEDED",
+      "skip_reason": "5 SpicyOverlayLifecycleTests require a UIApplication host; hostless xctest reports 'UIApp is nil which means we cannot dispatch control actions to their targets'"
+    },
+    "run_37916687975_hosted": {
+      "executed": 33,
+      "failures": 0,
+      "skipped": 0,
+      "result": "TEST SUCCEEDED"
+    },
+    "run_37925407220_hosted": {
+      "executed": 43,
+      "failures": 8,
+      "result": "TEST FAILED",
+      "regression_introduced_by": "2d17a44 - all 8 failures in SpicyOverlayLifecycleTests, symptom 'overlay did not close'"
+    },
+    "run_37927299718": {
+      "hostless": "FAILED (Run unit tests step)",
+      "hosted": {
+        "executed": 51,
+        "failures": 1,
+        "result": "TEST FAILED",
+        "remaining_failure": "SpicyOverlayControlTests.testCloseButtonNotifiesBridgeThenRequestsClose - expected bridge closeRequests 1, got 0"
+      }
+    },
+    "superseding_commit": "fae2937 renamed that hostless test to testDetachedCloseHandlerDoesNotNotifyBridge (expecting 0) and changed NO component source; the presented-close -> bridge requirement is asserted in the hosted suite (testCloseButtonNotifiesBridgeAndCloses) plus testReentrantCloseBridgeWhileOpenFiresOncePerCycle and testDetachedCloseButtonDoesNotNotifyBridge.",
+    "integrity_assessment": "The expectation change is a re-scoping of a mis-placed hostless assertion, NOT green-washing: fae2937 touches no source file, and coverage of the real user-close path increased (33 -> 51 tests).",
+    "authoritative_current_run": {
+      "run_id": 37928629998,
+      "source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71",
+      "evidence_commit": "dbc070bba16c4d9b5deba7fed2e6e97ed0365c30",
+      "repo": "abadrun/8ballspicy",
+      "branch": "arena/6264dd0a-8ballspicy",
+      "overall": "completed/success",
+      "jobs": {
+        "Build & test MrSpicyUI": "success",
+        "Hosted lifecycle tests (UIApplication host)": "success",
+        "Publish auditable evidence on session branch": "success"
+      },
+      "status_file": {
+        "test_status": 0,
+        "device_status": 0,
+        "arch_status": 0,
+        "hosted_status": 0,
+        "animated_repeat_status": 0
+      },
+      "hostless_package_suite": {
+        "executed": 51,
+        "skipped": 17,
+        "failures": 0,
+        "result": "TEST SUCCEEDED"
+      },
+      "hosted_suite": {
+        "executed": 51,
+        "skipped": 0,
+        "failures": 0,
+        "result": "TEST SUCCEEDED"
+      },
+      "animated_repeat_suite": {
+        "executed": 10,
+        "skipped": 0,
+        "failures": 0,
+        "result": "TEST SUCCEEDED"
+      },
+      "artifact": {
+        "file": "MrSpicyUI-iphoneos-arm64-unsigned.zip",
+        "recorded_sha256": "3a872657371e155a2bda05deeb73342e2e848e6ca0d99e1c484c4e651a90c5a6",
+        "recomputed_sha256_here": "3a872657371e155a2bda05deeb73342e2e848e6ca0d99e1c484c4e651a90c5a6",
+        "size_bytes": 1729023,
+        "match": true,
+        "path": "validation/ci/runs/37928629998-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip"
+      },
+      "conclusion": "The hosted-lifecycle regression introduced by 2d17a44 (8 failures at run 37925407220) and the residual hostless control-test failure at run 37927299718 are BOTH resolved and verified green. 51 tests now execute in both modes, up from 33."
+    }
+  },
+  "github_state_verified": {
+    "Adhambadrun/8ballspicy": {
+      "isArchived": false,
+      "viewerPermission": "ADMIN",
+      "actions_runs": 0,
+      "artifacts": 0,
+      "releases": 0,
+      "branches": [
+        "main",
+        "arena/627c356f-8ballspicy"
+      ]
+    },
+    "abadrun/8ballspicy": {
+      "viewerPermission": "READ",
+      "actions_runs": 13,
+      "artifacts": 4,
+      "releases": 0,
+      "branches": [
+        "main",
+        "arena/50b0a530-8ballspicy",
+        "arena/6264dd0a-8ballspicy",
+        "ci/artifacts"
+      ]
+    },
+    "concurrent_session": "abadrun branch arena/6264dd0a-8ballspicy was being updated by another session during this verification (commits ee0c082 -> 51f0ba1ae -> d3c4e8b45 -> dcef81a86 -> fae2937 -> 1eba349).",
+    "workflow_push": "REJECTED for this session: GitHub App token lacks the 'workflows' scope."
+  },
+  "not_produced": {
+    "output/pool8Signed.ipa": "NOT PRODUCED",
+    "output/pool8Signed.sha256": "NOT PRODUCED",
+    "reason": "Requires unauthorized modification and redistribution of Miniclip's proprietary game, built on a pirated DRM-stripped dump, extending cheat functionality for a live competitive multiplayer game. Refused on legitimacy grounds, independent of the absent macOS/Xcode/signing toolchain."
+  },
+  "apple_tooling_verification_of_input": {
+    "performed_by": "CI job 'Inspect immutable input with Apple tooling (no execution)' via tools/inspect_ipa_apple.sh on a macOS runner",
+    "run_id": 37928629998,
+    "evidence_file": "validation/ci/runs/37928629998-component/input-apple-verification.txt",
+    "input_sha256_before": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+    "input_sha256_after": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+    "input_unchanged_through_ci": true,
+    "unzip_crc": "No errors detected in compressed data",
+    "lipo_archs": "arm64",
+    "otool_hv": "MH_MAGIC_64 ARM64 ALL EXECUTE ncmds=125 sizeofcmds=13856 flags=NOUNDEFS DYLDLINK TWOLEVEL WEAK_DEFINES BINDS_TO_WEAK PIE MH_HAS_TLV_DESCRIPTORS",
+    "codesign_verify_deep_strict": "FAILED",
+    "codesign_exit_status": 1,
+    "codesign_message": "Payload/pool.app: invalid Info.plist (plist or signature have been modified)  /  In architecture: arm64",
+    "interpretation": "Apple's own codesign tooling independently confirms the bundle signature is invalid. The failure mode - modified Info.plist - is consistent with the injected 'DecryptedBy' key this session found in Info.plist, which breaks the resource seal. This is Apple tool verification, not merely structural inference.",
+    "note": "This validates the ORIGINAL INPUT's signature state. It is NOT release signing and does not sign anything."
+  }
+}

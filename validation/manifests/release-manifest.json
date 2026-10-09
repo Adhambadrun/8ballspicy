@@ -1,0 +1,301 @@
+{
+  "manifest_version": "2.0",
+  "generated_utc": "2026-10-09T12:32:23.967141+00:00",
+  "project": "8 Ball Pool / MR. SPICY independent component",
+  "session_branch": "arena/6264dd0a-8ballspicy",
+  "final_status": "COMPONENT VERIFIED — GAME INTEGRATION / SIGNED IPA BLOCKED",
+  "release_ipa": {
+    "status": "NOT PRODUCED",
+    "delivered": false,
+    "expected_path": "output/pool8Signed.ipa",
+    "expected_checksum_path": "output/pool8Signed.sha256",
+    "sha256": null,
+    "reason": "No owner-authorized buildable game source/SDK or written integration scope; no authorized signing/export or device test performed. No placeholder."
+  },
+  "input_evidence": {
+    "verified_utc": "2026-10-09T12:32:23.967141+00:00",
+    "path": "/home/user/8ballspicy/pool8Signed.ipa",
+    "size_bytes": 99010014,
+    "sha256": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
+    "zip_entries": 3527,
+    "zip_crc": "PASS",
+    "unchanged": true,
+    "output_ipa_exists": false,
+    "output_checksum_exists": false,
+    "application_name": "8 Ball Pool",
+    "bundle_identifier": "com.miniclip.8ballpoolmult",
+    "version": "56.31.0",
+    "build": "5330",
+    "minimum_ios": "13.0",
+    "architecture": "arm64",
+    "team_identifier_assertion": "HLSX4DMBX6 (embedded; not credential ownership proof)",
+    "report": "validation/reports/forensic-analysis.md"
+  },
+  "forensic_summary": {
+    "main_encryption_command": "PRESENT; cryptid=0",
+    "main_signature_command": "PRESENT; stale hashes",
+    "code_directory_mismatching_pages_each": 593,
+    "code_directory_pages_each": 19928,
+    "code_pages_wholly_before_signature_mismatched": 172,
+    "code_pages_overlapping_signature_mismatched": 421,
+    "pre_encrypt_table_mismatches_each": 593,
+    "resource_hash_comparisons": {
+      "match": 6624,
+      "mismatch": 98,
+      "missing": 61
+    },
+    "loader_signature_command": "ABSENT",
+    "loader_sha256": "bc6e41931e80a1fb7832612626ac05aacc7a45ecfbe7d73b45adbb889929823a",
+    "interpretation": "Mod-related strings and stale seals; loader plist does not authenticate Appdome attribution. No clean baseline, execution or source recovery.",
+    "independent_parser": "LIEF 0.17.6"
+  },
+  "component": {
+    "name": "MrSpicyUI",
+    "version": "1.0.0",
+    "sources": "MrSpicyUI/",
+    "provenance": "Continued existing original component from repository history, not Miniclip/i3rby source",
+    "brand_asset": {
+      "file": "MrSpicyUI/Sources/MrSpicyUI/Resources/Branding/spicy-s-mark.png",
+      "sha256": "7c6b53e4e2b2ef752759d8b99fd7bcb992aa1d270f9060c9dec37fd5b22786f1",
+      "provenance": "Existing AI-generated replacement from earlier implementation, reused unchanged; not recovered historical asset."
+    },
+    "ci_verified_source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71",
+    "source_trees": {
+      "MrSpicyUI": "3a775121085d8abdec4c0812c4b72cd8a150ea08",
+      "HostApp": "8704ef1e59bf1731e7f90e5379b2cd4387603413",
+      "tools": "18d176a13edf88d4816eadae42e4d0a07867c43d"
+    },
+    "device_build": {
+      "path": "validation/ci/runs/37928629998-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+      "size_bytes": 1729023,
+      "sha256": "3a872657371e155a2bda05deeb73342e2e848e6ca0d99e1c484c4e651a90c5a6",
+      "zip_crc": "PASS",
+      "mach_o": "arm64 thin MH_OBJECT (relocatable component, not app)",
+      "object_sha256": "3e14286d6ba4aae56f7ca3840a8d8854e30b00f1b702aa25584799af84cf9061",
+      "object_size_bytes": 415608,
+      "signed": false,
+      "contents": [
+        {
+          "path": "MrSpicyUI.o",
+          "size_bytes": 415608
+        },
+        {
+          "path": "MrSpicyUI_MrSpicyUI.bundle/",
+          "size_bytes": 0
+        },
+        {
+          "path": "MrSpicyUI_MrSpicyUI.bundle/ar.lproj/",
+          "size_bytes": 0
+        },
+        {
+          "path": "MrSpicyUI_MrSpicyUI.bundle/ar.lproj/Localizable.strings",
+          "size_bytes": 1544
+        },
+        {
+          "path": "MrSpicyUI_MrSpicyUI.bundle/en.lproj/",
+          "size_bytes": 0
+        },
+        {
+          "path": "MrSpicyUI_MrSpicyUI.bundle/en.lproj/Localizable.strings",
+          "size_bytes": 1141
+        },
+        {
+          "path": "MrSpicyUI_MrSpicyUI.bundle/spicy-s-mark.png",
+          "size_bytes": 1550502
+        },
+        {
+          "path": "MrSpicyUI_MrSpicyUI.bundle/Info.plist",
+          "size_bytes": 683
+        },
+        {
+          "path": "MrSpicyUI.swiftmodule/",
+          "size_bytes": 0
+        },
+        {
+          "path": "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftdoc",
+          "size_bytes": 13044
+        },
+        {
+          "path": "MrSpicyUI.swiftmodule/Project/",
+          "size_bytes": 0
+        },
+        {
+          "path": "MrSpicyUI.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo",
+          "size_bytes": 27420
+        },
+        {
+          "path": "MrSpicyUI.swiftmodule/arm64-apple-ios.swiftmodule",
+          "size_bytes": 175988
+        },
+        {
+          "path": "MrSpicyUI.swiftmodule/arm64-apple-ios.abi.json",
+          "size_bytes": 149
+        },
+        {
+          "path": "PackageFrameworks/",
+          "size_bytes": 0
+        }
+      ],
+      "url": "https://github.com/abadrun/8ballspicy/blob/dbc070bba16c4d9b5deba7fed2e6e97ed0365c30/validation/ci/runs/37928629998-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+      "target": "arm64-apple-ios13.0",
+      "sdk": "26.5",
+      "configuration": "Release",
+      "code_signing_allowed": false,
+      "result": "SUCCESS",
+      "installable": false
+    },
+    "controls_scope": "Persistence/callbacks, reset, en/ar RTL, accessibility metadata/theme, UIKit lifecycle only; no host/system/game effects"
+  },
+  "ci": {
+    "run_id": 37928629998,
+    "run_attempt": 1,
+    "url": "https://github.com/abadrun/8ballspicy/actions/runs/37928629998",
+    "result": "success",
+    "evidence_publication_commit": "dbc070bba16c4d9b5deba7fed2e6e97ed0365c30",
+    "source_commit": "fae2937905395c425c777c38cbc05e115b2e1d71",
+    "jobs": {
+      "Build & test MrSpicyUI": {
+        "id": 113814283708,
+        "result": "success",
+        "url": "https://github.com/abadrun/8ballspicy/actions/runs/37928629998/job/113814283708"
+      },
+      "Hosted lifecycle tests (UIApplication host)": {
+        "id": 113815315287,
+        "result": "success",
+        "url": "https://github.com/abadrun/8ballspicy/actions/runs/37928629998/job/113815315287"
+      },
+      "Publish auditable evidence on session branch": {
+        "id": 113819116622,
+        "result": "success",
+        "url": "https://github.com/abadrun/8ballspicy/actions/runs/37928629998/job/113819116622"
+      }
+    },
+    "evidence_file": "validation/evidence/component-verification-37928629998.json",
+    "actions_artifacts_metadata": "validation/evidence/artifacts-37928629998.json",
+    "retrieval": "git fetch of fixed session branch; bytes independently verified"
+  },
+  "tests": {
+    "hostless": {
+      "executed": 51,
+      "passed": 34,
+      "failed": 0,
+      "skipped": 17,
+      "warnings": [
+        "2026-10-09 12:16:16.447 appintentsmetadataprocessor[3037:13174] warning: Metadata extraction skipped. No AppIntents.framework dependency found."
+      ],
+      "errors": [],
+      "skip_reason": "17 lifecycle tests require UIApplicationMain; all run in hosted suite"
+    },
+    "hosted": {
+      "executed": 51,
+      "passed": 51,
+      "failed": 0,
+      "skipped": 0,
+      "warnings": [
+        "2026-10-09 12:19:28.877 appintentsmetadataprocessor[2585:11853] warning: Metadata extraction skipped. No AppIntents.framework dependency found.",
+        "2026-10-09 12:19:30.933 appintentsmetadataprocessor[2602:11910] warning: Metadata extraction skipped. No AppIntents.framework dependency found."
+      ],
+      "errors": []
+    },
+    "animated_repeat": {
+      "executed": 10,
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "unique_tests": 1,
+      "evidence": "validation/evidence/animated-repeat-37928629998.json"
+    },
+    "parser": {
+      "executed": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Synthetic forensic parser fixtures, not Apple signature trust"
+    }
+  },
+  "toolchain": {
+    "toolchain": "Xcode 26.6\nBuild version 17F113",
+    "swift": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+    "sdk": "26.5",
+    "analysis_host": "Linux x86_64; Python3.11 / LIEF0.17.6; no local Apple SDK",
+    "simulator": "iPhone 17 Pro, iOS 26.4.1"
+  },
+  "integration": {
+    "status": "BLOCKED / NOT IMPLEMENTED",
+    "host_source_found": false,
+    "authorized_sdk_found": false,
+    "game_runtime": "NOT TESTED",
+    "component_test_host": "MrSpicyDemoHost / com.mrspicy.demo.host, not 8 Ball Pool",
+    "bridge": "SpicyHostBridge: preferences changed and user close request callbacks",
+    "normal_game_preservation": "Identity and input bytes statically preserved; screens/navigation/gameplay NOT TESTED"
+  },
+  "features": {
+    "matrix": "validation/reports/feature-verification-matrix.md",
+    "advertised_categories": 42,
+    "description_source": "User-supplied inventory, not independently fetched marketing",
+    "en_ar": "Implemented/tested in component only",
+    "pro": "Localized read-only unavailable disclosure; no entitlement backend, unlocked status or paid feature implementation",
+    "ad_free": "Component adds no ad SDK/network code; no game ad removal/config or integrated runtime verification",
+    "automation": "Reference only, not implemented; no online aim, gameplay automation, evasion or bypass"
+  },
+  "signature_validation": {
+    "input_ipa": {
+      "method": "Apple codesign --verify --deep --strict --verbose=4",
+      "run_id": 37928629998,
+      "exit_code": 1,
+      "result": "FAILED",
+      "diagnostic": "invalid Info.plist (plist or signature have been modified)",
+      "log": "validation/ci/runs/37928629998-component/input-apple-verification.txt"
+    },
+    "component": "Unsigned device object/module/resource ZIP by design; not installable",
+    "release_export": "NOT RUN",
+    "local_signing_material": "Not found",
+    "remote_secrets": "UNKNOWN: metadata API returned403; not proof absent",
+    "device_installation_launch": "NOT RUN"
+  },
+  "release_publication": {
+    "github_release": "NONE; not created or uploaded",
+    "sources_branch": "arena/6264dd0a-8ballspicy",
+    "artifact_url": "https://github.com/abadrun/8ballspicy/blob/dbc070bba16c4d9b5deba7fed2e6e97ed0365c30/validation/ci/runs/37928629998-component/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip",
+    "publication_scope": "Independent component evidence only; no proprietary game release"
+  },
+  "blockers_next_steps": [
+    "Owner-authorized buildable game source or official presentation/settings SDK plus written permitted UI scope and clean baseline",
+    "Secure owner-authorized Apple identity and profiles for com.miniclip.8ballpoolmult and four extensions",
+    "Official permitted Pro/ad-free feature APIs, entitlement source/configuration and legitimate test access",
+    "Physical developer-mode iOS device with authorized provisioning, exact IPA-hash-based install/launch/normal-game/feature/ad tests"
+  ],
+  "deliverables": {
+    "forensic_report": "validation/reports/forensic-analysis.md",
+    "build_report": "validation/reports/build-and-signing-report.md",
+    "integration_report": "validation/reports/integration-validation.md",
+    "device_report": "validation/reports/device-test-report.md",
+    "feature_matrix": "validation/reports/feature-verification-matrix.md",
+    "output_readme": "output/README.md"
+  },
+  "limitations": [
+    "No proprietary source, call graph or feature functionality inferred from binary strings",
+    "No game integration, signing, physical device or normal-game verification",
+    "Only focused component accessibility/RTL tests, not a full VoiceOver/all-iOS/device audit",
+    "Historical unsuccessful runs retained; hostless skips not passes",
+    "Original package was already altered/untrusted; byte preservation is not a clean baseline"
+  ],
+  "historical_runs": [
+    {
+      "run_id": 37925407220,
+      "evidence": "validation/evidence/component-verification-37925407220.json",
+      "result": "FAILURE"
+    },
+    {
+      "run_id": 37926156116,
+      "evidence": "validation/evidence/component-verification-37926156116.json",
+      "result": "FAILURE"
+    },
+    {
+      "run_id": 37927299718,
+      "evidence": "validation/evidence/component-verification-37927299718.json",
+      "result": "FAILURE"
+    }
+  ]
+}
