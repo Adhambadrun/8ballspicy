@@ -9,11 +9,14 @@ state of session 734fc10e). Session branch: `arena/a8ab557d-8ballspicy` (remote 
 
 | Commit | Content | Pushed |
 |---|---|---|
-| C1 | `8f5942f` (amended once before push to record the new `tools` tree in the manifest snapshot). All source, tool, CI, evidence-manifest and documentation changes listed below. | **Pushed; accepted.** `origin/arena/a8ab557d-8ballspicy` = C1 (verified with `git ls-remote`). |
-| C2 | Doc-only: this change log's commit IDs and post-commit verification section. Its ID is the head of the branch after the push (`git log -1`). | Pushed in the same way as C1. |
+| C1 | `8f5942f` (amended once before push to record the new `tools` tree in the manifest snapshot). All source, tool, CI, evidence-manifest and documentation changes listed below. | **Pushed; accepted.** |
+| C2 | `56fe865`. Doc-only: this change log's commit IDs and post-commit verification section. | **Pushed; accepted.** `origin/arena/a8ab557d-8ballspicy` = C2 (verified with `git ls-remote`). |
+| C3 | Fresh evidence: `validation/evidence/final-input-verification-a8ab557d.json` plus this change-log section. | **Pushed; accepted.** `origin/arena/a8ab557d-8ballspicy` = C3 (verified post-push). |
 
-Commit IDs are written in C2 because a commit cannot contain its own ID. C2 changes no file
-that is part of any source tree, so the manifest's tree snapshot still matches.
+Commit IDs for C1 and C2 are written in C2 because a commit cannot contain its own ID. C2
+changes no file that is part of any source tree, so the manifest's tree snapshot still
+matches. C3 adds only a new evidence JSON under `validation/evidence/`; that directory is
+not part of any source tree.
 
 ## Push outcome
 
@@ -105,6 +108,12 @@ patch succeeds; the installed copy is byte-identical to the canonical text; the 
 * `session-a8ab557d-verification.md` (new): this session's measurements.
 * `change-log-a8ab557d.md` (new): this file.
 * All 734fc10e and earlier reports: **unchanged.**
+
+### Evidence (`validation/evidence/`)
+
+* `final-input-verification-a8ab557d.json` (new in C3): fresh independent inspector run over
+  `pool8Signed.ipa`. Size/sha256/entries/CRC/application metadata all match the manifest's
+  `input_evidence` (PASS on `input_ipa_unchanged`, `input_zip_crc`, `manifest_input_evidence`).
 
 ### Not changed
 
