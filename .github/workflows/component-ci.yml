@@ -46,6 +46,9 @@ jobs:
       - name: Test read-only forensic parser
         run: PYTHONPATH=../tools python3 -m unittest discover -s ../tools -p 'test_*.py' -v
 
+      - name: Inspect immutable input with Apple tooling (no execution)
+        run: bash ../tools/inspect_ipa_apple.sh
+
       - name: Show toolchain
         run: |
           {

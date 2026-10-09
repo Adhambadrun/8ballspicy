@@ -1,18 +1,17 @@
 {
   "manifest_version": "1.0",
-  "generated_utc": "2026-10-09T10:25:00Z",
+  "generated_utc": "2026-10-09T11:48:44.138620+00:00",
   "project": "8 Ball Pool / Mr. Spicy",
-  "session_branch": "arena/50b0a530-8ballspicy",
-  "final_status": "COMPONENT VERIFIED — HOST INTEGRATION BLOCKED",
-  "status_meaning": "The Mr. Spicy UI component is built and fully tested on a real Apple toolchain (including an arm64/iphoneos device build). The mission's release IPA (integrated, signed 8 Ball Pool) cannot be produced: the host application is closed-source third-party software and no Apple signing identity exists in this environment.",
-
+  "session_branch": "arena/6264dd0a-8ballspicy",
+  "final_status": "COMPONENT REBUILD IN PROGRESS — HOST INTEGRATION BLOCKED",
+  "status_meaning": "Prior component build verified; current repairs under CI. Host integration/source authorization not available; final IPA not produced.",
   "release_ipa": {
     "delivered": false,
-    "expected_path": "output/Mr Spicy.ipa",
-    "expected_checksum_path": "output/Mr Spicy.sha256",
-    "reason": "Requires (1) owner-authorized host source or integration interface for com.miniclip.8ballpoolmult and (2) an Apple-issued signing identity + provisioning for a legitimate export. Neither exists in any reachable location. No placeholder or renamed artifact was created at these paths."
+    "expected_path": "output/pool8Signed.ipa",
+    "expected_checksum_path": "output/pool8Signed.sha256",
+    "reason": "Requires (1) owner-authorized host source or integration interface for com.miniclip.8ballpoolmult and (2) an Apple-issued signing identity + provisioning for a legitimate export. Neither exists in any reachable location. No placeholder or renamed artifact was created at these paths.",
+    "status": "NOT PRODUCED"
   },
-
   "input_evidence": {
     "path": "pool8Signed.ipa",
     "sha256": "6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84",
@@ -25,26 +24,29 @@
     "minimum_os": "13.0",
     "architecture": "arm64 (single slice)",
     "team_identifier": "HLSX4DMBX6",
-    "provenance": "Decrypted App Store build (Info.plist 'DecryptedBy=@FastDecryptBot' watermark, LC_ENCRYPTION_INFO_64 crypt_id=0, SC_Info stripped). Original Miniclip code-signature structures retained; cryptographically re-verified signature status: NOT AVAILABLE on this host (no codesign on Linux).",
-    "hardening": "Appdome-protected (Frameworks/libloader.framework, com.appdome.libloader 1.0.0)",
+    "provenance": "Third-party decrypted/modified dump markers; main signature structures retained but code/resource hashes mismatch; unsigned mod-related nested loader. See updated forensic report.",
+    "hardening": "libloader plist claims com.appdome.libloader; attribution is not authenticated and binary contains third-party mod-related strings.",
     "report": "validation/reports/forensic-analysis.md"
   },
-
   "component": {
     "name": "MrSpicyUI",
     "version": "1.0.0",
     "sources": "MrSpicyUI/ (Swift package, iOS 13+)",
-    "provenance": "ORIGINAL implementation produced in this session. The referenced prior work (ExistingIPAWorkspace/OverlaySource/, device-component checksum c0e66b306465fb0093a83893664982a54a914f6b49f69a2c1f001cb6f751088b) was NOT recovered: it does not exist in this repository or its history, and the sibling repositories that contained it became unreachable during this session (see forensic-analysis.md section 7). The referenced checksum is therefore unverified and does NOT describe this build.",
+    "provenance": "Continued existing original implementation from previous branch; not recovered Miniclip or i3rby source.",
     "brand_asset": {
       "file": "MrSpicyUI/Sources/MrSpicyUI/Resources/Branding/spicy-s-mark.png",
       "provenance": "Newly generated 2026-10-09 (AI-generated monogram). NOT a recovered copy of the historical Spicy S asset, which lived only in the unreachable sibling repositories."
     },
-    "ci_verified_source_commit": "dc03d13",
+    "ci_verified_source_commit": "dc03d130664aed951dc003604592ed246e53f2c7",
     "device_build": {
       "artifact": "MrSpicyUI-iphoneos-arm64-unsigned.zip",
       "sha256": "1a57bab96031dc78abde5eec594eb8ca9f1121ebc47819a67cd2ed7df97c034d",
       "size_bytes": 1712887,
-      "contents": ["MrSpicyUI.o (arm64-apple-ios13.0)", "MrSpicyUI.swiftmodule/ (arm64-apple-ios)", "MrSpicyUI_MrSpicyUI.bundle/ (en/ar strings, spicy-s-mark.png)"],
+      "contents": [
+        "MrSpicyUI.o (arm64-apple-ios13.0)",
+        "MrSpicyUI.swiftmodule/ (arm64-apple-ios)",
+        "MrSpicyUI_MrSpicyUI.bundle/ (en/ar strings, spicy-s-mark.png)"
+      ],
       "target": "arm64-apple-ios13.0",
       "sdk": "iPhoneOS26.5.sdk (Xcode 26.6, build 17F113)",
       "configuration": "Release",
@@ -54,7 +56,6 @@
       "independent_verification": "SHA-256 re-computed on the analysis host and matched; MrSpicyUI.o re-parsed as Mach-O 64-bit CPU_TYPE_ARM64."
     }
   },
-
   "tests": {
     "hosted_suite": {
       "host": "HostApp/MrSpicyDemoHost (component TEST HOST — explicitly not the production game)",
@@ -90,7 +91,6 @@
       "reason": "Integration is blocked (see integration-validation.md). The third-party Appdome-hardened game binary was not patched or executed."
     }
   },
-
   "toolchain": {
     "ci_runner": "macOS 26.6.2 (25G83) arm64, GitHub-hosted macos-latest",
     "xcode": "26.6 (17F113)",
@@ -98,7 +98,6 @@
     "simulator": "auto-selected iPhone simulator (iPhone 17 Pro in final run)",
     "analysis_host": "Debian GNU/Linux 12, Python 3.11 + lief 1.0.0 (static analysis only)"
   },
-
   "integration": {
     "status": "BLOCKED",
     "host_application": "8 Ball Pool (com.miniclip.8ballpoolmult) — closed-source third-party (Miniclip)",
@@ -107,27 +106,23 @@
     "seam_provided_by_component": "SpicyHostBridge protocol (spicyOverlayDidRequestClose / spicyPreferencesDidChange)",
     "report": "validation/reports/integration-validation.md"
   },
-
   "signature_validation": {
-    "input_ipa": "Structural analysis only (dual CodeDirectory + CMS wrapper + entitlements present; identifier com.miniclip.8ballpoolmult, team HLSX4DMBX6). Cryptographic codesign verification NOT AVAILABLE (no codesign binary on Linux).",
+    "input_ipa": "FAILED structural hash comparisons; main signature/encryption commands PRESENT, loader signature command ABSENT. Apple CI verification pending.",
     "output_component": "Unsigned by design (no Apple identity). Not installable; not claimed as such.",
     "release_export": "NOT RUN — requires Apple-issued identity + provisioning (missing)."
   },
-
   "release_publication": {
-    "github_release": "NOT PUBLISHED — binary asset upload requires uploads.github.com, which is unreachable from this session sandbox (verified: release creation aborts on asset upload EOF).",
+    "github_release": "NOT PUBLISHED; no current release observed, no new release creation attempted.",
     "artifact_available_at": "repository branch 'ci/artifacts' (git transport — verified fetchable), path runs/37915278092-component/dist/",
-    "sources_branch": "arena/50b0a530-8ballspicy (pushed)"
+    "sources_branch": "arena/6264dd0a-8ballspicy"
   },
-
   "limitations": [
     "No authorized host source or integration interface for 8 Ball Pool — integration cannot proceed (external requirement).",
-    "No Apple signing identity or provisioning profile in any reachable environment — signed release export cannot proceed (external requirement).",
     "No physical iOS device — installation/launch validation NOT RUN.",
     "Prior Mr. Spicy component (ExistingIPAWorkspace/OverlaySource/) and its reported checksum c0e66b30… were not recoverable; this deliverable is a new original implementation.",
-    "The input IPA is a third-party decrypted App Store build; it was used as immutable evidence only and was not modified, re-signed, or redistributed."
+    "The input IPA is a third-party decrypted App Store build; it was used as immutable evidence only and was not modified, re-signed, or redistributed.",
+    "No local signing materials; repository secrets metadata inaccessible (403), so remote secret availability is UNKNOWN, not proven absent. No authorized signing performed."
   ],
-
   "deliverables": {
     "component_sources": "MrSpicyUI/",
     "component_test_host": "HostApp/",

@@ -20,7 +20,8 @@ final class SpicyLocalizationTests: XCTestCase {
         "mr.spicy.settings.nickname",
         "mr.spicy.settings.reset",
         "mr.spicy.a11y.close",
-        "mr.spicy.a11y.reset"
+        "mr.spicy.a11y.reset",
+        "mr.spicy.pro.reference"
     ]
 
     func testEnglishDefinesEveryUIKey() {

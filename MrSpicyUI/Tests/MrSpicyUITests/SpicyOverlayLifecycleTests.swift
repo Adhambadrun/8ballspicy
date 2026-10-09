@@ -105,9 +105,10 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
     }
 
     private func openOverlay(file: StaticString = #filePath, line: UInt = #line) {
-        overlay.open(from: presenter, animated: false, completion: nil)
+        var completed = false
+        XCTAssertTrue(overlay.open(from: presenter, animated: false) { completed = true }, file: file, line: line)
         waitUntil(5, "overlay did not open", {
-            overlay.presentingViewController != nil && overlay.isOpen
+            completed && overlay.presentingViewController != nil && overlay.isOpen
         }, file: file, line: line)
     }
 
@@ -210,6 +211,20 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
         XCTAssertFalse(overlay.close(animated: true))
         XCTAssertFalse(overlay.open(from: presenter, animated: true))
         waitUntil(5, "animated dismissal completion missing", { closed && !overlay.isOpen })
+    }
+
+    func testArabicHeaderActuallyMirrorsAndCanClose() {
+        overlay.refreshLocalization(language: "ar")
+        openOverlay()
+        overlay.view.layoutIfNeeded()
+        let header = overlay.headerView!
+        let mark = header.markImageView.convert(header.markImageView.bounds, to: overlay.view)
+        let close = header.closeButton.convert(header.closeButton.bounds, to: overlay.view)
+        XCTAssertGreaterThan(mark.midX, close.midX, "Arabic leading/trailing geometry must mirror, not just translate text")
+        XCTAssertGreaterThanOrEqual(close.width, 44)
+        XCTAssertGreaterThanOrEqual(close.height, 44)
+        XCTAssertGreaterThan(mark.width, 0)
+        closeOverlay()
     }
 
 }

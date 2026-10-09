@@ -1,134 +1,216 @@
-# Forensic Analysis — `pool8Signed.ipa`
+# Forensic Analysis — immutable `pool8Signed.ipa`
 
-**Date:** 2026-10-09 (UTC)
-**Analyst:** Arena.ai autonomous engineering agent (session `arena/50b0a530-8ballspicy`)
-**Method:** Static inspection only. All conclusions below are backed by command output produced in this session on a Debian 12 (x86_64) analysis host. No Apple-proprietary tooling (`codesign`, `otool`, `plutil`, `dwarfdump`) exists on this host; equivalents used: `unzip`, `python3` 3.11 (`plistlib`, `zipfile`), `lief` 1.0.0 (Mach-O parsing), `sha256sum`/`md5sum`, `od`, `strings`. The input file was treated as immutable evidence; all experiments ran on a copy extracted under `/home/user/work/`.
+**Audit date:** 2026-10-09. **Session:** `arena/6264dd0a-8ballspicy`.
+**Scope:** read-only static investigation; no game execution, DRM work, binary
+patching, library injection, activation bypass, or redistribution performed.
+This report supersedes conflicting conclusions in the earlier project reports.
 
----
+## 1. Reproducible evidence and confidence
 
-## 1. Input identity
+```bash
+python3 tools/inspect_ipa.py pool8Signed.ipa \
+  --output validation/evidence/ipa-inspection.json
+PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py' -v
+sha256sum pool8Signed.ipa
+```
 
-| Property | Value | Evidence |
-|---|---|---|
-| Path | `/home/user/8ballspicy/pool8Signed.ipa` | workspace inventory |
-| Size | 99,010,014 bytes | `ls -la` |
-| SHA-256 | `6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84` | `sha256sum` |
-| MD5 | `3bfa71c416ba3fc8ac6e167aee974d98` | `md5sum` |
-| Format | Valid ZIP archive (3,527 entries, `zipfile.testzip()` → `None`, top-level `Payload/`) | `python3 -m zipfile` / `zipfile` |
-| App bundle | `Payload/pool.app/` (3,366 files) | extraction inventory |
+- [`../evidence/ipa-inspection.json`](../evidence/ipa-inspection.json): stdlib
+  ZIP/CRC, plist, Mach-O commands/sections/nlist, CodeDirectory ordinary and
+  pre-encrypt hashes, entitlements, and declared resource hashes. All relevant
+  paths, binary sizes, hashes, dependencies, extensions and anomalies recorded.
+- [`../evidence/independent-macho-verification.json`](../evidence/independent-macho-verification.json):
+  independent **LIEF 0.17.6** in-memory metadata inspection of the main executable
+  and loader. No binary extracted to disk by either Python inspection.
+- [`../evidence/feature-string-search.json`](../evidence/feature-string-search.json):
+  exact substring search terms, byte offsets, excerpts. Limited static samples,
+  not executable payloads or reconstructed original source.
+- `tools/inspect_ipa_apple.sh`: macOS CI static `lipo`, `otool`, and
+  `codesign --verify --deep --strict` validation of the **input**, never signing.
+  Actual executed result is recorded in the build report; no success inferred.
+- The Python parser has four passing synthetic-fixture unit tests, including
+  detecting a mutated code page. The fixtures are **not** Apple signatures.
+  CodeDirectory layout was cross-checked against Apple's published XNU
+  `osfmk/kern/cs_blobs.h` (github.com/apple-oss-distributions/xnu).
 
-A second historical IPA exists only as a deleted git object in this repository's history (commit `f926d36`, removed in `5ab43b4`): `8-ball-pool-i3rby-IPAOMTK.COM.ipa`, blob `6011d5cd…`, SHA-256 `59607b4177f8ffdf36649d9bb3b0c5900d39f5b6b3eaa0c6e351ba353a58c2f8`. It is **not** the input for this mission and was not used.
+**Confidence:** high for recorded bytes/metadata/hash comparisons, medium for
+interpretation of mod-related strings, none for unexecuted game behavior.
+Hash comparisons do not replace Apple CMS trust validation. No known-clean
+owner-supplied baseline exists for a byte-by-byte provenance comparison.
 
-**Important:** the supplied filename (`pool8Signed.ipa`, "signed") is not evidence of an intact, verifiable signature — see §4.
+## 2. Input and host identity — VERIFIED FACT
 
-## 2. Application identity (from `Info.plist`, hash `d5de79bd…`)
-
-| Key | Value |
+| Property | Observed value / method |
 |---|---|
-| CFBundleDisplayName / CFBundleName | `8 Ball Pool` |
-| CFBundleIdentifier | `com.miniclip.8ballpoolmult` |
-| CFBundleExecutable | `pool` |
-| CFBundleShortVersionString / CFBundleVersion | `56.31.0` / `5330` |
-| MinimumOSVersion | `13.0` |
-| UIDeviceFamily | iPhone + iPad |
-| Orientation | Landscape Left/Right only, `UIRequiresFullScreen` |
-| Build toolchain | Xcode 26.2 (`DTXcode` 2620, `DTXcodeBuild` 17C52), SDK `iphoneos26.2` |
-| App Store app-id | `543186831` (`AppID`/`VungleAppID`) |
-| Provenance marker | `DecryptedBy = "@FastDecryptBot - https://t.me/FastDecryptBot"` |
+| Exact path | `/home/user/8ballspicy/pool8Signed.ipa` |
+| Size | **99,010,014 bytes** (`stat`, Python) |
+| SHA-256 before and after analysis | `6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84` |
+| ZIP | CRC **PASS**, **3,527 entries** (`zipfile.testzip`) |
+| Main bundle / executable | `Payload/pool.app/` / `pool` |
+| Display name / bundle name | **8 Ball Pool** / **8 Ball Pool** |
+| Bundle ID | **com.miniclip.8ballpoolmult** |
+| Version / build | **56.31.0 / 5330** |
+| Minimum iOS | **13.0** (plist and Mach-O) |
+| Architecture | **arm64**, thin 64-bit little-endian Mach-O |
+| Supported devices / orientations | iPhone and iPad; landscape left/right |
+| Reported original toolchain | Xcode 26.2 / SDK iphoneos26.2 (plist metadata) |
 
-**Interpretation (confidence: high):** this is Miniclip's *8 Ball Pool* iOS application, an App Store build (56.31.0 / build 5330) that was FairPlay-decrypted by a third-party dump service. The `DecryptedBy` Info.plist key is a well-known decryption-service watermark; `SC_Info/` contains only a `.keep` placeholder (FairPlay metadata stripped).
+All user-supplied input identity references match. The tracked input was never
+changed or overwritten. This proves byte preservation in this session, **not**
+that the starting archive was a pristine official game or works normally.
+There is **no output IPA**. Required eventual output is
+`output/pool8Signed.ipa`, not the outdated `output/Mr Spicy.ipa` contract.
 
-## 3. Binary & architecture (Mach-O analysis via `lief`)
+## 3. Package and binary architecture — VERIFIED FACT
 
-Main executable `Payload/pool.app/pool` (SHA-256 `4654de9a…`):
+- **25 framework bundles**, **4 app extensions**, **1 embedded Swift dylib**
+  (`libswift_Concurrency.dylib`). All inspected executables are thin arm64;
+  the exact per-binary metadata and hashes are in `ipa-inspection.json`.
+- Extensions: `NotificationContent.appex`, `NotificationService.appex`,
+  `PoolWidgetExtension.appex`, `PooliMessage.appex`. Their IDs remain under
+  `com.miniclip.8ballpoolmult`; widget minimum iOS is 14.0, others 13.0.
+- Resource inventory records localizations, CocosBuilder `.ccbi` files,
+  PNGs, plists and other assets. Resources were inspected, not rendered.
+  Opaque private blobs were not executed, decrypted or attributed as fact.
+- Main executable: **81,997,008 bytes**, SHA-256
+  `4654de9a52345e27397a7e0714c5efa0f51a3af53313e4bc068f02417aba84b3`,
+  `MH_EXECUTE`, **125 load commands**, minimum iOS 13.0 / SDK 26.2.
+- **105 linked-library commands**, rpaths `/usr/lib/swift` and
+  `@executable_path/Frameworks`. The complete linkage list is recorded.
+- nlist: **4,222 entries**; **30 defined external**, **4,191 undefined**
+  non-debug named entries (remaining entry not classified as named).
+  LIEF independently records imported/exported symbol metadata.
+  `UIApplication`, `UIViewController`, notification and `dlopen` references
+  establish dependencies only, not an application initialization call graph.
+- `LC_LOAD_DYLIB` for
+  `@executable_path/Frameworks/libloader.framework/libloader` is present at
+  main-file command offset **13,800**. This declares a dependency; whether
+  dyld successfully loads it, executes initializers, or presents UI is
+  **NOT TESTED**. No original host integration hook is established by this.
 
-- Single-slice Mach-O 64-bit, `CPU_TYPE.ARM64` (little-endian magic `cf fa ed fe`), `MH_EXECUTE`, 125 load commands, flags `0xa18085` (PIE, MH_TWOLEVEL, MH_NO_HEAP_EXECUTION bits among them).
-- `LC_BUILD_VERSION`: platform iOS, **min OS 13.0.0**, SDK 26.2.0, linked with `LD 1230.1.0`.
-- `LC_ENCRYPTION_INFO_64`: `crypt_id = 0` → the `__TEXT` segment is **not encrypted** (consistent with a decrypted dump). cryptoff 237568 / cryptsize 4096.
-- `LC_UUID` / uuid: `c235dccd-997e-3d31-a98f-eaa8bddd2bfb`.
-- Symbol table: 4,222 named symbols retained (partial symbols survive, e.g. `mcwebsocketpp` C++ networking symbols, `mc::crashlytics` globals, `FBLink_*` shims). Not fully stripped; **no dSYM / DWARF** was found in the bundle (`dwarfdump` unavailable on host, but no `.dSYM`/debug companion exists in the archive).
-- Exported symbols: 30 (mostly `FBLink_*`, `mcwebsocketpp` internals). Imported symbols: 4,191 (Swift stdlib/Foundation mangled names dominate → substantial Swift component alongside C++ game core).
-- Rpaths: `/usr/lib/swift`, `@executable_path/Frameworks`.
+## 4. Decryption and code-signature integrity — VERIFIED STRUCTURE / FAILED HASHES
 
-**All embedded binaries (main app, 4 app extensions, 25 framework binaries, 1 Swift dylib) are single-architecture ARM64 with `crypt_id = 0`.** No simulator slices. No fat binaries.
+- `Info.plist` contains `DecryptedBy = @FastDecryptBot - https://t.me/FastDecryptBot`.
+  `SC_Info/` contains only `.keep`; 61 missing app-seal entries refer to
+  FairPlay supplemental files. These are evidence of a third-party dump,
+  not authorization, a legitimate decryption operation here, or distribution rights.
+- Main **`LC_ENCRYPTION_INFO_64` is PRESENT**, cryptoff **237,568**, cryptsize
+  **4,096**, **crypt_id=0**. LIEF independently agrees. Unencrypted status is
+  consistent with the watermark/stripped metadata; absence of a command
+  must not be reported. No FairPlay bypass was performed in this session.
+- Main **`LC_CODE_SIGNATURE` is PRESENT** at **79,904,240**, size **2,092,768**.
+  Two CodeDirectories, requirements, XML/DER entitlements and CMS wrapper
+  remain. Presence is not validity, ownership of keys, or a signing identity
+  available for this project.
+- Both CodeDirectories identify `com.miniclip.8ballpoolmult` and team
+  `HLSX4DMBX6`. These are **embedded assertions**, not an independently
+  authenticated certificate ownership claim. Recorded entitlements include
+  application ID, game center, production push, associated domains,
+  Apple sign-in, declared age range and app group.
+- Ordinary hash tables: **593 mismatching pages per CodeDirectory** out of
+  **19,928** declared pages. **172 wholly precede the current signature**;
+  **421 overlap the current signature region** because codeLimit
+  **81,623,008** exceeds the signature offset. Do not characterize all 593
+  as gameplay patches. Optional pre-encrypt tables also give 593 mismatches.
+- Special-slot comparisons: **Info.plist MISMATCH**, **CodeResources MISMATCH**;
+  requirements and both entitlement blobs **MATCH**. These independent
+  mismatches establish stale seals even apart from decrypted code pages.
+- App resource seal: **6,624 matching hash comparisons**, **98 mismatching
+  hash comparisons**, **61 missing entries**. Counts are hash comparisons,
+  not 98 distinct files. Changed loader executable/plist and AppLovinSDK
+  executable each mismatch recorded SHA-1 and SHA-256 seals. All exact
+  anomalies and optional flags are in the evidence JSON. Nested-code rules
+  are not fully emulated by the Python file-hash check.
+- **No embedded provisioning profile** is present. Absence alone is not
+  proof an App Store build is unsigned; here stale hashes and an unsigned
+  nested loader are separate integrity evidence.
 
-## 4. Code signature & entitlements
+## 5. Loader anomaly / existing third-party modifications
 
-`LC_CODE_SIGNATURE` at file offset 79,904,240, size 2,092,768. SuperBlob `0xfade0cc0` with 6 slots:
+`Payload/pool.app/Frameworks/libloader.framework/libloader` is **12,265,804
+bytes**, SHA-256
+`bc6e41931e80a1fb7832612626ac05aacc7a45ecfbe7d73b45adbb889929823a`.
+It is arm64 `MH_DYLIB` with **45 commands**, `crypt_id=0`, **no
+LC_CODE_SIGNATURE** (confirmed independently with LIEF). Its plist says
+`com.appdome.libloader` 1.0.0, but that name **does not authenticate its contents
+as Appdome protection**. Its bytes contain:
 
-| Slot type | Blob magic | Notes |
+| Static observation | Decimal file offset |
+|---|---:|
+| `com.i3rby.8poolmod.autoqueue.tiercode.v1` | 10028341 |
+| `com.i3rby.8poolmod.autobreak.illegal.v1` | 10029530 |
+| `com.i3rby.autoplay` prefix | 10034542 |
+| `GBModMenuDelegate` | 9965433 |
+| `Aim Mode` / `Aim Strength` / `Max Aim Speed` | 10038551 / 10038665 / 10038698 |
+| `Free Auto Queue time or a PRO key. Watch an ad to add time, or activate a key in Account.` | 10045796 |
+
+**Static inference (medium/high confidence):** this framework contains
+third-party mod-menu-related material, including prediction/automation/paid
+activation references. The main dependency and stale seals are consistent
+with an altered package. Without a clean baseline or runtime, do **not**
+assert exactly who injected it, how it bypasses protection, that every named
+feature is implemented, or that gameplay automation runs.
+No loader code was used in MrSpicyUI; no key/activation/anti-cheat bypass was
+implemented. Full category audit: `feature-verification-matrix.md`.
+
+## 6. Runtime architecture and source distinctions
+
+| Artifact / question | What is established | Limitation |
 |---|---|---|
-| 0x0 CodeDirectory | `0xfade0c02` (797,394 B) | SHA-1 (hashType 1) CD, v2.5, 19,928 code slots, codeLimit 81,623,008, identifier `com.miniclip.8ballpoolmult`, flags `0x10000` (CS_RUNTIME / hardened runtime) |
-| 0x2 | `0xfade0c01` (108 B) | small blob containing the identifier string |
-| 0x5 | `0xfade7171` (953 B) | blob containing the entitlements XML (see below) |
-| 0x7 | `0xfade7172` (501 B) | embedded entitlements blob |
-| 0x1000 | `0xfade0c02` (1,275,750 B) | second (SHA-256-class) CodeDirectory, matching modern dual-CD layout |
-| 0x10000 | `0xfade0b01` (4,392 B) | CMS wrapper (certificate chain / signature) |
+| Original game source | **NOT AVAILABLE** in examined trees/history | Binary/symbols are not original source |
+| Decompiled/disassembled source | None recovered or fabricated | No guessed host call graph |
+| Main/loader metadata | Declared dependencies, ObjC/Swift symbol references, sections | Cannot prove initialization sequence, UI reachability or callbacks |
+| Existing third-party loader | Binary and static strings | Not authorized source, SDK, or component provenance |
+| `MrSpicyUI/` | Existing original Swift/UIKit package continued and repaired | Independent library, not loaded by game |
+| `HostApp/` | Existing UIApplication demo/test host | **Not 8 Ball Pool** |
+| `SpicyHostBridge` | Component-owned callback protocol | Game does not acquire this interface by its existence |
+| Compiled component ZIP | Independent unsigned device build; see build report | Not a framework injection payload or installable IPA |
+| Actual game navigation/gameplay/ad behavior | **NOT TESTED** | No authorized runtime/clean baseline/device |
+| Integrated host source / signed final IPA | **NOT PRODUCED** | Required authorization, source/SDK and signing absent |
 
-CodeDirectory special slots (SHA-1): Info.plist `85760279…`, Requirements `d7e90ffc…`, ResourceDir `74d9d0f6…`, Entitlements `94fc2873…`, EntitlementsDER `ace68336…`; Application and slot −6 are zero-filled.
+## 7. GitHub recovery / discrepancies corrected
 
-**Entitlements recovered from the signature blob:**
+- `abadrun/8ballspicy`: accessible, main
+  `7e59c3a733b53d8b16725ad82e05eab03de14dca` (merged PR #1).
+  Component introduced at `109072df115bd12a0ea9ce5dea256037843e1f03`;
+  subsequent compile/lifecycle/host/packaging fixes retained. Complete
+  reachable history fetched; no Miniclip host source or authorized SDK found.
+- Existing component, demo host, en/ar resources, S mark and tests recovered.
+  The mark is the **existing generated replacement** from the previous
+  implementation, not the missing historical brand asset. No new mark generated.
+- `Adhambadrun/8ballspicy` and `arena/f4b84726-8ballspicy` **are accessible**.
+  That branch's tip `10ad313616895ef75e1d269c7ff323809e105671` contains IPA
+  and reports, **no component/host source**. Its claim that main signature
+  and encryption commands are absent is **incorrect for the exact supplied
+  hash**; direct parsing and LIEF both establish their presence.
+- The prior abadrun report correctly observed main commands but incorrectly
+  generalized valid signature structures to all binaries and asserted an
+  Appdome loader identity from its plist. The loader has no signature command;
+  mod strings and mismatched seals were missed. Current findings replace those.
+- Prior report's four-commit/no-source inventory described the repository
+  **before** component introduction, not its current state. Existing component
+  work was reused, not discarded.
+- Current account listing exposes only `abadrun/8ballspicy`; earlier
+  `8ball`–`8ball7` content was not recovered. Historical claims about their
+  disappearance remain **NOT INDEPENDENTLY REVERIFIED** as an event.
+- Both inspected repos show no releases; abadrun historical Actions artifacts
+  exist but the useful successful build packages/logs are on `ci/artifacts`.
+  Latest prior run **37916687975**, source
+  `114b9aedfb04f34651afb1c14cde636612347bc3`, succeeded; its logs were fetched
+  via git and independently inspected. Older run **37915278092** package
+  hash `1a57bab96031dc78abde5eec594eb8ca9f1121ebc47819a67cd2ed7df97c034d`
+  independently matched; it is not the new repaired build.
+- Direct `gh run view --log` download failed at
+  `results-receiver.actions.githubusercontent.com` (**EOF**). Existing git
+  evidence remained fetchable. New CI uses one publisher on the **fixed
+  session branch only**, records full source/run provenance, and fails on
+  publication errors rather than masking a push failure.
 
-```
-com.apple.developer.declared-age-range      = true
-com.apple.developer.team-identifier         = HLSX4DMBX6
-application-identifier                     = HLSX4DMBX6.com.miniclip.8ballpoolmult
-com.apple.developer.applesignin             = [Default]
-aps-environment                             = production
-com.apple.developer.game-center             = true
-com.apple.developer.associated-domains      = [applinks:8bp.co, applinks:poolbyminiclip.com, applinks:miniclip8ballpool.onelink.me]
-com.apple.security.application-groups       = [group.com.miniclip.8ballpoolmult]
-```
+## 8. Technical conclusion
 
-- **Signing identity:** Apple-issued identity of **Miniclip (team `HLSX4DMBX6`)**. `codesign -vv`-style verification is **NOT AVAILABLE** on this Linux host (no `codesign` binary exists on Linux), so cryptographic validation of the CMS chain and per-page hashes was not re-executed here — *structural* presence and internal consistency were verified only.
-- **No `embedded.mobileprovision`** is present in the bundle (App Store distribution layout).
-- The CMS blob is small (4,392 B) and the Info.plist carries a decryption watermark; combined with `crypt_id = 0`, the file is best described as a **decrypted App Store package with retained (original) signature structures**. Treat the filename claim "Signed" as **unverified** for installation purposes.
-
-## 5. Dependency inventory
-
-### 5.1 Embedded frameworks (25) + 1 dylib
-
-Ad/analytics stack: `AdSurgeSDK` (com.AdSurge.ADN 1.0), `AppLovinSDK` 13.6.3, `BigoADS` 5.2.1, `DTBiOSSDK` (Amazon), `FBAudienceNetwork`, `InMobiSDK` 11.3.0, `MolocoSDK` 4.7.0, `OMSDK_Appodeal` 1.6.
-Analytics/infra: `FirebaseAnalytics/Core/CoreExtension/CoreInternal/Crashlytics/Installations/RemoteConfigInterop/Sessions` 11.15.0, `GoogleAppMeasurement(-IdentitySupport)`, `GoogleAdsOnDeviceConversion` 2.1.0, `GoogleDataTransport` 10.1.0, `GoogleUtilities` 8.1.0, `Promises`/`FBLPromises` 2.4.0, `nanopb` 3.30910.0.
-Security/hardening: **`libloader` (`com.appdome.libloader` 1.0.0)** — Appdome-secured loader (Appdome is a commercial app-hardening/threat-shielding platform). This is loaded via `@executable_path/Frameworks/libloader.framework/libloader`.
-Swift: `libswift_Concurrency.dylib` (embedded back-deployed).
-
-### 5.2 System linkage (excerpt)
-
-`libz, libresolv, libc++, libc++abi, libbz2, libsqlite3, libxml2, libcompression, libobjc, libSystem`; frameworks incl. `UIKit, SwiftUI (weak), Foundation (weak), CoreFoundation (weak), Metal/MetalKit, GLKit, OpenGLES, GameKit, StoreKit, AVFoundation/AVKit, WebKit (weak), JavaScriptCore (weak), AuthenticationServices (weak), AppTrackingTransparency (weak), AdSupport, AdServices (weak), AdAttributionKit (weak), MarketplaceKit (weak), WidgetKit (weak), CryptoKit, Security, CoreData, CoreMotion, …`. Six in-tree ad SDKs are loaded via `@rpath` (`AdSurgeSDK, AppLovinSDK, InMobiSDK, FBAudienceNetwork, DTBiOSSDK, MolocoSDK`).
-
-### 5.3 App extensions (4)
-
-| Extension | Bundle id | Min OS |
-|---|---|---|
-| `NotificationContent.appex` | `com.miniclip.8ballpoolmult.notificationContent` | 13.0 |
-| `NotificationService.appex` | `com.miniclip.8ballpoolmult.notificationService` | 13.0 |
-| `PoolWidgetExtension.appex` | `com.miniclip.8ballpoolmult.poolWidget` | 14.0 |
-| `PooliMessage.appex` | `com.miniclip.8ballpoolmult.PooliMessage` | 13.0 |
-
-### 5.4 Resources
-
-17 localizations (`ar, de, eng, es, fr, hi, id, it, ja, ko, kor, pt, pt-BR, pt-PT, ru, tr, vi` .lproj), 696 CocosBuilder `.ccbi` scene files, 742 property lists, 1,220 PNGs at app root (plus nested resources), `checksums/` (6 Miniclip asset-checksum plists), and a directory `j1O1pP4cpnaLPxs2xoSf/` containing 18 opaque blobs (all share magic `e1 1c ff 10 …` — an unidentified private format; hypothesis (confidence: medium): Appdome-protected or Miniclip-encrypted configuration/bundle data; **not executed or decrypted**).
-
-## 6. What is confirmed vs. hypothesis
-
-**Confirmed by direct evidence (static):**
-- Bundle identity, version, architectures, min-iOS, dependency graph, extension set, entitlements text, signature-blob structure, decryption markers (`DecryptedBy`, `crypt_id=0`, `SC_Info` stripped).
-
-**Hypotheses (not confirmed):**
-- The CMS signature would validate under Apple's trust chain on-device (cannot verify without `codesign`/iOS).
-- `j1O1pP4cpnaLPxs2xoSf` blob purpose (Appdome/Miniclip private format).
-- Behavior at runtime (nothing in this report is execution-confirmed; this analysis host cannot run iOS binaries).
-
-**Explicitly out of scope per mission constraints:** no DRM/FairPlay bypass work, no anti-cheat/anti-tamper defeat (Appdome), no binary patching of the game, no paid-entitlement or monetization manipulation, no competitive-gameplay modification. The Appdome-protected, third-party-owned binary is treated as immutable evidence only.
-
-## 7. Host-source discovery (COMMAND 04 outcome)
-
-- This repository's entire 4-commit history contains **no** `.xcodeproj`, `.xcworkspace`, `project.pbxproj`, Swift/ObjC source, entitlements, or host SDK — only two IPA blobs and `.gitattributes`.
-- No `ExistingIPAWorkspace/OverlaySource/` exists anywhere in the repository, its history, or the local filesystem (searched `/` for `*Overlay*`, `*Spicy*`, `*.swift`, `*.xcodeproj`, `project.pbxproj`, `*.xcarchive` — zero hits outside the repo metadata).
-- Sibling public repositories under the same account (`abadrun/8ball` … `abadrun/8ball7`) were observed early in this session via the GitHub API and contained extensive prior *Mr. Spicy* work (SwiftUI/UIKit `mr-spicy-ui` packages, a `MRSpicy.xcodeproj` demo app, branding assets, tooling, and release documentation). During this session those repositories were **deleted or made private**; every subsequent fetch attempt (git clone, `git ls-remote`, `codeload.github.com`, `raw.githubusercontent.com`, REST API) returns 404. Only file listings observed in this session survive as evidence; **no content was recovered**. The referenced device-component checksum `c0e66b306465fb0093a83893664982a54a914f6b49f69a2c1f001cb6f751088b` matches no reachable artifact (searched local workspace, git object store, GitHub code search) and **could not be verified**.
-- **The production host application is Miniclip's closed-source *8 Ball Pool*.** No owner-authorized source, overlay SDK, or documented integration interface exists in any reachable project artifact. Integration of the Mr. Spicy UI into the host therefore requires external authorization/source that this workspace does not contain.
-
-## 8. Bottom line
-
-`pool8Signed.ipa` is a decrypted (FairPlay-removed) ARM64 App Store build of *8 Ball Pool* 56.31.0 (5330) with original Miniclip team identity `HLSX4DMBX6`, Appdome hardening (`libloader`), 25 embedded third-party frameworks, and 4 extensions. It is suitable as *evidence and integration-target reference*; it is **not** a legitimate base for a re-signed release without Miniclip authorization and an Apple signing identity, and it must not be binary-patched (third-party protected game, mission constraints).
+**Modified/untrusted dump preserved as evidence; independent component work
+is legitimate and testable. Host integration remains BLOCKED.** Possession
+of the IPA and embedded Miniclip entitlement strings does not grant source,
+keys, license, or redistribution permission. Supply a clean owner-authorized
+host source/SDK and written integration scope first; then perform source-level
+presentation/settings integration, authorized build/sign/export and real-device
+regression tests without using the third-party loader or tampering with the dump.

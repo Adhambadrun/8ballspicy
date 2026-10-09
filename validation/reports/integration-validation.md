@@ -1,74 +1,84 @@
 # Integration Validation — Mr. Spicy × 8 Ball Pool
 
-**Date:** 2026-10-09 (UTC)
-**Session:** `arena/50b0a530-8ballspicy`
-**Verdict:** **NOT INTEGRATED — authorized host source/interface unavailable.**
+**Date:** 2026-10-09. **Session:** `arena/6264dd0a-8ballspicy`.
+**Status:** **BLOCKED — actual game integration NOT IMPLEMENTED.**
 
----
+## Verified available artifacts
 
-## 1. What "integration" means for this project
+- Existing `MrSpicyUI/` Swift/UIKit source, original component-owned
+  `SpicyHostBridge`, en/ar resources, S replacement mark and tests recovered
+  from abadrun history and continued rather than rebuilt from scratch.
+- Existing `HostApp/MrSpicyDemoHost` is a **component TEST HOST**, bundle ID
+  `com.mrspicy.demo.host`. It is not 8 Ball Pool and is not an IPA replacement.
+- `pool8Signed.ipa` metadata still names **8 Ball Pool**, bundle ID
+  **com.miniclip.8ballpoolmult**, version **56.31.0 / 5330**, minimum iOS 13.0.
+  Input bytes preserved. This is not runtime proof of game preservation.
+- Both named GitHub repositories and the reported historical branch were
+  inspected. No Miniclip game source, owner-authorized overlay SDK, license
+  agreement or documented host extension point found in examined artifacts.
+  The third-party `libloader` is **not** an authorized integration SDK.
+- Component build/test evidence is in `build-and-signing-report.md`.
+  Passing component tests is not evidence of game integration.
 
-The mission defines the production host as the *8 Ball Pool* application
-(`com.miniclip.8ballpoolmult`, verified present in `pool8Signed.ipa` — see
-`forensic-analysis.md`). The Mr. Spicy UI must be delivered *inside* that
-application, wired to authorized host functionality (settings ↔ game behavior),
-while preserving the original application identity.
+## Available component seam (not a game hook)
 
-## 2. Host discovery — investigation performed (COMMAND 04)
+An owner-authorized host must add `MrSpicyUI` as a local Swift package/library,
+retain its host adapter, and present `SpicyOverlayViewController` from a visible
+UIKit controller on the main thread. `SpicyHostBridge` reports close-button
+requests and persisted preferences. It does not locate the game, hook dyld,
+read game state, change aim, grant Pro access or remove advertising.
 
-| Source searched | Method | Result |
+- `open`/`close` return a discardable Bool; false rejects detached/busy
+  presenters or in-flight transitions without duplicate UIKit requests.
+- Host retains the adapter; component holds the bridge weakly.
+- Reload stored values on reopening; refresh explicit `en`/`ar` content and RTL.
+- Audio, haptics, notification permission, personalization consent and account
+  nickname must each be wired only to the owner's documented, allowed APIs.
+  Current controls verify component persistence/callbacks, not host effects.
+- Initial application of stored settings is the host's responsibility. The
+  adapter must not infer notification/tracking consent from stored booleans.
+- Current Pro/reference section is localized read-only **unavailable** status,
+  not licensed Pro functionality. Feature matrix lists every advertised item.
+
+## Evidence required before integration can be called completed
+
+1. Owner-authorized host source/build project or official integration SDK with
+   documented presentation/settings APIs and written permitted feature scope.
+2. Source-level integration diff and a successful **actual host build**.
+3. Build products demonstrating package resources/code inclusion and an
+   authorized runtime trace/test showing it loads and opens/closes/reopens.
+4. Regression tests for ordinary game screens, navigation, gameplay, account
+   and network behavior, plus English/Arabic layout and accessibility.
+5. Authorized App ID/team signing and every extension's matching entitlements
+   and provisioning; Apple verification and real IPA export.
+6. A manifest/hash for `output/pool8Signed.ipa`, with physical-device launch
+   and feature/ad-free verification or prominent disclosure of missing tests.
+
+**None of (1)–(6) has been completed for the game.** No injection, archive
+surgery, plist rebranding, DRM/app-protection work or replacement game performed.
+No authorized integration attempt was made against an invented interface.
+
+## Three requested goals — independent status
+
+| Goal | Completed evidence | Missing evidence / status |
 |---|---|---|
-| Repository working tree | full recursive listing | No source: one IPA + `.gitattributes` + `.DS_Store` |
-| Repository history (all 4 commits, incl. deleted IPA commit) | `git rev-list --all`, `git show --stat`, `git cat-file --batch-all-objects` | Only IPA blobs (99,010,014 B and 98,576,945 B) + text metadata. **No** `.xcodeproj`, `.xcworkspace`, `project.pbxproj`, Swift/ObjC/ObjC++ files, entitlements, or SDKs ever committed |
-| Local filesystem (`/`) | `find` for `*.xcodeproj`, `*.xcworkspace`, `project.pbxproj`, `*.swift`, `*.xcarchive`, `*Overlay*`, `*Spicy*` | Zero hits |
-| GitHub account `abadrun` repositories | REST API `users/abadrun/repos`, per-repo `git/trees/HEAD?recursive=1` | Sibling repos `8ball`–`8ball7` contained prior Mr. Spicy work (SwiftUI/UIKit `mr-spicy-ui` packages, `MRSpicy.xcodeproj`, tools, docs). All sibling repos were **deleted or made private during this session**; every later access (git, codeload, raw, REST) returns 404. Only file listings survive (recorded in `forensic-analysis.md` §7) |
-| GitHub code search for prior component checksum `c0e66b306465fb0093a83893664982a54a914f6b49f69a2c1f001cb6f751088b` | search API across account repos | 0 matches; checksum **unverifiable** |
-| Owner-authorized SDK / integration interface | searched all reachable artifacts and the IPA bundle itself (frameworks list in `forensic-analysis.md` §5) | No Mr. Spicy SDK, no overlay hook, no documented extension point. The only "loader" present is Appdome's `libloader` (third-party hardening — **not** an integration seam and out of scope to tamper with) |
+| Original game preservation | Identity statically verified, original SHA-256 unchanged | Game navigation/screens/gameplay NOT TESTED; input already anomalous |
+| Mr. Spicy Pro | Read-only honest status; feature/source/strings audit; component preference tests | No entitlement service, permitted feature implementation or actual host integration; BLOCKED |
+| Ad-free | Component has no ad SDK, ad-loading or network code | Game ad SDKs remain; no official ad-free API/entitlement found, integrated behavior NOT TESTED |
 
-**Conclusion (confidence: high):** the production host is closed-source
-third-party software (Miniclip). No owner-authorized host source and no
-supported integration interface exists in any reachable location.
+## Smallest legitimate next steps
 
-## 3. What was validated instead (independent component work)
-
-The component (`MrSpicyUI/`) implements the complete documented component
-scope and exposes exactly one integration seam, `SpicyHostBridge`. Validation
-evidence (full logs in `build-and-signing-report.md`, CI run `37915278092`):
-
-| Check | Status |
-|---|---|
-| Unit tests (preferences persistence/reset, localization completeness en/ar, RTL, theme, brand resource) | **PASS** — 33/33 hosted (0 failures); hostless package suite 33 executed / 0 failures / 5 documented skips |
-| UI lifecycle open → close → reopen on a real UIKit presentation stack | **PASS** (`testOpenCloseReopenCycle`, hosted in `HostApp/MrSpicyDemoHost`) |
-| Settings controls write through to `UserDefaults` and notify `SpicyHostBridge` | **PASS** (`testControlDispatchViaSendActionsReachesPersistenceAndBridge` + handler tests) |
-| Reset restores defaults in model **and** UI, and notifies the bridge | **PASS** (`testResetHandlerRestoresDefaultsInModelAndUI`) |
-| Accessibility identifiers/labels installed | **PASS** |
-| Device-architecture (arm64, `generic/platform=iOS`) build | **PASS** — `MrSpicyUI.o` arm64-apple-ios13.0 via iPhoneOS26.5 SDK, SHA-256 `1a57bab9…c034d`, unsigned |
-| Communication between UI settings and **8 Ball Pool functionality** | **NOT POSSIBLE** — requires the authorized host (see §2) |
-| Runtime behavior inside 8 Ball Pool | **NOT POSSIBLE** — host binary is third-party, Appdome-hardened, and must not be patched (mission constraint) |
-
-## 4. Why the integration is not faked
-
-The only technically available "integration" route would be archive surgery on
-the decrypted IPA (injecting a dylib / repacking resources / re-signing). That
-route is **explicitly prohibited** by the mission ("do not fake integration
-through archive manipulation", "Do not bypass DRM, signature enforcement,
-anti-cheat … Do not patch a third-party game binary …"), is blocked in practice
-by Appdome hardening (`libloader`, protected payload blobs), and could not be
-validly signed anyway. It was not attempted.
-
-## 5. Exact external requirements to unblock integration
-
-1. **Owner-authorized host source** for 8 Ball Pool (or an official overlay /
-   plugin SDK published by Miniclip), including the build configuration that
-   produces `com.miniclip.8ballpoolmult`.
-2. **Apple signing material** for a legitimate export: an Apple-issued
-   distribution identity for the target App ID/team (or an authorized
-   development identity + provisioning profile for device testing).
-3. **Rebuild authorization** covering the Appdome-protected build pipeline
-   (the shipped binary is hardened; a legitimate integrated build must go
-   through the owner's protected build process).
-4. For device validation: access to an authorized physical iOS device.
-
-With (1)+(2)+(3), the component is ready to wire through `SpicyHostBridge` in a
-single host-owned code path: present `SpicyOverlayViewController`, forward
-`spicyPreferencesDidChange` to the authorized game settings layer.
+1. Obtain **Miniclip/owner written authorization plus a buildable source tree
+   or official SDK** supporting in-app UI presentation and benign settings.
+   A certificate alone, the dumped IPA, or an external key cannot supply this.
+2. Provide a **clean owner baseline and documented protection/build pipeline**
+   for regressions and protected-build requirements; do not reuse the altered
+   third-party loader. Exact current protection attribution remains unverified.
+3. Supply Apple-issued identity and matching profiles for
+   `com.miniclip.8ballpoolmult` and four extensions via secure CI/environment
+   only. Local material absent; secrets-list API returned **403**, so remote
+   secrets availability is **UNKNOWN**, not independently proven absent.
+4. For Pro/ad-free requests, supply official permitted feature source and
+   entitlement/configuration APIs plus legitimate test access. No bypass.
+5. Attach an authorized physical iOS device to a macOS developer/self-hosted
+   environment for installation, launch, normal-game regressions and ads tests.

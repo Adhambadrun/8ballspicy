@@ -130,7 +130,14 @@ def macho(b, info=None, resources=None):
             d['first_mismatching_pages'] = mismatches[:12]
             d['mismatches_wholly_before_signature'] = sum((i+1)*page <= off for i in mismatches)
             d['mismatches_overlapping_signature'] = sum((i+1)*page > off for i in mismatches)
-            d['pre_encrypt_offset'] = struct.unpack_from('>I', cd, 88)[0] if ver >= 0x20500 else 0
+            d['pre_encrypt_offset'] = struct.unpack_from('>I', cd, 92)[0] if ver >= 0x20500 else 0
+            pe = d['pre_encrypt_offset']
+            if pe and pe+nc*hs <= len(cd):
+                pm = sum(hashlib.new(hashname, b[i*page:min((i+1)*page, limit)]).digest()[:hs] != cd[pe+i*hs:pe+(i+1)*hs] for i in range(nc))
+                d['pre_encrypt_hash_mismatches'] = pm
+                d['pre_encrypt_table_note'] = 'Compared where present; not Apple trust validation.'
+            d['runtime_version'] = struct.unpack_from('>I', cd, 88)[0] if ver >= 0x20500 else 0
+            d['page_hash_scope'] = 'Ordinary hash table; optional pre-encrypt table separately compared. Resource/plist mismatches are independent.'
             d['team_identifier'] = cd[struct.unpack_from('>I', cd, 48)[0]:].split(b'\0')[0].decode(errors='replace') if ver >= 0x20200 and struct.unpack_from('>I', cd, 48)[0] else None
             d['code_limit_overlaps_signature'] = limit > off
             d['special_slot_checks'] = {}
