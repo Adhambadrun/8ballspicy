@@ -1,0 +1,2 @@
+hosted_status=0
+animated_repeat_status=0
