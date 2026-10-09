@@ -1,6 +1,3 @@
-# SUPERSEDED COPY (kept as the historical proposal). NOT INSTALLED. The canonical text
-# for arena/734fc10e-8ballspicy is validation/ci/installable/component-ci.yml, delivered as
-# validation/ci/installable/install-component-ci.patch. See validation/ci/installable/INSTALL.md.
 name: component-ci
 
 # Builds and tests the MrSpicyUI component on a real macOS/Xcode toolchain:
@@ -16,6 +13,17 @@ name: component-ci
 #
 # This workflow deliberately does NOT attempt to modify, re-sign, or repackage
 # the 8 Ball Pool application. See validation/reports/integration-validation.md.
+#
+# STATUS: NOT INSTALLED by session arena/734fc10e-8ballspicy. The GitHub App token was
+# rejected when pushing .github/workflows/component-ci.yml (missing `workflows` permission).
+# This is the canonical text. Install it with validation/ci/installable/INSTALL.md, which
+# applies validation/ci/installable/install-component-ci.patch. tools/test_ci_workflow.py
+# checks these invariants and, once installed, checks that the installed copy is identical.
+#
+# A green run proves the INDEPENDENT
+# MrSpicyUI component builds and tests and that the release gate passes. It does NOT
+# mean the 8 Ball Pool game was integrated, signed, device-tested or released:
+# output/pool8Signed.ipa remains NOT PRODUCED until validation/manifests say otherwise.
 #
 # RELEASE GATE (added for session arena/a4ebad6a-8ballspicy):
 #  - job `release-gate`: runs tools/verify_release_state.py and
@@ -33,13 +41,18 @@ name: component-ci
 on:
   push:
     branches:
-      - arena/a4ebad6a-8ballspicy
+      - arena/734fc10e-8ballspicy
+    # validation/ci/** is deliberately NOT a trigger: publish-evidence commits
+    # land under validation/ci/runs/ and must not re-trigger the workflow.
     paths:
       - "MrSpicyUI/**"
       - "HostApp/**"
       - "tools/**"
       - "validation/manifests/**"
       - "validation/reports/**"
+      - "validation/evidence/**"
+      - "output/**"
+      - "pool8Signed.ipa"
       - ".github/workflows/component-ci.yml"
   workflow_dispatch:
 
@@ -262,6 +275,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Run the local Python test suite
+        run: |
+          set -euo pipefail
+          PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py' -v 2>&1 | tee unittest.txt
+          {
+            echo "### Local Python test suite"
+            echo '```'
+            tail -n 4 unittest.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Verify every delivery claim against the real repository state
         run: |
           set -euo pipefail
@@ -291,7 +315,17 @@ jobs:
 
       - name: Record gate provenance
         if: always()
-        run: python3 tools/ci_provenance.py release-gate gate-provenance.json || true
+        run: python3 tools/ci_provenance.py release-gate gate-provenance.json
+
+      - name: Scope statement (component success is not release readiness)
+        if: always()
+        run: |
+          {
+            echo "### Scope"
+            echo "- Component CI (MrSpicyUI build and tests) is verified by the component and hosted jobs of this run."
+            echo "- Game release readiness is a separate question. output/pool8Signed.ipa and output/pool8Signed.sha256 must stay NOT PRODUCED until a genuine integration, signing and device validation exist."
+            echo "- The release gate above fails this run on any FAIL result."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Transfer gate evidence
         if: always()
@@ -345,7 +379,7 @@ jobs:
           SESSION_BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          test "$SESSION_BRANCH" = "arena/a4ebad6a-8ballspicy"
+          test "$SESSION_BRANCH" = "arena/734fc10e-8ballspicy"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Deliberate small evidence archive exception to ignored build outputs.

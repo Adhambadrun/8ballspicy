@@ -53,6 +53,14 @@ FORBIDDEN_SOURCE_PATTERNS = (
     'mshookfunction', 'substrate', 'cycript',
 )
 
+# Pro must stay a read-only disclosure. Any entitlement, purchase or unlock API in
+# the component or host would let the UI represent Pro as authorized without a
+# real entitlement signal, so none may appear in the component or host sources.
+PRO_ENTITLEMENT_PATTERNS = (
+    'storekit', 'skpayment', 'skproduct', 'currententitlements', 'appstorereceipt',
+    'entitlement', 'unlockpro', 'proenabled', 'isprouser', 'skreceiptrefresh',
+)
+
 # Repository root the checks run against. Tests point this at a temporary tree.
 ROOT = Path('.')
 
@@ -309,6 +317,47 @@ def check_source_provenance(r):
                'no CI run recorded the current working-copy trees', **detail)
 
 
+def check_source_snapshot(r):
+    """The manifest must record the source trees that HEAD actually contains.
+
+    The snapshot is trees only, not a commit ID: the manifest is itself committed,
+    so it cannot name the commit that contains it. Tree IDs do not change when the
+    manifest changes, so the comparison is stable.
+    """
+    manifest = path(MANIFEST)
+    if not manifest.exists():
+        return  # manifest_present already reports this
+    try:
+        m = json.loads(manifest.read_text(encoding='utf-8'))
+    except Exception:  # noqa: BLE001 - manifest_parseable already reports this
+        return
+    code, _, err = git('-C', str(ROOT), 'rev-parse', 'HEAD')
+    if code != 0:
+        r.unverified('manifest_source_snapshot',
+                     'not a git repository; manifest source trees cannot be compared', error=err)
+        return
+    head = {}
+    for tree in SOURCE_TREES:
+        code, out, err = git('-C', str(ROOT), 'rev-parse', f'HEAD:{tree}')
+        if code != 0:
+            r.fail('manifest_source_snapshot', f'source tree {tree} is missing from HEAD', error=err)
+            return
+        head[tree] = out
+    snapshot = m.get('source_tree_snapshot')
+    recorded = snapshot.get('trees') if isinstance(snapshot, dict) else None
+    if not isinstance(recorded, dict):
+        r.fail('manifest_source_snapshot',
+               'manifest does not record source_tree_snapshot.trees', head=head)
+    elif recorded != head:
+        r.fail('manifest_source_snapshot',
+               'manifest source trees differ from the trees HEAD contains; update the manifest '
+               'in the same commit as the source change',
+               recorded=recorded, head=head)
+    else:
+        r.ok('manifest_source_snapshot',
+             'manifest source-tree snapshot matches the trees HEAD contains', trees=head)
+
+
 def check_manifest_consistency(r, input_info):
     manifest = path(MANIFEST)
     if not manifest.exists():
@@ -497,6 +546,30 @@ def check_component_scope(r):
              'networking client or dynamic host-loading reference')
 
 
+def check_pro_entitlement_scope(r):
+    """Pro is a read-only disclosure: no entitlement or purchase API may be referenced."""
+    offenders = []
+    scanned = 0
+    for base in COMPONENT_SOURCES:
+        for source in sorted(path(base).rglob('*')):
+            if not source.is_file() or source.suffix not in ('.swift', '.h', '.m', '.mm'):
+                continue
+            scanned += 1
+            text = source.read_text(encoding='utf-8', errors='replace').lower()
+            for pattern in PRO_ENTITLEMENT_PATTERNS:
+                if pattern in text:
+                    offenders.append({'path': str(source.relative_to(ROOT)), 'pattern': pattern})
+    if offenders:
+        r.fail('pro_entitlement_scope',
+               'component or host references an entitlement or purchase API, so Pro could be '
+               'represented as authorized without a verified entitlement signal',
+               offenders=offenders)
+    else:
+        r.ok('pro_entitlement_scope',
+             f'{scanned} component/host source files reference no entitlement, purchase or '
+             'unlock API; Pro remains a read-only disclosure')
+
+
 def check_feature_honesty(r):
     matrix = path(MATRIX)
     if not matrix.exists():
@@ -554,9 +627,11 @@ ALL_CHECKS = (
     check_no_placeholder_release,
     check_component_artifacts,
     check_source_provenance,
+    check_source_snapshot,
     check_manifest_consistency,
     check_localization,
     check_component_scope,
+    check_pro_entitlement_scope,
     check_feature_honesty,
     check_reports_present,
 )

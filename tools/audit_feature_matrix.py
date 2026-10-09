@@ -15,6 +15,13 @@ Checks performed
 4. The matrix and the evidence JSON describe the same 42 features.
 5. Rows stating "No match" correspond to evidence features with zero hits.
 6. No row advertises a game-only feature as implemented or available.
+7. Every matrix row has exactly one status-taxonomy assignment, and the
+   assignment is compatible with the row's final status
+   (``validation/evidence/feature-status-taxonomy.json``).
+8. Every row that claims Mr. Spicy-side support (``ui-only`` or
+   ``implemented (component only)``) cites component source files that exist
+   and contain the evidence token; no game-only row may carry such evidence
+   (``validation/evidence/component-feature-evidence.json``).
 
 Reporting rules
 ---------------
@@ -25,7 +32,8 @@ Reporting rules
 ``PASS``  the exact quoted bytes are present at the cited offset.
 
 Presence of a string never proves a feature works, and absence never proves a
-feature is missing. This tool verifies citations, not functionality.
+feature is missing. This tool verifies citations and evidence links, not
+functionality.
 """
 import argparse
 import hashlib
@@ -38,6 +46,34 @@ LOADER = 'Payload/pool.app/Frameworks/libloader.framework/libloader'
 EXPECTED_LOADER_SHA256 = 'bc6e41931e80a1fb7832612626ac05aacc7a45ecfbe7d73b45adbb889929823a'
 CITATION = re.compile(r'`([^`]+)` @ (\d+)')
 MATRIX_HEADER = '| Feature |'
+DEFAULT_TAXONOMY = 'validation/evidence/feature-status-taxonomy.json'
+DEFAULT_COMPONENT_EVIDENCE = 'validation/evidence/component-feature-evidence.json'
+
+# The seven status categories used in the matrix. Their meaning is defined in
+# validation/reports/feature-verification-matrix.md ("Status taxonomy").
+TAXONOMY = (
+    'Implemented and tested',
+    'Implemented but incompletely tested',
+    'UI representation only',
+    'Explicitly unavailable',
+    'Blocked by host integration',
+    'Dependent on external authorization',
+    'Not implemented',
+)
+
+# Which taxonomy categories a final status may map to. A row can never be
+# labelled "Implemented and tested" unless its status says the component (or
+# game) implements it, and no game-only status can map to an implemented category.
+ALLOWED_CATEGORIES_BY_STATUS = {
+    'unavailable': ('Explicitly unavailable', 'Blocked by host integration', 'Not implemented'),
+    'ui-only': ('UI representation only',),
+    'awaiting verification': ('Dependent on external authorization',),
+    'implemented (component only)': ('Implemented but incompletely tested',),
+}
+
+# Statuses that assert some Mr. Spicy-side support and therefore need component
+# source evidence. Game-only ("unavailable") rows must not carry such evidence.
+COMPONENT_EVIDENCE_STATUSES = ('ui-only', 'implemented (component only)')
 
 
 def matrix_rows(text):
@@ -74,7 +110,89 @@ def check(term, offset, blob):
     return 'FAIL'
 
 
-def audit(ipa, matrix_path, evidence_path):
+def check_taxonomy(rows, taxonomy, record):
+    """Every row has one assignment, and each assignment fits the row's status."""
+    if taxonomy.get('categories') != list(TAXONOMY):
+        record('FAIL', 'taxonomy categories differ from the seven defined categories',
+               check='taxonomy_categories', found=taxonomy.get('categories'))
+    else:
+        record('PASS', 'taxonomy defines exactly the seven status categories',
+               check='taxonomy_categories')
+
+    assignments = taxonomy.get('assignments', {})
+    names = [r[0] for r in rows]
+    missing = [n for n in names if n not in assignments]
+    extra = sorted(n for n in assignments if n not in names)
+    if missing or extra or len(set(names)) != len(names):
+        record('FAIL', 'taxonomy assignments do not cover each matrix row exactly once',
+               check='taxonomy_coverage', missing=missing, extra=extra)
+    else:
+        record('PASS', f'every one of the {len(rows)} matrix rows has exactly one taxonomy assignment',
+               check='taxonomy_coverage', count=len(rows))
+
+    contradictions = []
+    for row in rows:
+        name, status = row[0], row[-1]
+        category = assignments.get(name)
+        allowed = ALLOWED_CATEGORIES_BY_STATUS.get(status.lower(), ())
+        if category not in TAXONOMY or category not in allowed:
+            contradictions.append({'feature': name, 'status': status, 'category': category})
+    if contradictions:
+        record('FAIL', 'taxonomy category contradicts the final status of a row',
+               check='taxonomy_status_consistency', rows=contradictions)
+    else:
+        record('PASS', 'every taxonomy category is compatible with its row status',
+               check='taxonomy_status_consistency')
+
+
+def check_component_evidence(rows, spec, root, record):
+    """Support claims need component source evidence; game-only rows may not carry it."""
+    features = spec.get('features', {})
+    names = {r[0] for r in rows}
+    statuses = {r[0]: r[-1].lower() for r in rows}
+
+    stray = sorted(n for n in features if n not in names
+                   or statuses[n] not in COMPONENT_EVIDENCE_STATUSES)
+    if stray:
+        record('FAIL', 'component evidence is attached to a row that does not claim Mr. Spicy-side support',
+               check='component_evidence_scope', rows=stray)
+    else:
+        record('PASS', 'component evidence is attached only to rows that claim Mr. Spicy-side support',
+               check='component_evidence_scope')
+
+    unsupported, unresolved = [], []
+    for row in rows:
+        name, status = row[0], row[-1].lower()
+        if status not in COMPONENT_EVIDENCE_STATUSES:
+            continue
+        entries = features.get(name, [])
+        if not entries:
+            unsupported.append(name)
+            continue
+        for entry in entries:
+            source = Path(root) / entry['file']
+            if not source.exists():
+                unresolved.append({'feature': name, 'file': entry['file'], 'reason': 'file missing'})
+                continue
+            text = source.read_text(encoding='utf-8', errors='replace')
+            if entry['contains'] not in text:
+                unresolved.append({'feature': name, 'file': entry['file'],
+                                   'reason': 'evidence token not found', 'token': entry['contains']})
+    if unsupported or unresolved:
+        record('FAIL', 'a row claims Mr. Spicy-side support without resolvable component evidence',
+               check='component_evidence_resolves', unsupported=unsupported, unresolved=unresolved)
+    else:
+        supported = [r[0] for r in rows if r[-1].lower() in COMPONENT_EVIDENCE_STATUSES]
+        record('PASS', f'{len(supported)} component-supported row(s) cite component source that contains their evidence',
+               check='component_evidence_resolves', rows=supported)
+
+
+def audit(ipa, matrix_path, evidence_path, taxonomy_path=None,
+          component_evidence_path=None, root=None):
+    root = Path(root) if root is not None else Path('.')
+    taxonomy_path = Path(taxonomy_path) if taxonomy_path is not None else root / DEFAULT_TAXONOMY
+    component_evidence_path = (Path(component_evidence_path) if component_evidence_path is not None
+                               else root / DEFAULT_COMPONENT_EVIDENCE)
     blob = read_loader(ipa)
     sha = hashlib.sha256(blob).hexdigest()
     evidence = json.loads(Path(evidence_path).read_text(encoding='utf-8'))
@@ -163,8 +281,24 @@ def audit(ipa, matrix_path, evidence_path):
         record('FAIL', 'feature rows claim an unsupported implementation status',
                check='feature_status_honesty', rows=dishonest)
 
+    # 7-8. status taxonomy and component evidence
+    taxonomy = json.loads(taxonomy_path.read_text(encoding='utf-8')) if taxonomy_path.exists() else None
+    if taxonomy is None:
+        record('FAIL', f'taxonomy file {taxonomy_path} is missing', check='taxonomy_present')
+    else:
+        check_taxonomy(rows, taxonomy, record)
+
+    spec = (json.loads(component_evidence_path.read_text(encoding='utf-8'))
+            if component_evidence_path.exists() else None)
+    if spec is None:
+        record('FAIL', f'component evidence file {component_evidence_path} is missing',
+               check='component_evidence_present')
+    else:
+        check_component_evidence(rows, spec, root, record)
+
     return {
         'method': 'Read-only re-derivation of matrix citations from the immutable IPA; '
+                  'component evidence links resolved against the working tree; '
                   'no game execution, patching or redistribution.',
         'loader': {'path': LOADER, 'size_bytes': len(blob), 'sha256': sha},
         'matrix': str(matrix_path),
@@ -184,17 +318,21 @@ def main():
                    default=Path('validation/reports/feature-verification-matrix.md'))
     p.add_argument('--evidence', type=Path,
                    default=Path('validation/evidence/feature-string-search.json'))
+    p.add_argument('--taxonomy', type=Path, default=Path(DEFAULT_TAXONOMY))
+    p.add_argument('--component-evidence', type=Path, default=Path(DEFAULT_COMPONENT_EVIDENCE))
+    p.add_argument('--root', type=Path, default=Path('.'),
+                   help='repository root that component evidence paths are relative to')
     p.add_argument('--output', type=Path, default=None)
     a = p.parse_args()
 
-    result = audit(a.ipa, a.matrix, a.evidence)
+    result = audit(a.ipa, a.matrix, a.evidence, a.taxonomy, a.component_evidence, a.root)
     if a.output:
         a.output.parent.mkdir(parents=True, exist_ok=True)
         a.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
 
     print(f"loader sha256 : {result['loader']['sha256']}")
     print(f"categories    : {result['advertised_categories']}")
-    print(f"citations     : {result['summary']}")
+    print(f"findings      : {result['summary']}")
     for f in result['findings']:
         if f['result'] != 'PASS':
             print(f"  {f['result']}: {f['detail']}")
