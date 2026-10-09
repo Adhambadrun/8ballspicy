@@ -63,7 +63,7 @@ final class SpicyOverlayLifecycleTests: XCTestCase {
     }
 
     override func tearDown() {
-        overlay.close(animated: false, completion: nil)
+        overlay?.close(animated: false, completion: nil)
         spinRunLoop(0.1)
         window?.isHidden = true
         window = nil
