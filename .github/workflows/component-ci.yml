@@ -1,0 +1,111 @@
+name: component-ci
+
+# Builds and tests the MrSpicyUI component on a real macOS/Xcode toolchain:
+#  - unit tests on an iOS Simulator (xcodebuild test)
+#  - device-architecture build (generic/platform=iOS, arm64/iphoneos), unsigned
+#
+# This workflow deliberately does NOT attempt to modify, re-sign, or repackage
+# the 8 Ball Pool application. See validation/reports/integration-validation.md.
+
+on:
+  push:
+    branches:
+      - arena/50b0a530-8ballspicy
+  workflow_dispatch:
+
+jobs:
+  test-ios-simulator:
+    name: Unit tests (iOS Simulator)
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: MrSpicyUI
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+
+      - name: Select iPhone simulator
+        id: sim
+        run: |
+          SIM_NAME=$(xcrun simctl list devices available | sed -n 's/^ *\(iPhone [^(]*\) (.*)$/\1/p' | head -1 | sed 's/[[:space:]]*$//')
+          if [ -z "$SIM_NAME" ]; then
+            echo "No available iPhone simulator found" >&2
+            xcrun simctl list devices available
+            exit 1
+          fi
+          echo "Using simulator: $SIM_NAME"
+          echo "name=$SIM_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Run unit tests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme MrSpicyUI \
+            -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.name }}" \
+            -resultBundlePath MrSpicyUI-tests.xcresult
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: MrSpicyUI-tests-xcresult
+          path: MrSpicyUI/MrSpicyUI-tests.xcresult
+          if-no-files-found: warn
+
+  build-ios-device:
+    name: Device build (iphoneos/arm64, unsigned)
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: MrSpicyUI
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build for generic iOS device
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -scheme MrSpicyUI \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build-device \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Verify produced architecture
+        run: |
+          PRODUCTS=build-device/Build/Products/Release-iphoneos
+          echo "== products =="
+          find "$PRODUCTS" -type f | sed 's/^/  /'
+          echo "== architectures =="
+          status=0
+          while IFS= read -r f; do
+            case "$(file -b "$f")" in
+              *Mach-O*)
+                echo "  $f -> $(lipo -archs "$f" 2>/dev/null || echo 'single-arch')"
+                lipo -archs "$f" | grep -q arm64 || { echo "NOT arm64: $f"; status=1; }
+                ;;
+            esac
+          done < <(find "$PRODUCTS" -type f)
+          exit $status
+
+      - name: Package and hash
+        run: |
+          PRODUCTS=build-device/Build/Products/Release-iphoneos
+          mkdir -p dist
+          (cd "$PRODUCTS" && zip -qr ../../../dist/MrSpicyUI-iphoneos-arm64-unsigned.zip .)
+          shasum -a 256 dist/MrSpicyUI-iphoneos-arm64-unsigned.zip | tee dist/MrSpicyUI-iphoneos-arm64-unsigned.sha256
+
+      - name: Upload device build
+        uses: actions/upload-artifact@v4
+        with:
+          name: MrSpicyUI-iphoneos-arm64
+          path: |
+            MrSpicyUI/dist/MrSpicyUI-iphoneos-arm64-unsigned.zip
+            MrSpicyUI/dist/MrSpicyUI-iphoneos-arm64-unsigned.sha256

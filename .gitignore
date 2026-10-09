@@ -1,0 +1,21 @@
+# Build products (regenerable) — never commit these.
+.build/
+build-device/
+dist/
+DerivedData/
+*.xcresult
+*.xcarchive
+*.dSYM
+*.dSYM.zip
+
+# Swift Package Manager
+.swiftpm/
+Package.resolved
+
+# macOS noise
+.DS_Store
+
+# The input IPA (pool8Signed.ipa) is intentionally tracked: it is the
+# immutable evidence artifact for this project (SHA-256
+# 6b4dfd3bd63a1ee5e649d98c44077e5d48f8a013255082287bef4514f6abdc84).
+# Never modify or replace it.

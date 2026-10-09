@@ -1,0 +1,17 @@
+"mr.spicy.header.title" = "Mr. Spicy";
+"mr.spicy.header.subtitle" = "Premium table controls";
+
+"mr.spicy.settings.sound" = "Sound effects";
+"mr.spicy.settings.haptics" = "Haptic feedback";
+"mr.spicy.settings.hapticIntensity" = "Haptic intensity";
+"mr.spicy.settings.haptic.off" = "Off";
+"mr.spicy.settings.haptic.light" = "Light";
+"mr.spicy.settings.haptic.medium" = "Medium";
+"mr.spicy.settings.haptic.strong" = "Strong";
+"mr.spicy.settings.notifications" = "Match notifications";
+"mr.spicy.settings.personalization" = "Personalized tips";
+"mr.spicy.settings.nickname" = "Player nickname";
+"mr.spicy.settings.reset" = "Reset to defaults";
+
+"mr.spicy.a11y.close" = "Close Mr. Spicy";
+"mr.spicy.a11y.reset" = "Reset all Mr. Spicy settings to defaults";
