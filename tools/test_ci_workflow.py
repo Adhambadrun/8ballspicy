@@ -23,7 +23,7 @@ REPO = Path(__file__).resolve().parent.parent
 CANONICAL = REPO / 'validation/ci/installable/component-ci.yml'
 PATCH = REPO / 'validation/ci/installable/install-component-ci.patch'
 INSTALLED = REPO / '.github/workflows/component-ci.yml'
-SESSION_BRANCH = 'arena/734fc10e-8ballspicy'
+SESSION_BRANCH = 'arena/a8ab557d-8ballspicy'
 TARGET = '.github/workflows/component-ci.yml'
 
 

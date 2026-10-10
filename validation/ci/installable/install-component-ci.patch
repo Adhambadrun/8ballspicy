@@ -1,9 +1,9 @@
 diff --git a/.github/workflows/component-ci.yml b/.github/workflows/component-ci.yml
 new file mode 100644
-index 0000000..81c9de2
+index 0000000..66ea25f
 --- /dev/null
 +++ b/.github/workflows/component-ci.yml
-@@ -0,0 +1,389 @@
+@@ -0,0 +1,391 @@
 +name: component-ci
 +
 +# Builds and tests the MrSpicyUI component on a real macOS/Xcode toolchain:
@@ -20,10 +20,12 @@ index 0000000..81c9de2
 +# This workflow deliberately does NOT attempt to modify, re-sign, or repackage
 +# the 8 Ball Pool application. See validation/reports/integration-validation.md.
 +#
-+# STATUS: NOT INSTALLED by session arena/734fc10e-8ballspicy. The GitHub App token was
-+# rejected when pushing .github/workflows/component-ci.yml (missing `workflows` permission).
-+# This is the canonical text. Install it with validation/ci/installable/INSTALL.md, which
-+# applies validation/ci/installable/install-component-ci.patch. tools/test_ci_workflow.py
++# STATUS: NOT INSTALLED by session arena/a8ab557d-8ballspicy (2026-10-09). The GitHub App
++# token was again rejected when pushing .github/workflows/component-ci.yml (missing
++# `workflows` permission); the refusal was re-verified in this session by git push and by
++# the contents API (HTTP 403). This is the canonical text, retargeted to this session
++# branch. Install it with validation/ci/installable/INSTALL.md, which applies
++# validation/ci/installable/install-component-ci.patch. tools/test_ci_workflow.py
 +# checks these invariants and, once installed, checks that the installed copy is identical.
 +#
 +# A green run proves the INDEPENDENT
@@ -47,7 +49,7 @@ index 0000000..81c9de2
 +on:
 +  push:
 +    branches:
-+      - arena/734fc10e-8ballspicy
++      - arena/a8ab557d-8ballspicy
 +    # validation/ci/** is deliberately NOT a trigger: publish-evidence commits
 +    # land under validation/ci/runs/ and must not re-trigger the workflow.
 +    paths:
@@ -385,7 +387,7 @@ index 0000000..81c9de2
 +          SESSION_BRANCH: ${{ github.ref_name }}
 +        run: |
 +          set -euo pipefail
-+          test "$SESSION_BRANCH" = "arena/734fc10e-8ballspicy"
++          test "$SESSION_BRANCH" = "arena/a8ab557d-8ballspicy"
 +          git config user.name "github-actions[bot]"
 +          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 +          # Deliberate small evidence archive exception to ignored build outputs.

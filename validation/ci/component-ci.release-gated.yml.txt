@@ -1,5 +1,5 @@
 # SUPERSEDED COPY (kept as the historical proposal). NOT INSTALLED. The canonical text
-# for arena/734fc10e-8ballspicy is validation/ci/installable/component-ci.yml, delivered as
+# for arena/a8ab557d-8ballspicy is validation/ci/installable/component-ci.yml, delivered as
 # validation/ci/installable/install-component-ci.patch. See validation/ci/installable/INSTALL.md.
 name: component-ci
 
